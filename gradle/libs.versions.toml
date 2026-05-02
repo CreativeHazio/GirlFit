@@ -13,6 +13,7 @@ composeMultiplatform = "1.10.3"
 junit = "4.13.2"
 kotlin = "2.3.20"
 material3 = "1.10.0-alpha05"
+coroutines = "1.10.2"
 
 #navigation
 multiplatform-nav3-ui = "1.1.0"
@@ -54,6 +55,8 @@ compose-material3 = { module = "org.jetbrains.compose.material3:material3", vers
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 
 #navigation
 jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
@@ -77,6 +80,7 @@ coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.re
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
 exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exoplayer" }
 exoplayer-media3 = { module = "androidx.media3:media3-ui", version.ref = "exoplayer" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
