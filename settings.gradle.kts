@@ -30,3 +30,13 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":androidApp")
+include(":core:designsystem")
+include(":core:common")
+include(":core:database")
+include(":feature:auth")
+include(":feature:home")
+include(":feature:workout")
+include(":feature:progress")
+include(":feature:meals")
+include(":feature:me")
+include(":feature:fitnessbuddy")
