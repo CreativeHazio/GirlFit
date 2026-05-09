@@ -51,6 +51,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
+            implementation(projects.core.designsystem)
             implementation(projects.feature.auth)
             implementation(projects.feature.home)
             implementation(projects.feature.workout)

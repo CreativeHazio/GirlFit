@@ -14,6 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.creativehazio.designsystem.components.dd
+import com.creativehazio.designsystem.theme.GirlFitTheme
 import org.jetbrains.compose.resources.painterResource
 
 import girlfit.composeapp.generated.resources.Res
@@ -21,11 +23,10 @@ import girlfit.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun App() {
-    MaterialTheme {
+    GirlFitTheme {
         var showContent by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding()
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,7 +40,7 @@ fun App() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
+                    dd()
                     Text("Compose: $greeting")
                 }
             }
