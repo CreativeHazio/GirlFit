@@ -1,4 +1,5 @@
 import SwiftUI
+import ComposeApp
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
@@ -12,6 +13,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct iOSApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    init() {
+        KoinInitIosKt.doInitKoinIos()
+    }
     
     var body: some Scene {
         WindowGroup {
