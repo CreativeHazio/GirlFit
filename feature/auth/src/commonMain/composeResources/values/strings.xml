@@ -1,0 +1,7 @@
+<resources>
+    <string name="empty_name">GirlFit</string>
+    <string name="password_too_short">Password must be at least 8 characters long</string>
+    <string name="password_too_simple">Password must include a mix of letters, numbers, and symbols</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="email_already_taken">This email is already registered. Try logging in instead.</string>
+</resources>

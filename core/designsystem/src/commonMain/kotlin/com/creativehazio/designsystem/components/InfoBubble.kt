@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.core.designsystem.generated.resources.Res
+import girlfit.core.designsystem.generated.resources.carbohydrate
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -88,7 +89,7 @@ fun InfoBubble(
 fun InfoBubblePreview() {
     InfoBubble(
 
-//        icon = Res.drawable.carbohydrate,
+        icon = Res.drawable.carbohydrate,
         text = "Carbohydrates",
         subText = "100g"
     )

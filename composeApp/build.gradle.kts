@@ -33,25 +33,17 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
-
-            implementation(libs.koin.android)
-            implementation(libs.ktor.client.android)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.compose.components.resources)
 
             implementation(libs.coil.network.ktor)
             implementation(libs.ktor.client.core)
 
+            implementation(projects.core.common)
             implementation(projects.core.designsystem)
             implementation(projects.feature.auth)
             implementation(projects.feature.home)

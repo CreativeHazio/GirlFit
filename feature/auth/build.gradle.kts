@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.androidKMPLibrary)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.android.lint)
@@ -25,6 +26,7 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
+        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
     val xcfName = "feature:authKit"
@@ -54,6 +56,8 @@ kotlin {
                 implementation(projects.core.designsystem)
                 implementation(libs.firebase.auth)
                 implementation(libs.firebase.firestore)
+
+                implementation(libs.compose.components.resources)
             }
         }
 
@@ -65,7 +69,8 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation("com.google.firebase:firebase-auth")
             }
         }
 

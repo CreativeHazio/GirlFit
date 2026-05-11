@@ -25,7 +25,6 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
-        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
     val xcfName = "core:designsystemKit"
@@ -57,7 +56,7 @@ kotlin {
                 api(libs.compose.material3)
                 api(libs.compose.ui)
                 api(libs.compose.uiToolingPreview)
-                api(libs.compose.components.resources)
+//                api(libs.compose.components.resources)
 
                 api(libs.coil.compose)
             }

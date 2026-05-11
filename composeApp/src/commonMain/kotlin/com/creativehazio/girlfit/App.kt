@@ -27,7 +27,6 @@ import org.jetbrains.compose.resources.painterResource
 
 import girlfit.composeapp.generated.resources.Res
 import girlfit.composeapp.generated.resources.carbohydrate
-import girlfit.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 fun App() {

@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.flow.Flow
 
+
 @Composable
 fun SignUpScreenRoot(
     paddingValues: PaddingValues = PaddingValues.Zero,
@@ -29,7 +30,7 @@ fun SignUpScreenRoot(
                 SignUpEffect.NavigateToHome -> onNavigateToHome()
                 is SignUpEffect.ShowError -> {
                     snackbarHostState.showSnackbar(
-                        message = it.message,
+                        message = "",
                         duration = SnackbarDuration.Short
                     )
                 }
