@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -45,16 +46,16 @@ fun App() {
                 onClick = { showContent = !showContent }
             )
             Spacer(Modifier.size(20.dp))
-//            SearchBar(
-//                query = query,
-//                onQueryChange = {
-//                    query = it
-//                },
-//                placeholderText = "e.g weightloss meals",
-//                onSearchPressed = {},
-//                showFilterIcon = true,
-//                onFilterClick = {}
-//            )
+            SearchBar(
+                query = query,
+                onQueryChange = {
+                    query = it
+                },
+                placeholderText = "e.g weightloss meals",
+                onSearchPressed = {},
+                showFilterIcon = true,
+                onFilterClick = {}
+            )
             Spacer(Modifier.size(20.dp))
             WorkoutCard(
                 imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
@@ -70,16 +71,6 @@ fun App() {
                 text = "Carbohydrates",
                 subText = "100g"
             )
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
         }
     }
 }

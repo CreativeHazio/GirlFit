@@ -3,6 +3,7 @@ import com.android.build.api.dsl.ApplicationExtension
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.google.services)
 }
 
 extensions.configure<ApplicationExtension>() {
