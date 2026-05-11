@@ -55,5 +55,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
 
+    implementation(project.dependencies.platform(libs.koin.bom))
     implementation(libs.koin.android)
 }
