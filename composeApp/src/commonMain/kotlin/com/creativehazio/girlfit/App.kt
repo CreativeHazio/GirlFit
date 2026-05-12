@@ -26,6 +26,8 @@ import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
+import com.creativehazio.auth.presentation.login.LoginScreenRoot
+import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
 import com.creativehazio.designsystem.components.InfoBubble
@@ -62,6 +64,7 @@ fun App() {
     }
 
     val signUpViewModel : SignUpViewModel = koinViewModel()
+    val loginViewModel : LoginViewModel = koinViewModel()
 
     GirlFitTheme {
         var showContent by remember { mutableStateOf(false) }
@@ -104,10 +107,16 @@ fun App() {
 //                subText = "100g"
 //            )
 //            Spacer(Modifier.size(20.dp))
-            SignUpScreenRoot(
-                signUpViewModel = signUpViewModel,
+//            SignUpScreenRoot(
+//                signUpViewModel = signUpViewModel,
+//                onNavigateToHome = {},
+//                onNavigateToLogin = {}
+//            )
+
+            LoginScreenRoot(
+                loginViewModel = loginViewModel,
                 onNavigateToHome = {},
-                onNavigateToLogin = {}
+                onNavigateToSignUp = {}
             )
         }
     }
