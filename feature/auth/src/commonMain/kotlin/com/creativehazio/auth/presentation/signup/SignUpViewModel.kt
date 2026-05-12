@@ -30,6 +30,7 @@ data class SignUpState(
 sealed interface SignUpEvent : Event {
     data class OnNameChanged(val name: String) : SignUpEvent
     data class OnEmailChanged(val email: String) : SignUpEvent
+    data class OnPasswordChanged(val password: String) : SignUpEvent
     data object OnSignUpClicked : SignUpEvent
 }
 
@@ -72,6 +73,7 @@ class SignUpViewModel(
             is SignUpEvent.OnEmailChanged -> onEmailChanged(event.email)
             is SignUpEvent.OnNameChanged -> onNameChanged(event.name)
             SignUpEvent.OnSignUpClicked -> onSignUpClicked()
+            is SignUpEvent.OnPasswordChanged -> onPasswordChanged(event.password)
         }
     }
 
@@ -83,6 +85,10 @@ class SignUpViewModel(
     private fun onNameChanged(name: String) {
         savedStateHandle[NAME] = name
         updateState { copy(name = name) }
+    }
+
+    private fun onPasswordChanged(password: String) {
+        updateState { copy(password = password) }
     }
 
     private fun onSignUpClicked() {
@@ -125,7 +131,7 @@ class SignUpViewModel(
                 SignUpError.PASSWORD_TOO_SHORT
             }
 
-            PASSWORD_COMPLEXITY_REGEX.matches(currentState.password) -> {
+            !PASSWORD_COMPLEXITY_REGEX.matches(currentState.password) -> {
                 SignUpError.PASSWORD_TOO_SIMPLE
             }
 

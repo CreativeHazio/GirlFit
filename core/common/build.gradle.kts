@@ -69,7 +69,6 @@ kotlin {
         androidMain {
             dependencies {
                 api(libs.koin.android)
-                api(libs.ktor.client.android)
             }
         }
 

@@ -1,6 +1,9 @@
 package com.creativehazio.auth.presentation.signup
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -10,6 +13,10 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import com.creativehazio.designsystem.components.CustomTextField
+import com.creativehazio.designsystem.theme.Spacing
 import kotlinx.coroutines.flow.Flow
 
 
@@ -48,6 +55,7 @@ fun SignUpScreenRoot(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         SignUpScreen(
+            modifier = Modifier.padding(innerPadding),
             name = uiState.name,
             email = uiState.email,
             password = uiState.password,
@@ -57,13 +65,47 @@ fun SignUpScreenRoot(
 }
 
 @Composable
-fun SignUpScreen(
+internal fun SignUpScreen(
+    modifier: Modifier,
     name: String,
     email: String,
     password: String,
     event: (SignUpEvent) -> Unit,
 ) {
 
+    Column(
+        modifier = modifier.padding(Spacing.Medium)
+            .imePadding()
+    ) {
+        CustomTextField(
+            value = name,
+            onValueChange = {
+                event(SignUpEvent.OnNameChanged(it))
+            },
+            labelText = "Name",
+            isError = true,
+            errorText = "Name too short",
+            singleLine = true
+        )
 
+        CustomTextField(
+            value = email,
+            onValueChange = {
+                event(SignUpEvent.OnEmailChanged(it))
+            },
+            labelText = "Email",
+            singleLine = true
+        )
+
+        CustomTextField(
+            value = password,
+            onValueChange = {
+                event(SignUpEvent.OnPasswordChanged(it))
+            },
+            labelText = "Password",
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true
+        )
+    }
 
 }
