@@ -198,7 +198,7 @@ fun CustomTextField(
                             .clickable {
                                 // TODO: Handle Forgot Password click
                             }
-                            .padding(vertical = 4.dp, horizontal = 2.dp)
+                            .padding(vertical = 4.dp)
                     )
                 }
             }

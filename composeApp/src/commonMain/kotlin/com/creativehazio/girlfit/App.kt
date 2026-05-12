@@ -73,40 +73,41 @@ fun App() {
                 .scrollable(rememberScrollState(), Orientation.Vertical),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            PrimaryButton(
-                text = "Click me!",
-                onClick = { showContent = !showContent }
-            )
-            Spacer(Modifier.size(20.dp))
-            SearchBar(
-                query = query,
-                onQueryChange = {
-                    query = it
-                },
-                placeholderText = "e.g weightloss meals",
-                onSearchPressed = {},
-                showFilterIcon = true,
-                onFilterClick = {}
-            )
-            Spacer(Modifier.size(20.dp))
-            WorkoutCard(
-                imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
-                title = "Flat \nStomach",
-                durationText = "🕑7 mins",
-                buttonText = "Start",
-                onCardClick = {}
-            )
-            Spacer(Modifier.size(20.dp))
-            InfoBubble(
-                color = MaterialTheme.colorScheme.secondary,
-                icon = Res.drawable.carbohydrate,
-                text = "Carbohydrates",
-                subText = "100g"
-            )
-            Spacer(Modifier.size(20.dp))
+//            PrimaryButton(
+//                text = "Click me!",
+//                onClick = { showContent = !showContent }
+//            )
+//            Spacer(Modifier.size(20.dp))
+//            SearchBar(
+//                query = query,
+//                onQueryChange = {
+//                    query = it
+//                },
+//                placeholderText = "e.g weightloss meals",
+//                onSearchPressed = {},
+//                showFilterIcon = true,
+//                onFilterClick = {}
+//            )
+//            Spacer(Modifier.size(20.dp))
+//            WorkoutCard(
+//                imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
+//                title = "Flat \nStomach",
+//                durationText = "🕑7 mins",
+//                buttonText = "Start",
+//                onCardClick = {}
+//            )
+//            Spacer(Modifier.size(20.dp))
+//            InfoBubble(
+//                color = MaterialTheme.colorScheme.secondary,
+//                icon = Res.drawable.carbohydrate,
+//                text = "Carbohydrates",
+//                subText = "100g"
+//            )
+//            Spacer(Modifier.size(20.dp))
             SignUpScreenRoot(
                 signUpViewModel = signUpViewModel,
-                onNavigateToHome = {}
+                onNavigateToHome = {},
+                onNavigateToLogin = {}
             )
         }
     }

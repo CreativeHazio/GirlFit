@@ -23,8 +23,11 @@ data class SignUpState(
     val isLoading: Boolean = false,
     val errorMessage: String? = "",
     val name: String = "",
+    val nameError: UiText? = null,
     val email: String = "",
-    val password: String = ""
+    val emailError: UiText? = null,
+    val password: String = "",
+    val passwordError: UiText? = null,
 ) : State
 
 sealed interface SignUpEvent : Event {
@@ -32,12 +35,12 @@ sealed interface SignUpEvent : Event {
     data class OnEmailChanged(val email: String) : SignUpEvent
     data class OnPasswordChanged(val password: String) : SignUpEvent
     data object OnSignUpClicked : SignUpEvent
+    data object OnLoginClicked : SignUpEvent
 }
 
 sealed interface SignUpEffect : Effect {
     data object NavigateToHome : SignUpEffect
-    data class ShowError(val error: SignUpError) : SignUpEffect
-    data class ShowSuccess(val message: String) : SignUpEffect
+    data object NavigateToLogin : SignUpEffect
 }
 
 enum class SignUpError : Error {
@@ -74,25 +77,28 @@ class SignUpViewModel(
             is SignUpEvent.OnNameChanged -> onNameChanged(event.name)
             SignUpEvent.OnSignUpClicked -> onSignUpClicked()
             is SignUpEvent.OnPasswordChanged -> onPasswordChanged(event.password)
+            SignUpEvent.OnLoginClicked -> {
+                sendEffect(SignUpEffect.NavigateToLogin)
+            }
         }
     }
 
     private fun onEmailChanged(email: String) {
         savedStateHandle[EMAIL] = email
-        updateState { copy(email = email) }
+        updateState { copy(email = email, emailError = null) }
     }
 
     private fun onNameChanged(name: String) {
         savedStateHandle[NAME] = name
-        updateState { copy(name = name) }
+        updateState { copy(name = name, nameError = null) }
     }
 
     private fun onPasswordChanged(password: String) {
-        updateState { copy(password = password) }
+        updateState { copy(password = password, passwordError = null) }
     }
 
     private fun onSignUpClicked() {
-        if (verifyInput() != null) return
+        if (!verifyInput()) return
 
         updateState { copy(isLoading = true) }
 
@@ -101,7 +107,7 @@ class SignUpViewModel(
         }
     }
 
-    private fun verifyInput(): SignUpError? {
+    private fun verifyInput(): Boolean {
         val EMAIL_REGEX = Regex(
             "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                     "\\@" +
@@ -116,26 +122,35 @@ class SignUpViewModel(
             "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#\$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/?]).+\$"
         )
 
-        return when {
-            currentState.name.isBlank() -> {
-                SignUpError.EMPTY_NAME
-                // Send Effects here
-            }
+        val nameError = if (currentState.name.isBlank()) {
+            SignUpError.EMPTY_NAME.message()
+        } else null
 
-            currentState.email.isBlank()
-                    || !EMAIL_REGEX.matches(currentState.email) -> {
-                SignUpError.INVALID_EMAIL
+        val emailError = when {
+            currentState.email.isBlank() || !EMAIL_REGEX.matches(currentState.email) -> {
+                SignUpError.INVALID_EMAIL.message()
             }
-
-            currentState.password.isBlank() || currentState.password.length < 8 -> {
-                SignUpError.PASSWORD_TOO_SHORT
-            }
-
-            !PASSWORD_COMPLEXITY_REGEX.matches(currentState.password) -> {
-                SignUpError.PASSWORD_TOO_SIMPLE
-            }
-
             else -> null
         }
+
+        val passwordError = when {
+            currentState.password.isBlank() || currentState.password.length < 8 -> {
+                SignUpError.PASSWORD_TOO_SHORT.message()
+            }
+            !PASSWORD_COMPLEXITY_REGEX.matches(currentState.password) -> {
+                SignUpError.PASSWORD_TOO_SIMPLE.message()
+            }
+            else -> null
+        }
+
+        updateState {
+            copy(
+                nameError = nameError,
+                emailError = emailError,
+                passwordError = passwordError
+            )
+        }
+
+        return nameError == null && emailError == null && passwordError == null
     }
 }
