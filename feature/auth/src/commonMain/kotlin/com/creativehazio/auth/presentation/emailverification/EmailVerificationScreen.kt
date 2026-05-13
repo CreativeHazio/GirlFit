@@ -101,7 +101,7 @@ internal fun EmailVerificationScreen(
 
         Text(
             text = stringResource(Res.string.verify_email_title),
-            style = MaterialTheme.typography.headlineMedium,
+            style = MaterialTheme.typography.titleLarge,
             textAlign = TextAlign.Center
         )
 
@@ -127,18 +127,15 @@ internal fun EmailVerificationScreen(
         Spacer(modifier = Modifier.height(Spacing.Medium))
 
         Text(
-            text = stringResource(Res.string.check_spam)
+            text = stringResource(Res.string.check_spam),
+            style = MaterialTheme.typography.bodyMedium
         )
         TextButton(
             enabled = uiState.isResendEnabled && !uiState.isLoading,
             onClick = { event(EmailVerificationEvent.ResendEmailVerification) }
         ) {
             Text(
-                text = if (uiState.isResendEnabled) {
-                    "Didn't receive it? ${uiState.timerText.asString()}"
-                } else {
-                    uiState.timerText.asString()
-                },
+                text = uiState.timerText.asString(),
                 color = if (uiState.isResendEnabled) {
                     MaterialTheme.colorScheme.primary
                 } else {

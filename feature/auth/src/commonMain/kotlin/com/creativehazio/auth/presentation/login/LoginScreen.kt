@@ -34,9 +34,11 @@ import com.creativehazio.designsystem.components.SecondaryButton
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.app_name
+import girlfit.feature.auth.generated.resources.apple_logo
 import girlfit.feature.auth.generated.resources.continue_with_apple
 import girlfit.feature.auth.generated.resources.continue_with_google
 import girlfit.feature.auth.generated.resources.email
+import girlfit.feature.auth.generated.resources.google_logo
 import girlfit.feature.auth.generated.resources.log_in_action
 import girlfit.feature.auth.generated.resources.login_subtitle
 import girlfit.feature.auth.generated.resources.no_account_prompt
@@ -164,12 +166,14 @@ internal fun LoginScreen(
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
+            leadingIcon = Res.drawable.google_logo,
             text = stringResource(Res.string.continue_with_google),
             onClick = {}
         )
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
+            leadingIcon = Res.drawable.apple_logo,
             text = stringResource(Res.string.continue_with_apple),
             onClick = {}
         )

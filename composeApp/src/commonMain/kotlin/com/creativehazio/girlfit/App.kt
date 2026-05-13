@@ -1,11 +1,13 @@
 package com.creativehazio.girlfit
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +18,7 @@ import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
+import com.creativehazio.auth.presentation.login.LoginScreenRoot
 import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
@@ -56,6 +59,7 @@ fun App() {
             modifier = Modifier
                 .safeContentPadding()
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
                 .scrollable(rememberScrollState(), Orientation.Vertical),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -90,23 +94,23 @@ fun App() {
 //                subText = "100g"
 //            )
 //            Spacer(Modifier.size(20.dp))
-            SignUpScreenRoot(
-                signUpViewModel = signUpViewModel,
-                onNavigateToEmailVerification = {},
-                onNavigateToLogin = {}
-            )
-
-//            LoginScreenRoot(
-//                loginViewModel = loginViewModel,
-//                onNavigateToHome = {},
-//                onNavigateToSignUp = {}
+//            SignUpScreenRoot(
+//                signUpViewModel = signUpViewModel,
+//                onNavigateToEmailVerification = {},
+//                onNavigateToLogin = {}
 //            )
 
-            EmailVerificationScreenRoot(
-                email = "davideze123@gmail.com",
-                emailVerificationViewModel = emailVerificationViewModel,
-                onNavigateToLogin = {},
+            LoginScreenRoot(
+                loginViewModel = loginViewModel,
+                onNavigateToHome = {},
+                onNavigateToSignUp = {},
+                onNavigateToEmailVerification = {}
             )
+//            EmailVerificationScreenRoot(
+//                email = "haziothedev123@gmail.com",
+//                emailVerificationViewModel = emailVerificationViewModel,
+//                onNavigateToLogin = {},
+//            )
         }
     }
 }
