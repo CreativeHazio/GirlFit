@@ -2,23 +2,14 @@ package com.creativehazio.auth.presentation.signup
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.creativehazio.auth.presentation.login.LoginEffect
-import com.creativehazio.auth.presentation.login.LoginError
+import com.creativehazio.auth.data.AuthService
+import com.creativehazio.auth.error.SignUpError
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.resulthandler.Error
 import com.creativehazio.common.resulthandler.UiText
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseAuthException
-import dev.gitlive.firebase.auth.auth
-import girlfit.feature.auth.generated.resources.Res
-import girlfit.feature.auth.generated.resources.email_already_taken
-import girlfit.feature.auth.generated.resources.empty_name
-import girlfit.feature.auth.generated.resources.invalid_email
-import girlfit.feature.auth.generated.resources.password_too_short
-import girlfit.feature.auth.generated.resources.password_too_simple
+import com.creativehazio.common.resulthandler.Result
 import kotlinx.coroutines.launch
 
 private const val NAME = "name"
@@ -50,25 +41,26 @@ sealed interface SignUpEffect : Effect {
     data class ShowError(val error: SignUpError) : SignUpEffect
 }
 
-enum class SignUpError : Error {
-    EMPTY_NAME,
-    PASSWORD_TOO_SHORT,
-    PASSWORD_TOO_SIMPLE,
-    INVALID_EMAIL,
-    EMAIL_ALREADY_TAKEN;
-
-    fun message() : UiText {
-        return when(this) {
-            EMPTY_NAME -> UiText.Resource(Res.string.empty_name)
-            PASSWORD_TOO_SHORT -> UiText.Resource(Res.string.password_too_short)
-            PASSWORD_TOO_SIMPLE -> UiText.Resource(Res.string.password_too_simple)
-            INVALID_EMAIL -> UiText.Resource(Res.string.invalid_email)
-            EMAIL_ALREADY_TAKEN -> UiText.Resource(Res.string.email_already_taken)
-        }
-    }
-}
+//enum class SignUpError : Error {
+//    EMPTY_NAME,
+//    PASSWORD_TOO_SHORT,
+//    PASSWORD_TOO_SIMPLE,
+//    INVALID_EMAIL,
+//    EMAIL_ALREADY_TAKEN;
+//
+//    fun message() : UiText {
+//        return when(this) {
+//            EMPTY_NAME -> UiText.Resource(Res.string.empty_name)
+//            PASSWORD_TOO_SHORT -> UiText.Resource(Res.string.password_too_short)
+//            PASSWORD_TOO_SIMPLE -> UiText.Resource(Res.string.password_too_simple)
+//            INVALID_EMAIL -> UiText.Resource(Res.string.invalid_email)
+//            EMAIL_ALREADY_TAKEN -> UiText.Resource(Res.string.email_already_taken)
+//        }
+//    }
+//}
 
 class SignUpViewModel(
+    private val authService: AuthService,
     private val savedStateHandle: SavedStateHandle
 ) : BaseViewModel<SignUpState, SignUpEvent, SignUpEffect>(
     SignUpState(
@@ -110,35 +102,33 @@ class SignUpViewModel(
         updateState { copy(isLoading = true) }
 
         viewModelScope.launch {
-            try {
-                val authResult = Firebase.auth.createUserWithEmailAndPassword(
-                    email = currentState.email,
-                    password = currentState.password
-                )
+            val result = authService.signUpWithEmailAndPassword(
+                name = currentState.name,
+                email = currentState.email,
+                password = currentState.password
+            )
 
-                authResult.user?.sendEmailVerification()
+            updateState { copy(isLoading = false) }
 
-                sendEffect(SignUpEffect.NavigateToEmailVerification)
-                updateState { copy(isLoading = false) }
-
-            } catch (e : FirebaseAuthException) {
-                val error = when {
-                    e.message?.contains("email-already-in-use") == true ->
-                        SignUpError.EMAIL_ALREADY_TAKEN
-                    e.message?.contains("invalid-email") == true ->
-                        SignUpError.INVALID_EMAIL
-                    e.message?.contains("weak-password") == true ->
-                        SignUpError.PASSWORD_TOO_SIMPLE
-                    else -> null
+            when (result) {
+                is Result.Success -> {
+                    sendEffect(SignUpEffect.NavigateToEmailVerification)
                 }
-
-                if (error != null) {
-                    updateState { copy(emailError = error.message()) }
-                } else {
-                    sendEffect(SignUpEffect.ShowError(SignUpError.INVALID_EMAIL))
+                is Result.Error -> {
+                    when (result.error) {
+                        SignUpError.EMAIL_ALREADY_TAKEN,
+                        SignUpError.INVALID_EMAIL -> {
+                            updateState { copy(emailError = result.error.message()) }
+                        }
+                        SignUpError.PASSWORD_TOO_SIMPLE,
+                        SignUpError.PASSWORD_TOO_SHORT -> {
+                            updateState { copy(passwordError = result.error.message()) }
+                        }
+                        else -> {
+                            sendEffect(SignUpEffect.ShowError(result.error))
+                        }
+                    }
                 }
-
-                updateState { copy(isLoading = false) }
             }
         }
     }
