@@ -2,6 +2,7 @@ package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -15,9 +16,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
@@ -27,7 +28,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun PrimaryButton(
+fun SecondaryButton(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.large,
     text: String,
@@ -41,8 +42,7 @@ fun PrimaryButton(
         modifier = modifier.height(Sizing.ButtonHeight),
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primary,
-            disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+            containerColor = greyDisabledButtonLight,
         ),
         enabled = enabled && !isLoading,
         onClick = onClick,
@@ -59,6 +59,17 @@ fun PrimaryButton(
                     stroke = Stroke(width = 2f)
                 )
             } else {
+                leadingIcon?.let {
+                    Icon(
+                        modifier = Modifier.size(Sizing.IconSmall),
+                        tint = Color.Unspecified,
+                        painter = painterResource(leadingIcon),
+                        contentDescription = null
+                    )
+                }
+
+                Spacer(Modifier.size(Spacing.ExtraLarge))
+
                 Text(
                     text = text,
                     color = MaterialTheme.colorScheme.onSurface,

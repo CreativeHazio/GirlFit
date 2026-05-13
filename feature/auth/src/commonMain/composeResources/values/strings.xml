@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">GirlFit</string>
+    <string name="empty_name">Name cannot be blank</string>
+    <string name="empty_password">Password cannot be blank</string>
+    <string name="password_too_short">Password must be at least 8 characters long</string>
+    <string name="password_too_simple">Password must include a mix of letters, numbers, and symbols</string>
+    <string name="invalid_email">Please enter a valid email address</string>
+    <string name="invalid_credentials">Email address or password incorrect</string>
+    <string name="email_already_taken">This email is already registered. Try logging in instead.</string>
+    <string name="successfully_sign_up">Sign up successful.</string>
+    <string name="verify_email_title">You're almost there! 💌</string>
+    <string name="verify_email_body">We've sent a verification link to %1$s. Please check your inbox and click the link to activate your account!</string>
+    <string name="check_spam">Didn't receive it? Check your spam folder, or </string>
+    <string name="resend_email">Resend Email</string>
+    <string name="resend_in">Resend in %1$s</string>
+    <string name="too_many_requests">Too many attempts. Please wait a moment and try again.</string>
+    <string name="user_not_found">Account not found. It may have been deleted.</string>
+    <string name="network_error">No internet connection. Please check your network.</string>
+    <string name="unknown_error">An unexpected error occurred. Please try again.</string>
+    <string name="sent">Sent</string>
+    <string name="back_to_login">Back to login</string>
+    <string name="user_disabled">This account has been disabled.</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="or_divider">or</string>
+    <string name="continue_with_google">Continue with google</string>
+    <string name="continue_with_apple">Continue with apple</string>
+    <string name="login_title">Log In</string>
+    <string name="login_subtitle">Welcome back, let's get to work</string>
+    <string name="no_account_prompt">Don't have an account? </string>
+    <string name="sign_up_action">Sign up</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="sign_up_subtitle">Start your fitness journey today</string>
+    <string name="has_account_prompt">Already have an account? </string>
+    <string name="log_in_action">Log in</string>
+</resources>

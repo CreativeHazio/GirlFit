@@ -38,6 +38,7 @@ exoplayer = "1.10.0"
 ktor = "3.4.3"
 
 # Firebase
+firebase-bom = "34.13.0"
 google-services = "4.4.4"
 auth = "2.4.0"
 firestore = "2.4.0"
@@ -105,8 +106,9 @@ ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "k
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 #Firebase
-auth = { module = "dev.gitlive:firebase-auth", version.ref = "auth" }
-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firestore" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-auth = { module = "dev.gitlive:firebase-auth", version.ref = "auth" }
+firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firestore" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }

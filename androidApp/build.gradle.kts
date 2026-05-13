@@ -1,8 +1,11 @@
 import com.android.build.api.dsl.ApplicationExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.google.services)
 }
 
 extensions.configure<ApplicationExtension>() {
@@ -32,6 +35,12 @@ extensions.configure<ApplicationExtension>() {
     }
     buildFeatures {
         compose = true
+    }
+}
+
+android {
+    defaultConfig {
+        applicationId = "com.creativehazio.girlfit"
     }
 }
 
