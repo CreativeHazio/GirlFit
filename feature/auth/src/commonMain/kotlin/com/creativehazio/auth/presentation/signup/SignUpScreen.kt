@@ -34,8 +34,23 @@ import com.creativehazio.designsystem.components.CustomTextField
 import com.creativehazio.designsystem.components.PrimaryButton
 import com.creativehazio.designsystem.components.SecondaryButton
 import com.creativehazio.designsystem.theme.Spacing
+import girlfit.feature.auth.generated.resources.Res
+import girlfit.feature.auth.generated.resources.app_name
+import girlfit.feature.auth.generated.resources.continue_with_apple
+import girlfit.feature.auth.generated.resources.continue_with_google
+import girlfit.feature.auth.generated.resources.email
+import girlfit.feature.auth.generated.resources.has_account_prompt
+import girlfit.feature.auth.generated.resources.log_in_action
+import girlfit.feature.auth.generated.resources.login_title
+import girlfit.feature.auth.generated.resources.name
+import girlfit.feature.auth.generated.resources.or_divider
+import girlfit.feature.auth.generated.resources.password
+import girlfit.feature.auth.generated.resources.sign_up_action
+import girlfit.feature.auth.generated.resources.sign_up_subtitle
+import girlfit.feature.auth.generated.resources.sign_up_title
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -103,15 +118,18 @@ internal fun SignUpScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "GirlFit",
+            text = stringResource(Res.string.app_name),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge
         )
 
         Column {
-            Text(text = "Sign Up", style = MaterialTheme.typography.titleLarge)
             Text(
-                text = "Start your fitness journey today",
+                text = stringResource(Res.string.sign_up_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            Text(
+                text = stringResource(Res.string.sign_up_subtitle),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -121,7 +139,7 @@ internal fun SignUpScreen(
             onValueChange = {
                 event(SignUpEvent.OnNameChanged(it))
             },
-            labelText = "Name",
+            labelText = stringResource(Res.string.name),
             isError = nameError != null,
             errorText = nameError?.asString() ?: "",
             singleLine = true
@@ -132,7 +150,7 @@ internal fun SignUpScreen(
             onValueChange = {
                 event(SignUpEvent.OnEmailChanged(it))
             },
-            labelText = "Email",
+            labelText = stringResource(Res.string.email),
             isError = emailError != null,
             errorText = emailError?.asString() ?: "",
             singleLine = true
@@ -143,7 +161,7 @@ internal fun SignUpScreen(
             onValueChange = {
                 event(SignUpEvent.OnPasswordChanged(it))
             },
-            labelText = "Password",
+            labelText = stringResource(Res.string.password),
             visualTransformation = PasswordVisualTransformation(),
             isError = passwordError != null,
             errorText = passwordError?.asString() ?: "",
@@ -154,36 +172,40 @@ internal fun SignUpScreen(
             modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
             isLoading = isLoading,
-            text = "Sign Up",
+            text = stringResource(Res.string.sign_up_action),
             onClick = {
                 event(SignUpEvent.OnSignUpClicked)
             }
         )
 
-        Text(modifier = Modifier.fillMaxWidth(), text = "or", textAlign = TextAlign.Center)
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(Res.string.or_divider),
+            textAlign = TextAlign.Center
+        )
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Continue with google",
+            text = stringResource(Res.string.continue_with_google),
             onClick = {}
         )
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Continue with apple",
+            text = stringResource(Res.string.continue_with_apple),
             onClick = {}
         )
 
         Text(
             text = buildAnnotatedString {
-                append("Already have an account? ")
+                append(stringResource(Res.string.has_account_prompt))
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 ) {
-                    append("Log in")
+                    append(stringResource(Res.string.log_in_action))
                 }
             },
             textAlign = TextAlign.Center,

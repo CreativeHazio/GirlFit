@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -31,6 +32,17 @@ import com.creativehazio.designsystem.components.CustomTextField
 import com.creativehazio.designsystem.components.PrimaryButton
 import com.creativehazio.designsystem.components.SecondaryButton
 import com.creativehazio.designsystem.theme.Spacing
+import girlfit.feature.auth.generated.resources.Res
+import girlfit.feature.auth.generated.resources.app_name
+import girlfit.feature.auth.generated.resources.continue_with_apple
+import girlfit.feature.auth.generated.resources.continue_with_google
+import girlfit.feature.auth.generated.resources.email
+import girlfit.feature.auth.generated.resources.log_in_action
+import girlfit.feature.auth.generated.resources.login_subtitle
+import girlfit.feature.auth.generated.resources.no_account_prompt
+import girlfit.feature.auth.generated.resources.password
+import girlfit.feature.auth.generated.resources.sign_up_action
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginScreenRoot(
@@ -38,6 +50,7 @@ fun LoginScreenRoot(
     loginViewModel: LoginViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToSignUp: () -> Unit,
+    onNavigateToEmailVerification: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -50,11 +63,20 @@ fun LoginScreenRoot(
                 LoginEffect.NavigateToHome -> onNavigateToHome()
                 LoginEffect.NavigateToSignUp -> onNavigateToSignUp()
                 is LoginEffect.ShowError -> {
-                    // TODO: snackbarHostState.showSnackbar(...)
+                    snackbarHostState.showSnackbar(
+                        message = it.error.message().asStringSuspend(),
+                        duration = SnackbarDuration.Long
+                    )
                 }
+
                 is LoginEffect.ShowSuccess -> {
-                    // TODO: snackbarHostState.showSnackbar(...)
+                    snackbarHostState.showSnackbar(
+                        message = it.message,
+                        duration = SnackbarDuration.Long
+                    )
                 }
+
+                LoginEffect.NavigateToEmailVerification -> onNavigateToEmailVerification()
             }
         }
     }
@@ -64,6 +86,7 @@ fun LoginScreenRoot(
     ) { innerPadding ->
         LoginScreen(
             modifier = Modifier.padding(innerPadding),
+            isLoading = uiState.isLoading,
             email = uiState.email,
             emailError = uiState.emailError,
             password = uiState.password,
@@ -76,6 +99,7 @@ fun LoginScreenRoot(
 @Composable
 internal fun LoginScreen(
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     email: String,
     password: String,
     event: (LoginEvent) -> Unit,
@@ -90,7 +114,7 @@ internal fun LoginScreen(
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "GirlFit",
+            text = stringResource(Res.string.app_name),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.titleLarge
         )
@@ -98,7 +122,7 @@ internal fun LoginScreen(
         Column {
             Text(text = "Log In", style = MaterialTheme.typography.titleLarge)
             Text(
-                text = "Welcome back, let's get to work",
+                text = stringResource(Res.string.login_subtitle),
                 style = MaterialTheme.typography.bodyMedium
             )
         }
@@ -108,7 +132,7 @@ internal fun LoginScreen(
             onValueChange = {
                 event(LoginEvent.OnEmailChanged(it))
             },
-            labelText = "Email",
+            labelText = stringResource(Res.string.email),
             isError = emailError != null,
             errorText = emailError?.asString() ?: "",
             singleLine = true
@@ -119,7 +143,7 @@ internal fun LoginScreen(
             onValueChange = {
                 event(LoginEvent.OnPasswordChanged(it))
             },
-            labelText = "Password",
+            labelText = stringResource(Res.string.password),
             visualTransformation = PasswordVisualTransformation(),
             isError = passwordError != null,
             errorText = passwordError?.asString() ?: "",
@@ -128,7 +152,9 @@ internal fun LoginScreen(
 
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Log In",
+            enabled = !isLoading,
+            isLoading = isLoading,
+            text = stringResource(Res.string.log_in_action),
             onClick = {
                 event(LoginEvent.OnLoginClicked)
             }
@@ -138,26 +164,26 @@ internal fun LoginScreen(
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Continue with google",
+            text = stringResource(Res.string.continue_with_google),
             onClick = {}
         )
 
         SecondaryButton(
             modifier = Modifier.fillMaxWidth(),
-            text = "Continue with apple",
+            text = stringResource(Res.string.continue_with_apple),
             onClick = {}
         )
 
         Text(
             text = buildAnnotatedString {
-                append("Don't have an account? ")
+                append(stringResource(Res.string.no_account_prompt))
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 ) {
-                    append("Sign up")
+                    append(stringResource(Res.string.sign_up_action))
                 }
             },
             textAlign = TextAlign.Center,
@@ -181,6 +207,7 @@ internal fun LoginScreen(
 @Composable
 internal fun LoginScreenPreview() {
     LoginScreen(
+        isLoading = true,
         email = "",
         password = "",
         event = {},

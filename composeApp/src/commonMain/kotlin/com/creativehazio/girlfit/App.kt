@@ -17,6 +17,7 @@ import coil3.request.CachePolicy
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
 import com.creativehazio.auth.presentation.login.LoginViewModel
+import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
 import com.creativehazio.designsystem.theme.GirlFitTheme
 
@@ -89,11 +90,11 @@ fun App() {
 //                subText = "100g"
 //            )
 //            Spacer(Modifier.size(20.dp))
-//            SignUpScreenRoot(
-//                signUpViewModel = signUpViewModel,
-//                onNavigateToEmailVerification = {},
-//                onNavigateToLogin = {}
-//            )
+            SignUpScreenRoot(
+                signUpViewModel = signUpViewModel,
+                onNavigateToEmailVerification = {},
+                onNavigateToLogin = {}
+            )
 
 //            LoginScreenRoot(
 //                loginViewModel = loginViewModel,
