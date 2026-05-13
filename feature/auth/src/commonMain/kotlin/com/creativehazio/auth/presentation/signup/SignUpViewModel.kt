@@ -2,12 +2,17 @@ package com.creativehazio.auth.presentation.signup
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.creativehazio.auth.presentation.login.LoginEffect
+import com.creativehazio.auth.presentation.login.LoginError
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.common.resulthandler.Error
 import com.creativehazio.common.resulthandler.UiText
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.auth.FirebaseAuthException
+import dev.gitlive.firebase.auth.auth
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.email_already_taken
 import girlfit.feature.auth.generated.resources.empty_name
@@ -39,8 +44,10 @@ sealed interface SignUpEvent : Event {
 }
 
 sealed interface SignUpEffect : Effect {
-    data object NavigateToHome : SignUpEffect
     data object NavigateToLogin : SignUpEffect
+
+    data object NavigateToEmailVerification : SignUpEffect
+    data class ShowError(val error: SignUpError) : SignUpEffect
 }
 
 enum class SignUpError : Error {
@@ -103,7 +110,36 @@ class SignUpViewModel(
         updateState { copy(isLoading = true) }
 
         viewModelScope.launch {
+            try {
+                val authResult = Firebase.auth.createUserWithEmailAndPassword(
+                    email = currentState.email,
+                    password = currentState.password
+                )
 
+                authResult.user?.sendEmailVerification()
+
+                sendEffect(SignUpEffect.NavigateToEmailVerification)
+                updateState { copy(isLoading = false) }
+
+            } catch (e : FirebaseAuthException) {
+                val error = when {
+                    e.message?.contains("email-already-in-use") == true ->
+                        SignUpError.EMAIL_ALREADY_TAKEN
+                    e.message?.contains("invalid-email") == true ->
+                        SignUpError.INVALID_EMAIL
+                    e.message?.contains("weak-password") == true ->
+                        SignUpError.PASSWORD_TOO_SIMPLE
+                    else -> null
+                }
+
+                if (error != null) {
+                    updateState { copy(emailError = error.message()) }
+                } else {
+                    sendEffect(SignUpEffect.ShowError(SignUpError.INVALID_EMAIL))
+                }
+
+                updateState { copy(isLoading = false) }
+            }
         }
     }
 

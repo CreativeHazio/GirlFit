@@ -6,4 +6,16 @@
     <string name="invalid_email">Please enter a valid email address</string>
     <string name="invalid_credentials">Email address or password incorrect</string>
     <string name="email_already_taken">This email is already registered. Try logging in instead.</string>
+    <string name="successfully_sign_up">Sign up successful.</string>
+    <string name="verify_email_title">You're almost there! 💌</string>
+    <string name="verify_email_body">We've sent a verification link to %1$s. Please check your inbox and click the link to activate your account!</string>
+    <string name="check_spam">Didn't receive it? Check your spam folder, or </string>
+    <string name="resend_email">Resend Email</string>
+    <string name="resend_in">Resend in %1$s</string>
+    <string name="too_many_requests">Too many attempts. Please wait a moment and try again.</string>
+    <string name="user_not_found">Account not found. It may have been deleted.</string>
+    <string name="network_error">No internet connection. Please check your network.</string>
+    <string name="unknown_error">Failed to resend email. Try again later.</string>
+    <string name="sent">Sent</string>
+    <string name="back_to_login">Back to login</string>
 </resources>

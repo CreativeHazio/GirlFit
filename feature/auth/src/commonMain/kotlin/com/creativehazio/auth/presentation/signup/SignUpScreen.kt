@@ -1,6 +1,7 @@
 package com.creativehazio.auth.presentation.signup
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,7 +42,7 @@ import kotlinx.coroutines.flow.emptyFlow
 fun SignUpScreenRoot(
     paddingValues: PaddingValues = PaddingValues.Zero,
     signUpViewModel: SignUpViewModel,
-    onNavigateToHome: () -> Unit,
+    onNavigateToEmailVerification: () -> Unit,
     onNavigateToLogin: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -51,7 +53,14 @@ fun SignUpScreenRoot(
     LaunchedEffect(signUpViewModel.effect) {
         signUpViewModel.effect.collect {
             when (it) {
-                SignUpEffect.NavigateToHome -> onNavigateToHome()
+                SignUpEffect.NavigateToEmailVerification -> onNavigateToEmailVerification()
+                is SignUpEffect.ShowError -> {
+                    snackbarHostState.showSnackbar(
+                        message = it.error.message().asStringSuspend(),
+                        duration = SnackbarDuration.Long
+                    )
+                }
+
                 SignUpEffect.NavigateToLogin -> onNavigateToLogin()
             }
         }
@@ -69,6 +78,7 @@ fun SignUpScreenRoot(
             password = uiState.password,
             passwordError = uiState.passwordError,
             event = event,
+            isLoading = uiState.isLoading
         )
     }
 }
@@ -79,6 +89,7 @@ internal fun SignUpScreen(
     name: String,
     email: String,
     password: String,
+    isLoading: Boolean,
     event: (SignUpEvent) -> Unit,
     nameError: UiText?,
     emailError: UiText?,
@@ -141,6 +152,8 @@ internal fun SignUpScreen(
 
         PrimaryButton(
             modifier = Modifier.fillMaxWidth(),
+            enabled = !isLoading,
+            isLoading = isLoading,
             text = "Sign Up",
             onClick = {
                 event(SignUpEvent.OnSignUpClicked)
@@ -178,7 +191,10 @@ internal fun SignUpScreen(
             color = MaterialTheme.colorScheme.onBackground,
             modifier = modifier
                 .fillMaxWidth()
-                .clickable {
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
                     event(SignUpEvent.OnLoginClicked)
                 }
                 .padding(8.dp)
@@ -198,5 +214,6 @@ internal fun SignUpScreenPreview() {
         nameError = null,
         emailError = null,
         passwordError = null,
+        isLoading = false
     )
 }

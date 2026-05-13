@@ -2,6 +2,7 @@ package com.creativehazio.common.resulthandler
 
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 
 sealed class UiText {
@@ -16,6 +17,13 @@ sealed class UiText {
         return when (this) {
             is DynamicString -> value
             is Resource -> stringResource(res, *args)
+        }
+    }
+
+    suspend fun asStringSuspend(): String {
+        return when (this) {
+            is DynamicString -> value
+            is Resource -> getString(res, *args)
         }
     }
 }

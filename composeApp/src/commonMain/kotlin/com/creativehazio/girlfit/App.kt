@@ -1,44 +1,25 @@
 package com.creativehazio.girlfit
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
-import com.creativehazio.auth.presentation.login.LoginScreenRoot
+import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
+import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
 import com.creativehazio.auth.presentation.login.LoginViewModel
-import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
-import com.creativehazio.designsystem.components.InfoBubble
-import com.creativehazio.designsystem.components.PrimaryButton
-import com.creativehazio.designsystem.components.SearchBar
-import com.creativehazio.designsystem.components.WorkoutCard
 import com.creativehazio.designsystem.theme.GirlFitTheme
-import org.jetbrains.compose.resources.painterResource
 
-import girlfit.composeapp.generated.resources.Res
-import girlfit.composeapp.generated.resources.carbohydrate
 import okio.FileSystem
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,6 +46,7 @@ fun App() {
 
     val signUpViewModel : SignUpViewModel = koinViewModel()
     val loginViewModel : LoginViewModel = koinViewModel()
+    val emailVerificationViewModel : EmailVerificationViewModel = koinViewModel()
 
     GirlFitTheme {
         var showContent by remember { mutableStateOf(false) }
@@ -109,14 +91,20 @@ fun App() {
 //            Spacer(Modifier.size(20.dp))
 //            SignUpScreenRoot(
 //                signUpViewModel = signUpViewModel,
-//                onNavigateToHome = {},
+//                onNavigateToEmailVerification = {},
 //                onNavigateToLogin = {}
 //            )
 
-            LoginScreenRoot(
-                loginViewModel = loginViewModel,
-                onNavigateToHome = {},
-                onNavigateToSignUp = {}
+//            LoginScreenRoot(
+//                loginViewModel = loginViewModel,
+//                onNavigateToHome = {},
+//                onNavigateToSignUp = {}
+//            )
+
+            EmailVerificationScreenRoot(
+                email = "davideze123@gmail.com",
+                emailVerificationViewModel = emailVerificationViewModel,
+                onNavigateToLogin = {},
             )
         }
     }
