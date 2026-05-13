@@ -74,7 +74,7 @@ fun SignUpScreenRoot(
                 is SignUpEffect.ShowError -> {
                     snackbarHostState.showSnackbar(
                         message = it.error.message().asStringSuspend(),
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Short
                     )
                 }
 

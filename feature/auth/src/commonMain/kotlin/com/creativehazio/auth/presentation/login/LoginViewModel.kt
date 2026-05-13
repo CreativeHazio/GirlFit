@@ -18,8 +18,10 @@ import girlfit.feature.auth.generated.resources.empty_password
 import girlfit.feature.auth.generated.resources.invalid_credentials
 import girlfit.feature.auth.generated.resources.invalid_email
 import girlfit.feature.auth.generated.resources.network_error
+import girlfit.feature.auth.generated.resources.resend_email
 import girlfit.feature.auth.generated.resources.unknown_error
 import girlfit.feature.auth.generated.resources.user_disabled
+import girlfit.feature.auth.generated.resources.verify_email_body
 import kotlinx.coroutines.launch
 
 private const val EMAIL = "email"
@@ -52,6 +54,7 @@ enum class LoginError : Error {
     INVALID_EMAIL,
     EMPTY_PASSWORD,
     USER_DISABLED,
+    USER_NOT_VERIFIED,
     NETWORK_ERROR,
     UNKNOWN_ERROR,
     INVALID_CREDENTIALS;
@@ -64,6 +67,7 @@ enum class LoginError : Error {
             USER_DISABLED -> Resource(Res.string.user_disabled)
             NETWORK_ERROR -> Resource(Res.string.network_error)
             UNKNOWN_ERROR -> Resource(Res.string.unknown_error)
+            USER_NOT_VERIFIED -> Resource(Res.string.verify_email_body, "you")
         }
     }
 
@@ -126,9 +130,11 @@ class LoginViewModel(
 
                 if (authResult.user?.isEmailVerified == true) {
                     updateState { copy(isLoading = false) }
+                    sendEffect(LoginEffect.ShowSuccess("✅"))
                     sendEffect(LoginEffect.NavigateToHome)
                 } else {
                     updateState { copy(isLoading = false) }
+                    sendEffect(LoginEffect.ShowError(LoginError.USER_NOT_VERIFIED))
                     sendEffect(LoginEffect.NavigateToEmailVerification)
                 }
 

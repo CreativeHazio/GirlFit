@@ -67,14 +67,14 @@ fun LoginScreenRoot(
                 is LoginEffect.ShowError -> {
                     snackbarHostState.showSnackbar(
                         message = it.error.message().asStringSuspend(),
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Short
                     )
                 }
 
                 is LoginEffect.ShowSuccess -> {
                     snackbarHostState.showSnackbar(
                         message = it.message,
-                        duration = SnackbarDuration.Long
+                        duration = SnackbarDuration.Short
                     )
                 }
 
