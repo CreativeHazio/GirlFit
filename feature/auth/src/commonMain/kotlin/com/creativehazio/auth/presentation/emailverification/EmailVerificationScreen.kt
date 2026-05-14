@@ -23,12 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.creativehazio.designsystem.components.PrimaryButton
+import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.back_to_login
 import girlfit.feature.auth.generated.resources.check_spam
-import girlfit.feature.auth.generated.resources.resend_email
 import girlfit.feature.auth.generated.resources.verify_email_body
 import girlfit.feature.auth.generated.resources.verify_email_title
 import org.jetbrains.compose.resources.stringResource
@@ -116,7 +115,7 @@ internal fun EmailVerificationScreen(
 
         Spacer(modifier = Modifier.height(Spacing.ExtraLarge))
 
-        PrimaryButton(
+        GirlFitPrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.back_to_login),
             onClick = {

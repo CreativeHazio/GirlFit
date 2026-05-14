@@ -28,9 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.common.resulthandler.UiText
-import com.creativehazio.designsystem.components.CustomTextField
-import com.creativehazio.designsystem.components.PrimaryButton
-import com.creativehazio.designsystem.components.SecondaryButton
+import com.creativehazio.designsystem.components.GirlFitTextField
+import com.creativehazio.designsystem.components.GirlFitPrimaryButton
+import com.creativehazio.designsystem.components.GirlFitSecondaryButton
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.app_name
@@ -129,7 +129,7 @@ internal fun LoginScreen(
             )
         }
 
-        CustomTextField(
+        GirlFitTextField(
             value = email,
             onValueChange = {
                 event(LoginEvent.OnEmailChanged(it))
@@ -140,7 +140,7 @@ internal fun LoginScreen(
             singleLine = true
         )
 
-        CustomTextField(
+        GirlFitTextField(
             value = password,
             onValueChange = {
                 event(LoginEvent.OnPasswordChanged(it))
@@ -152,7 +152,7 @@ internal fun LoginScreen(
             singleLine = true
         )
 
-        PrimaryButton(
+        GirlFitPrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
             isLoading = isLoading,
@@ -164,14 +164,14 @@ internal fun LoginScreen(
 
         Text(modifier = Modifier.fillMaxWidth(), text = "or", textAlign = TextAlign.Center)
 
-        SecondaryButton(
+        GirlFitSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Res.drawable.google_logo,
             text = stringResource(Res.string.continue_with_google),
             onClick = {}
         )
 
-        SecondaryButton(
+        GirlFitSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Res.drawable.apple_logo,
             text = stringResource(Res.string.continue_with_apple),

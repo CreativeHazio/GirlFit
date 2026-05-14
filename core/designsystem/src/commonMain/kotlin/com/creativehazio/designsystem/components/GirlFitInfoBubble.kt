@@ -2,19 +2,15 @@ package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,7 +29,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun InfoBubble(
+fun GirlFitInfoBubble(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colorScheme.secondary,
     icon: DrawableResource? = null,
@@ -86,8 +82,8 @@ fun InfoBubble(
 
 @Preview
 @Composable
-fun InfoBubblePreview() {
-    InfoBubble(
+fun GirlFitInfoBubblePreview() {
+    GirlFitInfoBubble(
 
         icon = Res.drawable.carbohydrate,
         text = "Carbohydrates",

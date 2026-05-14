@@ -9,13 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,9 +28,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.creativehazio.common.resulthandler.UiText
-import com.creativehazio.designsystem.components.CustomTextField
-import com.creativehazio.designsystem.components.PrimaryButton
-import com.creativehazio.designsystem.components.SecondaryButton
+import com.creativehazio.designsystem.components.GirlFitTextField
+import com.creativehazio.designsystem.components.GirlFitPrimaryButton
+import com.creativehazio.designsystem.components.GirlFitSecondaryButton
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.app_name
@@ -43,15 +41,12 @@ import girlfit.feature.auth.generated.resources.email
 import girlfit.feature.auth.generated.resources.google_logo
 import girlfit.feature.auth.generated.resources.has_account_prompt
 import girlfit.feature.auth.generated.resources.log_in_action
-import girlfit.feature.auth.generated.resources.login_title
 import girlfit.feature.auth.generated.resources.name
 import girlfit.feature.auth.generated.resources.or_divider
 import girlfit.feature.auth.generated.resources.password
 import girlfit.feature.auth.generated.resources.sign_up_action
 import girlfit.feature.auth.generated.resources.sign_up_subtitle
 import girlfit.feature.auth.generated.resources.sign_up_title
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import org.jetbrains.compose.resources.stringResource
 
 
@@ -136,7 +131,7 @@ internal fun SignUpScreen(
             )
         }
 
-        CustomTextField(
+        GirlFitTextField(
             value = name,
             onValueChange = {
                 event(SignUpEvent.OnNameChanged(it))
@@ -147,7 +142,7 @@ internal fun SignUpScreen(
             singleLine = true
         )
 
-        CustomTextField(
+        GirlFitTextField(
             value = email,
             onValueChange = {
                 event(SignUpEvent.OnEmailChanged(it))
@@ -158,7 +153,7 @@ internal fun SignUpScreen(
             singleLine = true
         )
 
-        CustomTextField(
+        GirlFitTextField(
             value = password,
             onValueChange = {
                 event(SignUpEvent.OnPasswordChanged(it))
@@ -170,7 +165,7 @@ internal fun SignUpScreen(
             singleLine = true
         )
 
-        PrimaryButton(
+        GirlFitPrimaryButton(
             modifier = Modifier.fillMaxWidth(),
             enabled = !isLoading,
             isLoading = isLoading,
@@ -186,14 +181,14 @@ internal fun SignUpScreen(
             textAlign = TextAlign.Center
         )
 
-        SecondaryButton(
+        GirlFitSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Res.drawable.google_logo,
             text = stringResource(Res.string.continue_with_google),
             onClick = {}
         )
 
-        SecondaryButton(
+        GirlFitSecondaryButton(
             modifier = Modifier.fillMaxWidth(),
             leadingIcon = Res.drawable.apple_logo,
             text = stringResource(Res.string.continue_with_apple),
