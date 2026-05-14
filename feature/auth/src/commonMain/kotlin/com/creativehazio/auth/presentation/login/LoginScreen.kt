@@ -52,7 +52,7 @@ fun LoginScreenRoot(
     loginViewModel: LoginViewModel,
     onNavigateToHome: () -> Unit,
     onNavigateToSignUp: () -> Unit,
-    onNavigateToEmailVerification: () -> Unit,
+    onNavigateToEmailVerification: (String) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -78,7 +78,7 @@ fun LoginScreenRoot(
                     )
                 }
 
-                LoginEffect.NavigateToEmailVerification -> onNavigateToEmailVerification()
+                is LoginEffect.NavigateToEmailVerification -> onNavigateToEmailVerification(it.email)
             }
         }
     }

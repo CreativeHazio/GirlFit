@@ -59,7 +59,7 @@ import org.jetbrains.compose.resources.stringResource
 fun SignUpScreenRoot(
     paddingValues: PaddingValues = PaddingValues.Zero,
     signUpViewModel: SignUpViewModel,
-    onNavigateToEmailVerification: () -> Unit,
+    onNavigateToEmailVerification: (String) -> Unit,
     onNavigateToLogin: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -70,7 +70,7 @@ fun SignUpScreenRoot(
     LaunchedEffect(signUpViewModel.effect) {
         signUpViewModel.effect.collect {
             when (it) {
-                SignUpEffect.NavigateToEmailVerification -> onNavigateToEmailVerification()
+                is SignUpEffect.NavigateToEmailVerification -> onNavigateToEmailVerification(it.email)
                 is SignUpEffect.ShowError -> {
                     snackbarHostState.showSnackbar(
                         message = it.error.message().asStringSuspend(),

@@ -11,6 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
@@ -23,9 +29,27 @@ import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
 import com.creativehazio.designsystem.theme.GirlFitTheme
+import com.creativehazio.girlfit.navigation.EmailVerification
+import com.creativehazio.girlfit.navigation.Login
+import com.creativehazio.girlfit.navigation.Main
+import com.creativehazio.girlfit.navigation.Route
+import com.creativehazio.girlfit.navigation.SignUp
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.json.Json.Default.serializersModule
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 
 import okio.FileSystem
 import org.koin.compose.viewmodel.koinViewModel
+
+@OptIn(ExperimentalSerializationApi::class)
+private val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclassesOfSealed<Route>()
+        }
+    }
+}
 
 @Composable
 fun App() {
@@ -48,69 +72,67 @@ fun App() {
             .build()
     }
 
-    val signUpViewModel : SignUpViewModel = koinViewModel()
-    val loginViewModel : LoginViewModel = koinViewModel()
-    val emailVerificationViewModel : EmailVerificationViewModel = koinViewModel()
+    val backStack = rememberNavBackStack(navConfig, Login)
 
     GirlFitTheme {
-        var showContent by remember { mutableStateOf(false) }
-        var query by remember { mutableStateOf("")}
-        Column(
-            modifier = Modifier
-                .safeContentPadding()
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .scrollable(rememberScrollState(), Orientation.Vertical),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-//            PrimaryButton(
-//                text = "Click me!",
-//                onClick = { showContent = !showContent }
-//            )
-//            Spacer(Modifier.size(20.dp))
-//            SearchBar(
-//                query = query,
-//                onQueryChange = {
-//                    query = it
-//                },
-//                placeholderText = "e.g weightloss meals",
-//                onSearchPressed = {},
-//                showFilterIcon = true,
-//                onFilterClick = {}
-//            )
-//            Spacer(Modifier.size(20.dp))
-//            WorkoutCard(
-//                imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400",
-//                title = "Flat \nStomach",
-//                durationText = "🕑7 mins",
-//                buttonText = "Start",
-//                onCardClick = {}
-//            )
-//            Spacer(Modifier.size(20.dp))
-//            InfoBubble(
-//                color = MaterialTheme.colorScheme.secondary,
-//                icon = Res.drawable.carbohydrate,
-//                text = "Carbohydrates",
-//                subText = "100g"
-//            )
-//            Spacer(Modifier.size(20.dp))
-//            SignUpScreenRoot(
-//                signUpViewModel = signUpViewModel,
-//                onNavigateToEmailVerification = {},
-//                onNavigateToLogin = {}
-//            )
 
-            LoginScreenRoot(
-                loginViewModel = loginViewModel,
-                onNavigateToHome = {},
-                onNavigateToSignUp = {},
-                onNavigateToEmailVerification = {}
-            )
-//            EmailVerificationScreenRoot(
-//                email = "haziothedev123@gmail.com",
-//                emailVerificationViewModel = emailVerificationViewModel,
-//                onNavigateToLogin = {},
-//            )
-        }
+        NavDisplay(
+            backStack = backStack,
+            onBack = {
+                if (backStack.size > 1) backStack.removeLastOrNull()
+            },
+            entryProvider = entryProvider {
+                entry<Login>{
+                    val loginViewModel : LoginViewModel = koinViewModel()
+
+                    LoginScreenRoot(
+                        loginViewModel = loginViewModel,
+                        onNavigateToSignUp = {
+                            backStack.add(SignUp)
+                        },
+                        onNavigateToHome = {
+                            backStack.clear()
+                            backStack.add(Main)
+                        },
+                        onNavigateToEmailVerification = { email ->
+                            backStack.add(EmailVerification(email))
+                        }
+                    )
+                }
+
+                entry<EmailVerification> { key ->
+                    val emailVerificationViewModel : EmailVerificationViewModel = koinViewModel()
+
+                    EmailVerificationScreenRoot(
+                        email = key.email,
+                        emailVerificationViewModel = emailVerificationViewModel,
+                        onNavigateToLogin = {
+                            backStack.clear()
+                            backStack.add(Login)
+                        }
+                    )
+                }
+
+                entry<SignUp> {
+                    val signUpViewModel : SignUpViewModel = koinViewModel()
+
+                    SignUpScreenRoot(
+                        signUpViewModel = signUpViewModel,
+                        onNavigateToLogin = {
+                            backStack.removeLastOrNull()
+                        },
+                        onNavigateToEmailVerification = { email ->
+                            backStack.add(EmailVerification(email))
+                        }
+                    )
+                }
+
+                entry<Main> {
+
+                }
+
+            }
+        )
+
     }
 }

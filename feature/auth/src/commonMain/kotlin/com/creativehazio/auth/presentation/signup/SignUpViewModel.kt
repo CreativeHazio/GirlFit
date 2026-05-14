@@ -37,7 +37,7 @@ sealed interface SignUpEvent : Event {
 sealed interface SignUpEffect : Effect {
     data object NavigateToLogin : SignUpEffect
 
-    data object NavigateToEmailVerification : SignUpEffect
+    data class NavigateToEmailVerification(val email: String) : SignUpEffect
     data class ShowError(val error: SignUpError) : SignUpEffect
 }
 
@@ -112,7 +112,7 @@ class SignUpViewModel(
 
             when (result) {
                 is Result.Success -> {
-                    sendEffect(SignUpEffect.NavigateToEmailVerification)
+                    sendEffect(SignUpEffect.NavigateToEmailVerification(currentState.email))
                 }
                 is Result.Error -> {
                     when (result.error) {
