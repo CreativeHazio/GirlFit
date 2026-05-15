@@ -1,4 +1,4 @@
-package com.creativehazio.girlfit.navigation
+package com.creativehazio.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

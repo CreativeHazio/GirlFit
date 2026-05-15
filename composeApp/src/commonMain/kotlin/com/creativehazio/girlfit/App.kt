@@ -1,17 +1,10 @@
 package com.creativehazio.girlfit
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -28,14 +21,33 @@ import com.creativehazio.auth.presentation.login.LoginScreenRoot
 import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
+import com.creativehazio.designsystem.components.BottomBarTab
+import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
-import com.creativehazio.girlfit.navigation.EmailVerification
-import com.creativehazio.girlfit.navigation.Login
-import com.creativehazio.girlfit.navigation.Main
-import com.creativehazio.girlfit.navigation.Route
-import com.creativehazio.girlfit.navigation.SignUp
+import com.creativehazio.girlfit.MainAppContainer
+import com.creativehazio.girlfit.navConfig
+import com.creativehazio.navigation.EmailVerification
+import com.creativehazio.navigation.Home
+import com.creativehazio.navigation.Login
+import com.creativehazio.navigation.Main
+import com.creativehazio.navigation.Me
+import com.creativehazio.navigation.Meals
+import com.creativehazio.navigation.Progress
+import com.creativehazio.navigation.Route
+import com.creativehazio.navigation.SignUp
+import com.creativehazio.navigation.Workout
+import girlfit.composeapp.generated.resources.Res
+import girlfit.composeapp.generated.resources.home
+import girlfit.composeapp.generated.resources.home_selected
+import girlfit.composeapp.generated.resources.me
+import girlfit.composeapp.generated.resources.me_selected
+import girlfit.composeapp.generated.resources.meals
+import girlfit.composeapp.generated.resources.meals_selected
+import girlfit.composeapp.generated.resources.progress
+import girlfit.composeapp.generated.resources.progress_selected
+import girlfit.composeapp.generated.resources.workout
+import girlfit.composeapp.generated.resources.workout_selected
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json.Default.serializersModule
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -72,7 +84,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Login)
+    val backStack = rememberNavBackStack(navConfig, Main)
 
     GirlFitTheme {
 
@@ -128,11 +140,101 @@ fun App() {
                 }
 
                 entry<Main> {
-
+                    MainAppContainer(
+                        onLogout = {
+                            backStack.clear()
+                            backStack.add(Login)
+                        }
+                    )
                 }
 
             }
         )
 
     }
+}
+
+@Composable
+fun MainAppContainer(
+    onLogout: () -> Unit
+) {
+
+    val tabBackStack = rememberNavBackStack(navConfig, Home)
+    val currentTab = tabBackStack.lastOrNull() as? Route
+
+    val tabs = listOf<BottomBarTab<Route>>(
+        BottomBarTab(
+            route = Home,
+            title = "Home",
+            unselectedIcon = Res.drawable.home,
+            selectedIcon = Res.drawable.home_selected
+        ),
+        BottomBarTab(
+            route = Workout,
+            title = "Workout",
+            unselectedIcon = Res.drawable.workout,
+            selectedIcon = Res.drawable.workout_selected
+        ),
+        BottomBarTab(
+            route = Progress,
+            title = "Progress",
+            unselectedIcon = Res.drawable.progress,
+            selectedIcon = Res.drawable.progress_selected
+        ),
+        BottomBarTab(
+            route = Meals,
+            title = "Meals",
+            unselectedIcon = Res.drawable.meals,
+            selectedIcon = Res.drawable.meals_selected
+        ),
+        BottomBarTab(
+            route = Me,
+            title = "Me",
+            unselectedIcon = Res.drawable.me,
+            selectedIcon = Res.drawable.me_selected
+        )
+    )
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            GirlFitBottomBar(
+                tabs = tabs,
+                currentRoute = currentTab,
+                onTabSelected = { selectedRoute ->
+                    if (currentTab != selectedRoute) {
+                        tabBackStack.clear()
+                        tabBackStack.add(selectedRoute)
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        NavDisplay(
+            modifier = Modifier.padding(innerPadding),
+            backStack = tabBackStack,
+            entryProvider = entryProvider {
+                entry<Home> {
+
+                }
+
+                entry<Workout> {
+
+                }
+
+                entry<Progress> {
+
+                }
+
+                entry<Meals> {
+
+                }
+
+                entry<Me> {
+
+                }
+            }
+        )
+    }
+
 }
