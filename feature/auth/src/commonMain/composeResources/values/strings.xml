@@ -14,7 +14,7 @@
     <string name="resend_email">Resend Email</string>
     <string name="resend_in">Resend in %1$s</string>
     <string name="too_many_requests">Too many attempts. Please wait a moment and try again.</string>
-    <string name="user_not_found">Account not found. It may have been deleted.</string>
+    <string name="user_not_found">Account does not exist!</string>
     <string name="network_error">No internet connection. Please check your network.</string>
     <string name="unknown_error">An unexpected error occurred. Please try again.</string>
     <string name="sent">Sent</string>

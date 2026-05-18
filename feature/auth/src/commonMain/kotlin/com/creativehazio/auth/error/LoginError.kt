@@ -10,13 +10,16 @@ import girlfit.feature.auth.generated.resources.invalid_email
 import girlfit.feature.auth.generated.resources.network_error
 import girlfit.feature.auth.generated.resources.unknown_error
 import girlfit.feature.auth.generated.resources.user_disabled
+import girlfit.feature.auth.generated.resources.user_not_found
 import girlfit.feature.auth.generated.resources.verify_email_body
 
+// TODO: Fix FirebaseAuthExceptions
 enum class LoginError : Error {
     INVALID_EMAIL,
     EMPTY_PASSWORD,
     USER_DISABLED,
     USER_NOT_VERIFIED,
+    USER_NOT_FOUND,
     NETWORK_ERROR,
     UNKNOWN_ERROR,
     INVALID_CREDENTIALS;
@@ -30,6 +33,7 @@ enum class LoginError : Error {
             NETWORK_ERROR -> Resource(Res.string.network_error)
             UNKNOWN_ERROR -> Resource(Res.string.unknown_error)
             USER_NOT_VERIFIED -> Resource(Res.string.verify_email_body, "you")
+            USER_NOT_FOUND -> Resource(Res.string.user_not_found)
         }
     }
 
@@ -38,6 +42,8 @@ enum class LoginError : Error {
             return when {
                 message?.contains("invalid-credential", ignoreCase = true) == true ->
                     INVALID_CREDENTIALS
+                message?.contains("incorrect, malformed or has expired", ignoreCase = true) == true ->
+                    USER_NOT_FOUND
                 message?.contains("user-disabled", ignoreCase = true) == true ->
                     USER_DISABLED
                 message?.contains("network-request-failed", ignoreCase = true) == true ->

@@ -15,6 +15,7 @@ import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
+import com.creativehazio.auth.data.FirebaseAuthService
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
 import com.creativehazio.auth.presentation.login.LoginScreenRoot
@@ -26,6 +27,7 @@ import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.girlfit.MainAppContainer
 import com.creativehazio.girlfit.navConfig
+import com.creativehazio.home.presentation.HomeScreen
 import com.creativehazio.navigation.EmailVerification
 import com.creativehazio.navigation.Home
 import com.creativehazio.navigation.Login
@@ -84,7 +86,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Login)
 
     GirlFitTheme {
 
@@ -215,7 +217,9 @@ fun MainAppContainer(
             backStack = tabBackStack,
             entryProvider = entryProvider {
                 entry<Home> {
-
+                    HomeScreen(
+                        "Hazio TheDev"
+                    )
                 }
 
                 entry<Workout> {

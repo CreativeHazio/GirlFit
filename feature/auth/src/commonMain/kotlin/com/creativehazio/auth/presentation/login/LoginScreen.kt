@@ -18,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -109,9 +111,19 @@ internal fun LoginScreen(
     passwordError: UiText?,
 ) {
 
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     Column(
         modifier = modifier.padding(Spacing.Medium)
-            .imePadding(),
+            .imePadding()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = {
+                    keyboardController?.hide()
+                }
+            ),
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
         Text(
@@ -158,6 +170,7 @@ internal fun LoginScreen(
             isLoading = isLoading,
             text = stringResource(Res.string.log_in_action),
             onClick = {
+                focusManager.clearFocus()
                 event(LoginEvent.OnLoginClicked)
             }
         )
