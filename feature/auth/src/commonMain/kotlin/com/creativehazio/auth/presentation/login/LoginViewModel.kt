@@ -39,7 +39,7 @@ sealed interface LoginEvent : Event {
 sealed interface LoginEffect : Effect {
     data object NavigateToHome : LoginEffect
     data object NavigateToSignUp : LoginEffect
-    data object NavigateToEmailVerification : LoginEffect
+    data class NavigateToEmailVerification(val email: String) : LoginEffect
     data class ShowError(val error: LoginError) : LoginEffect
     data class ShowSuccess(val message: String) : LoginEffect
 }
@@ -131,7 +131,7 @@ class LoginViewModel(
                 is Result.Error -> {
                     if (result.error == LoginError.USER_NOT_VERIFIED) {
                         sendEffect(LoginEffect.ShowError(LoginError.USER_NOT_VERIFIED))
-                        sendEffect(LoginEffect.NavigateToEmailVerification)
+                        sendEffect(LoginEffect.NavigateToEmailVerification(currentState.email))
                     } else {
                         sendEffect(LoginEffect.ShowError(result.error))
                     }

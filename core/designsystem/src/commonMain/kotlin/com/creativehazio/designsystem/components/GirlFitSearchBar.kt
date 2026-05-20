@@ -2,7 +2,6 @@ package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.runtime.Composable
@@ -10,13 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import com.creativehazio.designsystem.theme.Sizing
 import girlfit.core.designsystem.generated.resources.Res
 import girlfit.core.designsystem.generated.resources.filter_ic
 import girlfit.core.designsystem.generated.resources.search_ic
 
 @Composable
-fun SearchBar(
+fun GirlFitSearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChange: (String) -> Unit,
@@ -28,7 +26,7 @@ fun SearchBar(
     val focusManager = LocalFocusManager.current
     val isDark = isSystemInDarkTheme()
 
-    CustomTextField(
+    GirlFitTextField(
         modifier = modifier
             .fillMaxWidth(),
         value = query,

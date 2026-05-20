@@ -1,15 +1,15 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidKMPLibrary)
+    alias(libs.plugins.composeCompiler)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
 
     android {
-        namespace = "com.creativehazio.home"
+        namespace = "com.creativehazio.navigation"
         compileSdk {
             version = release(36) {
                 minorApiLevel = 1
@@ -25,10 +25,9 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
-        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
-    val xcfName = "feature:homeKit"
+    val xcfName = "core:navigationKit"
 
     iosX64 {
         binaries.framework {
@@ -52,10 +51,9 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(projects.core.common)
-                implementation(projects.core.designsystem)
-
-                implementation(libs.compose.components.resources)
+                implementation(libs.jetbrains.navigation3.ui)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
             }
         }
 
@@ -67,9 +65,7 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+
             }
         }
 
@@ -83,11 +79,7 @@ kotlin {
 
         iosMain {
             dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
+
             }
         }
     }

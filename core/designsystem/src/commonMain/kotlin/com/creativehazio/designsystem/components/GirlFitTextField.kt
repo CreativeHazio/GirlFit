@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,7 +23,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
@@ -37,7 +35,6 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.creativehazio.designsystem.theme.Sizing
-import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
 import girlfit.core.designsystem.generated.resources.Res
 import girlfit.core.designsystem.generated.resources.close_ic
@@ -47,7 +44,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CustomTextField(
+fun GirlFitTextField(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,

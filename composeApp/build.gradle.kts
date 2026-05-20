@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidKMPLibrary)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -40,13 +41,19 @@ kotlin {
             implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
+
             implementation(libs.compose.components.resources)
 
             implementation(libs.coil.network.ktor)
             implementation(libs.ktor.client.core)
 
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
+
             implementation(projects.core.common)
             implementation(projects.core.designsystem)
+            implementation(projects.core.navigation)
             implementation(projects.feature.auth)
             implementation(projects.feature.home)
             implementation(projects.feature.workout)
