@@ -87,16 +87,14 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Login)
 
     GirlFitTheme {
 
         NavDisplay(
             backStack = backStack,
             onBack = {
-                if (backStack.size > 1) {
-                    backStack.removeLastOrNull()
-                }
+                if (backStack.size > 1) backStack.removeLastOrNull()
             },
             entryProvider = entryProvider {
                 entry<Login>{
