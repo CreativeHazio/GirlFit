@@ -27,7 +27,8 @@ import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.girlfit.MainAppContainer
 import com.creativehazio.girlfit.navConfig
-import com.creativehazio.home.presentation.HomeScreen
+import com.creativehazio.home.presentation.HomeScreenRoot
+import com.creativehazio.home.presentation.HomeViewModel
 import com.creativehazio.navigation.EmailVerification
 import com.creativehazio.navigation.Home
 import com.creativehazio.navigation.Login
@@ -212,13 +213,18 @@ fun MainAppContainer(
             )
         }
     ) { innerPadding ->
+        //TODO: Add onback to only close app when its homescreen
         NavDisplay(
-            modifier = Modifier.padding(innerPadding),
             backStack = tabBackStack,
             entryProvider = entryProvider {
                 entry<Home> {
-                    HomeScreen(
-                        "Hazio TheDev"
+                    val homeViewModel : HomeViewModel = koinViewModel()
+                    HomeScreenRoot(
+                        contentPaddingValues = innerPadding,
+                        homeViewModel = homeViewModel,
+                        onNavigateToWorkoutDetail = {
+
+                        }
                     )
                 }
 
