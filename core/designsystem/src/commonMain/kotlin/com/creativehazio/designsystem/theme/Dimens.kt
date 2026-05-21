@@ -24,5 +24,8 @@ object Sizing {
     val MinimumTouchTarget = 48.dp
 
     val CardElevation = 2.dp
+    val CardHeightSmall = 66.dp
+    val CardHeightMedium = 120.dp
+    val CardHeightLarge = 180.dp
     val BorderWidth = 1.dp
 }

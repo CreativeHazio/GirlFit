@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
+import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.home.domain.RecommendedWorkout
@@ -277,59 +279,17 @@ internal fun RecommendedWorkoutSection(
         Text("Recommended workouts")
         Spacer(Modifier.size(Spacing.ExtraSmall))
         recommendedWorkouts.forEach { workout ->
-            HomeScreenWorkoutCard(
+            GirlFitWorkoutCard(
+                modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 durationText = workout.durationText,
                 imageUrl = workout.imageUrl,
-                onClick = {
+                onCardClick = {
                     onNavigateToWorkoutDetail(workout.id)
                 }
             )
         }
     }
-}
-
-@Composable
-fun HomeScreenWorkoutCard(
-    title: String,
-    imageUrl: String,
-    detailsText: String? = null,
-    durationText: String,
-    onClick: () -> Unit
-) {
-
-    Card(
-        modifier = Modifier.fillMaxWidth().height(120.dp)
-    ) {
-        Box(Modifier.fillMaxSize()) {
-            SubcomposeAsyncImage(
-                model = imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    )
-            )
-
-            Column(
-                modifier = Modifier.align(Alignment.TopStart)
-                    .padding(Spacing.Medium)
-            ) {
-                Text(title)
-                Spacer(Modifier.size(Spacing.Small))
-                Row {
-                    Text(durationText)
-                }
-            }
-        }
-    }
-
 }
 
 @Composable
@@ -344,11 +304,12 @@ internal fun RelaxWorkoutSection(
         Text("Relax instead?")
         Spacer(Modifier.size(Spacing.ExtraSmall))
         relaxWorkouts.forEach { workout ->
-            HomeScreenWorkoutCard(
+            GirlFitWorkoutCard(
+                modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 durationText = workout.durationText,
                 imageUrl = workout.imageUrl,
-                onClick = {
+                onCardClick = {
                     onNavigateToWorkoutDetail(workout.id)
                 }
             )

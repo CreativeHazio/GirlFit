@@ -28,12 +28,12 @@ fun GirlFitWorkoutCard(
     title: String,
     detailsText: String? = null,
     durationText: String,
-    buttonText: String,
+    buttonText: String? = null,
     onCardClick: () -> Unit
 ) {
 
     Card(
-        modifier = modifier.height(180.dp).width(170.dp),
+        modifier = modifier,
         shape = MaterialTheme.shapes.medium
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -73,15 +73,18 @@ fun GirlFitWorkoutCard(
                 }
             }
 
-            GirlFitPrimaryButton(
-                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                    .padding(Spacing.Medium),
-                shape = MaterialTheme.shapes.medium,
-                text = buttonText,
-                onClick = {
-                    onCardClick()
-                }
-            )
+            buttonText?.let {
+                GirlFitPrimaryButton(
+                    modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                        .padding(Spacing.Medium),
+                    shape = MaterialTheme.shapes.medium,
+                    text = buttonText,
+                    onClick = {
+                        onCardClick()
+                    }
+                )
+            }
+
         }
     }
 }
