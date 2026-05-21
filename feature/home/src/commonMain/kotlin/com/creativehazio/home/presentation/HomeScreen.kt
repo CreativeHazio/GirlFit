@@ -2,6 +2,7 @@ package com.creativehazio.home.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -63,6 +64,7 @@ fun HomeScreenRoot(
         contentPaddingValues = contentPaddingValues,
         uiState = uiState,
         event = event,
+        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
     )
 
 }
@@ -71,7 +73,8 @@ fun HomeScreenRoot(
 internal fun HomeScreen(
     contentPaddingValues: PaddingValues,
     uiState: HomeState,
-    event: (HomeEvent) -> Unit
+    event: (HomeEvent) -> Unit,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     LazyColumn(
@@ -108,7 +111,8 @@ internal fun HomeScreen(
                 )
             }
             RecommendedWorkoutSection(
-                recommendedWorkouts = recommendedWorkouts
+                recommendedWorkouts = recommendedWorkouts,
+                onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
             )
         }
 
@@ -123,7 +127,8 @@ internal fun HomeScreen(
                 )
             }
             RelaxWorkoutSection(
-                relaxWorkouts = relaxWorkouts
+                relaxWorkouts = relaxWorkouts,
+                onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
             )
             Spacer(Modifier.size(Spacing.Small))
         }
@@ -262,7 +267,8 @@ internal fun CycleCalender() {
 
 @Composable
 internal fun RecommendedWorkoutSection(
-    recommendedWorkouts: List<RecommendedWorkout>
+    recommendedWorkouts: List<RecommendedWorkout>,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     Column(
@@ -274,7 +280,10 @@ internal fun RecommendedWorkoutSection(
             HomeScreenWorkoutCard(
                 title = workout.title,
                 durationText = workout.durationText,
-                imageUrl = workout.imageUrl
+                imageUrl = workout.imageUrl,
+                onClick = {
+                    onNavigateToWorkoutDetail(workout.id)
+                }
             )
         }
     }
@@ -286,6 +295,7 @@ fun HomeScreenWorkoutCard(
     imageUrl: String,
     detailsText: String? = null,
     durationText: String,
+    onClick: () -> Unit
 ) {
 
     Card(
@@ -324,7 +334,8 @@ fun HomeScreenWorkoutCard(
 
 @Composable
 internal fun RelaxWorkoutSection(
-    relaxWorkouts: List<RelaxWorkout>
+    relaxWorkouts: List<RelaxWorkout>,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     Column(
@@ -336,7 +347,10 @@ internal fun RelaxWorkoutSection(
             HomeScreenWorkoutCard(
                 title = workout.title,
                 durationText = workout.durationText,
-                imageUrl = workout.imageUrl
+                imageUrl = workout.imageUrl,
+                onClick = {
+                    onNavigateToWorkoutDetail(workout.id)
+                }
             )
         }
     }
@@ -349,6 +363,7 @@ fun HomeScreenPreview() {
     HomeScreen(
         contentPaddingValues = PaddingValues.Zero,
         uiState = HomeState(),
-        event = {}
+        event = {},
+        onNavigateToWorkoutDetail = {}
     )
 }

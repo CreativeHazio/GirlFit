@@ -39,6 +39,10 @@ import com.creativehazio.navigation.Progress
 import com.creativehazio.navigation.Route
 import com.creativehazio.navigation.SignUp
 import com.creativehazio.navigation.Workout
+import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailScreenRoot
+import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailState
+import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel
 import girlfit.composeapp.generated.resources.Res
 import girlfit.composeapp.generated.resources.home
 import girlfit.composeapp.generated.resources.home_selected
@@ -87,7 +91,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Login)
+    val backStack = rememberNavBackStack(navConfig, Main)
 
     GirlFitTheme {
 
@@ -147,8 +151,24 @@ fun App() {
                         onLogout = {
                             backStack.clear()
                             backStack.add(Login)
+                        },
+                        onNavigateToWorkoutDetail = { workoutId ->
+                            backStack.add(WorkoutDetail(workoutId))
                         }
                     )
+                }
+
+                entry<WorkoutDetail> {
+
+                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel()
+
+                    WorkoutDetailScreenRoot(
+                        workoutViewModel = workoutDetailViewModel,
+                        onBack = {
+                            backStack.removeLastOrNull()
+                        }
+                    )
+
                 }
 
             }
@@ -159,7 +179,8 @@ fun App() {
 
 @Composable
 fun MainAppContainer(
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     val tabBackStack = rememberNavBackStack(navConfig, Home)
@@ -222,9 +243,7 @@ fun MainAppContainer(
                     HomeScreenRoot(
                         contentPaddingValues = innerPadding,
                         homeViewModel = homeViewModel,
-                        onNavigateToWorkoutDetail = {
-
-                        }
+                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
                     )
                 }
 
