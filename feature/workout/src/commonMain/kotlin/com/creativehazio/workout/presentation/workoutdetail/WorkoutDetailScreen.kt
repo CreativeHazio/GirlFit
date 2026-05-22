@@ -34,17 +34,18 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun WorkoutDetailScreenRoot(
-    paddingValues: PaddingValues = PaddingValues.Zero,
     workoutViewModel: WorkoutDetailViewModel,
     onBack: () -> Unit
 ) {
     val uiState = workoutViewModel.uiState.collectAsStateWithLifecycle().value
     val event = workoutViewModel::onEvent
 
-    WorkoutDetailScreen(
-        modifier = Modifier.padding(paddingValues),
+    Scaffold { innerPadding ->
+        WorkoutDetailScreen(
+            modifier = Modifier.padding(innerPadding),
             onBack = onBack
-    )
+        )
+    }
 }
 
 @Composable
@@ -59,7 +60,7 @@ internal fun WorkoutDetailScreen(
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
-                .height(350.dp)
+                .height(200.dp)
         ) {
             AsyncImage(
                 model = "",
@@ -103,7 +104,7 @@ internal fun WorkoutDetailScreen(
 
 }
 
-@Preview
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun WorkoutDetailPreview() {
     WorkoutDetailScreen(

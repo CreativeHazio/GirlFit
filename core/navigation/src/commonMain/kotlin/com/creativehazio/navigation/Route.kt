@@ -26,6 +26,9 @@ data object Home : Route
 data object Workout : Route
 
 @Serializable
+data class WorkoutChallengeCalender(val id: String) : Route
+
+@Serializable
 data class WorkoutDetail(val id: String) : Route
 
 @Serializable

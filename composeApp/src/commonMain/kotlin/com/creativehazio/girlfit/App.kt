@@ -39,7 +39,10 @@ import com.creativehazio.navigation.Progress
 import com.creativehazio.navigation.Route
 import com.creativehazio.navigation.SignUp
 import com.creativehazio.navigation.Workout
+import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
+import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailScreenRoot
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailState
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel
@@ -158,7 +161,22 @@ fun App() {
                     )
                 }
 
-                entry<WorkoutDetail> {
+                entry<WorkoutChallengeCalender> {
+
+                    val workoutChallengeCalenderViewModel : WorkoutChallengeCalenderViewModel = koinViewModel()
+
+                    WorkoutChallengeCalenderScreenRoot(
+                        viewModel = workoutChallengeCalenderViewModel,
+                        onBack = {
+
+                        },
+                        onNavigateToWorkoutDetail = {
+
+                        }
+                    )
+                }
+
+                entry<WorkoutDetail> { key ->
 
                     val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel()
 
