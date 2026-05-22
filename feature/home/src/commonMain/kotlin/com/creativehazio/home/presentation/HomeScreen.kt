@@ -33,12 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
+import com.creativehazio.common.domain.workout.Workout
+import com.creativehazio.common.domain.workout.WorkoutCategory
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.creativehazio.home.domain.RecommendedWorkout
-import com.creativehazio.home.domain.RelaxWorkout
 import girlfit.feature.home.generated.resources.Res
 import girlfit.feature.home.generated.resources.angry_emoji
 import girlfit.feature.home.generated.resources.exhausted_emoji
@@ -100,15 +100,17 @@ internal fun HomeScreen(
         item {
             val recommendedWorkouts = remember {
                 mutableStateListOf(
-                    RecommendedWorkout(
+                    Workout(
                         title = "Full body workout",
                         durationText = "15 mins",
-                        imageUrl = ""
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
-                    RecommendedWorkout(
+                    Workout(
                         title = "Full body stretch",
                         durationText = "12 mins",
-                        imageUrl = ""
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
                 )
             }
@@ -121,10 +123,11 @@ internal fun HomeScreen(
         item {
             val relaxWorkouts = remember {
                 mutableStateListOf(
-                    RelaxWorkout(
+                    Workout(
                         title = "De-stress",
                         durationText = "15 mins",
-                        imageUrl = ""
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RELAX
                     )
                 )
             }
@@ -269,7 +272,7 @@ internal fun CycleCalender() {
 
 @Composable
 internal fun RecommendedWorkoutSection(
-    recommendedWorkouts: List<RecommendedWorkout>,
+    recommendedWorkouts: List<Workout>,
     onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
@@ -294,7 +297,7 @@ internal fun RecommendedWorkoutSection(
 
 @Composable
 internal fun RelaxWorkoutSection(
-    relaxWorkouts: List<RelaxWorkout>,
+    relaxWorkouts: List<Workout>,
     onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
