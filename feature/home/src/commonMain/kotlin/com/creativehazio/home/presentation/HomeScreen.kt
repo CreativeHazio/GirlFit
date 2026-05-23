@@ -157,20 +157,32 @@ internal fun HomeScreenWelcomeSection() {
             Column(
                 verticalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
-                Text("Hi Ria ❤️")
-                Text("How do you feel today?")
+                Text(
+                    "Hi Ria ❤️",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    "How do you feel today?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 Image(
-                    modifier = Modifier.size(Sizing.IconLarge),
+                    modifier = Modifier.size(Sizing.IconExtraLarge),
                     painter = painterResource(Res.drawable.lollipop),
                     contentDescription = null
                 )
-                Text("6")
+                Text(
+                    "6",
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
 
         }
@@ -203,7 +215,11 @@ internal fun HomeScreenWelcomeSection() {
 internal fun HomeScreenCycleCalenderSection() {
     Column {
         Row {
-            Text("14th day of Cycle")
+            Text(
+                "14th day of Cycle",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
         Spacer(Modifier.size(Spacing.Medium))
         CycleCalender()
@@ -237,7 +253,11 @@ internal fun CycleCalender() {
         Column(
             modifier = Modifier.padding(Spacing.Medium)
         ) {
-            Text("2 December")
+            Text(
+                "2 December",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             Spacer(Modifier.size(Spacing.Medium))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -247,10 +267,12 @@ internal fun CycleCalender() {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(day)
+                        Text(day, style = MaterialTheme.typography.bodySmall)
                         Spacer(Modifier.size(Spacing.Small))
                         Text(
-                            thisWeekDay[index], modifier = Modifier.background(
+                            text = thisWeekDay[index],
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.background(
                                 color = if (index == 3) MaterialTheme.colorScheme.primary else Color.Transparent,
                                 shape = CircleShape
                             ).padding(Spacing.ExtraSmall)
@@ -272,7 +294,11 @@ internal fun RecommendedWorkoutSection(
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.Small)
     ) {
-        Text("Recommended workouts")
+        Text(
+            "Recommended workouts",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
         Spacer(Modifier.size(Spacing.ExtraSmall))
         recommendedWorkouts.forEach { workout ->
             GirlFitWorkoutCard(

@@ -65,7 +65,7 @@ fun GirlFitInfoBubble(
             Column {
                 Text(
                     text = text,
-                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight(500))
+                    style = MaterialTheme.typography.bodySmall
                 )
                 Spacer(Modifier.size(Spacing.ExtraSmall))
                 subText?.let {
