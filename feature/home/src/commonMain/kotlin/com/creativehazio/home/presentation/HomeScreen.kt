@@ -2,19 +2,15 @@ package com.creativehazio.home.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
@@ -28,11 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
 import com.creativehazio.common.domain.workout.Workout
 import com.creativehazio.common.domain.workout.WorkoutCategory
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
@@ -102,13 +95,13 @@ internal fun HomeScreen(
                 mutableStateListOf(
                     Workout(
                         title = "Full body workout",
-                        durationText = "15 mins",
+                        duration = "15 mins",
                         imageUrl = "",
                         workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
                     Workout(
                         title = "Full body stretch",
-                        durationText = "12 mins",
+                        duration = "12 mins",
                         imageUrl = "",
                         workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
@@ -125,7 +118,7 @@ internal fun HomeScreen(
                 mutableStateListOf(
                     Workout(
                         title = "De-stress",
-                        durationText = "15 mins",
+                        duration = "15 mins",
                         imageUrl = "",
                         workoutCategory = WorkoutCategory.RELAX
                     )
@@ -285,7 +278,7 @@ internal fun RecommendedWorkoutSection(
             GirlFitWorkoutCard(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
-                durationText = workout.durationText,
+                durationText = workout.duration,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout.id)
@@ -310,7 +303,7 @@ internal fun RelaxWorkoutSection(
             GirlFitWorkoutCard(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
-                durationText = workout.durationText,
+                durationText = workout.duration,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout.id)

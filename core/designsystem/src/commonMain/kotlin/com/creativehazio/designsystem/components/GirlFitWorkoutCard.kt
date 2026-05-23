@@ -1,6 +1,7 @@
 package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,9 @@ fun GirlFitWorkoutCard(
 ) {
 
     Card(
-        modifier = modifier,
+        modifier = modifier.clickable() {
+            onCardClick()
+        },
         shape = MaterialTheme.shapes.medium
     ) {
         Box(Modifier.fillMaxSize()) {
