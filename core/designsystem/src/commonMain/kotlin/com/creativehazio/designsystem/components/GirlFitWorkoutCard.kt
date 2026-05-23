@@ -70,7 +70,7 @@ fun GirlFitWorkoutCard(
                 Row {
                     Text(
                         text = durationText,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.labelMedium,
                         color = Color.White
                     )
                 }
