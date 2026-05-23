@@ -3,12 +3,10 @@ package com.creativehazio.home.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,16 +24,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.SubcomposeAsyncImage
+import com.creativehazio.common.domain.workout.Workout
+import com.creativehazio.common.domain.workout.WorkoutCategory
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
+import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.creativehazio.home.domain.RecommendedWorkout
-import com.creativehazio.home.domain.RelaxWorkout
 import girlfit.feature.home.generated.resources.Res
 import girlfit.feature.home.generated.resources.angry_emoji
 import girlfit.feature.home.generated.resources.exhausted_emoji
@@ -63,6 +59,7 @@ fun HomeScreenRoot(
         contentPaddingValues = contentPaddingValues,
         uiState = uiState,
         event = event,
+        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
     )
 
 }
@@ -71,7 +68,8 @@ fun HomeScreenRoot(
 internal fun HomeScreen(
     contentPaddingValues: PaddingValues,
     uiState: HomeState,
-    event: (HomeEvent) -> Unit
+    event: (HomeEvent) -> Unit,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     LazyColumn(
@@ -95,35 +93,40 @@ internal fun HomeScreen(
         item {
             val recommendedWorkouts = remember {
                 mutableStateListOf(
-                    RecommendedWorkout(
+                    Workout(
                         title = "Full body workout",
-                        durationText = "15 mins",
-                        imageUrl = ""
+                        duration = "15 mins",
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
-                    RecommendedWorkout(
+                    Workout(
                         title = "Full body stretch",
-                        durationText = "12 mins",
-                        imageUrl = ""
+                        duration = "12 mins",
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RECOMMENDED
                     ),
                 )
             }
             RecommendedWorkoutSection(
-                recommendedWorkouts = recommendedWorkouts
+                recommendedWorkouts = recommendedWorkouts,
+                onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
             )
         }
 
         item {
             val relaxWorkouts = remember {
                 mutableStateListOf(
-                    RelaxWorkout(
+                    Workout(
                         title = "De-stress",
-                        durationText = "15 mins",
-                        imageUrl = ""
+                        duration = "15 mins",
+                        imageUrl = "",
+                        workoutCategory = WorkoutCategory.RELAX
                     )
                 )
             }
             RelaxWorkoutSection(
-                relaxWorkouts = relaxWorkouts
+                relaxWorkouts = relaxWorkouts,
+                onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
             )
             Spacer(Modifier.size(Spacing.Small))
         }
@@ -262,7 +265,8 @@ internal fun CycleCalender() {
 
 @Composable
 internal fun RecommendedWorkoutSection(
-    recommendedWorkouts: List<RecommendedWorkout>
+    recommendedWorkouts: List<Workout>,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     Column(
@@ -271,60 +275,23 @@ internal fun RecommendedWorkoutSection(
         Text("Recommended workouts")
         Spacer(Modifier.size(Spacing.ExtraSmall))
         recommendedWorkouts.forEach { workout ->
-            HomeScreenWorkoutCard(
+            GirlFitWorkoutCard(
+                modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
-                durationText = workout.durationText,
-                imageUrl = workout.imageUrl
-            )
-        }
-    }
-}
-
-@Composable
-fun HomeScreenWorkoutCard(
-    title: String,
-    imageUrl: String,
-    detailsText: String? = null,
-    durationText: String,
-) {
-
-    Card(
-        modifier = Modifier.fillMaxWidth().height(120.dp)
-    ) {
-        Box(Modifier.fillMaxSize()) {
-            SubcomposeAsyncImage(
-                model = imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    )
-            )
-
-            Column(
-                modifier = Modifier.align(Alignment.TopStart)
-                    .padding(Spacing.Medium)
-            ) {
-                Text(title)
-                Spacer(Modifier.size(Spacing.Small))
-                Row {
-                    Text(durationText)
+                durationText = workout.duration,
+                imageUrl = workout.imageUrl,
+                onCardClick = {
+                    onNavigateToWorkoutDetail(workout.id)
                 }
-            }
+            )
         }
     }
-
 }
 
 @Composable
 internal fun RelaxWorkoutSection(
-    relaxWorkouts: List<RelaxWorkout>
+    relaxWorkouts: List<Workout>,
+    onNavigateToWorkoutDetail: (String) -> Unit
 ) {
 
     Column(
@@ -333,10 +300,14 @@ internal fun RelaxWorkoutSection(
         Text("Relax instead?")
         Spacer(Modifier.size(Spacing.ExtraSmall))
         relaxWorkouts.forEach { workout ->
-            HomeScreenWorkoutCard(
+            GirlFitWorkoutCard(
+                modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
-                durationText = workout.durationText,
-                imageUrl = workout.imageUrl
+                durationText = workout.duration,
+                imageUrl = workout.imageUrl,
+                onCardClick = {
+                    onNavigateToWorkoutDetail(workout.id)
+                }
             )
         }
     }
@@ -349,6 +320,7 @@ fun HomeScreenPreview() {
     HomeScreen(
         contentPaddingValues = PaddingValues.Zero,
         uiState = HomeState(),
-        event = {}
+        event = {},
+        onNavigateToWorkoutDetail = {}
     )
 }

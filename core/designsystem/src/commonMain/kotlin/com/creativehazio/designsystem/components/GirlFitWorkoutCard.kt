@@ -1,6 +1,7 @@
 package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,12 +29,14 @@ fun GirlFitWorkoutCard(
     title: String,
     detailsText: String? = null,
     durationText: String,
-    buttonText: String,
+    buttonText: String? = null,
     onCardClick: () -> Unit
 ) {
 
     Card(
-        modifier = modifier.height(180.dp).width(170.dp),
+        modifier = modifier.clickable() {
+            onCardClick()
+        },
         shape = MaterialTheme.shapes.medium
     ) {
         Box(Modifier.fillMaxSize()) {
@@ -73,15 +76,18 @@ fun GirlFitWorkoutCard(
                 }
             }
 
-            GirlFitPrimaryButton(
-                modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                    .padding(Spacing.Medium),
-                shape = MaterialTheme.shapes.medium,
-                text = buttonText,
-                onClick = {
-                    onCardClick()
-                }
-            )
+            buttonText?.let {
+                GirlFitPrimaryButton(
+                    modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+                        .padding(Spacing.Medium),
+                    shape = MaterialTheme.shapes.medium,
+                    text = buttonText,
+                    onClick = {
+                        onCardClick()
+                    }
+                )
+            }
+
         }
     }
 }
