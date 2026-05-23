@@ -178,12 +178,24 @@ fun App() {
 
                 entry<WorkoutDetail> { key ->
 
-                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel()
+//                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel()
+//
+//                    WorkoutDetailScreenRoot(
+//                        workoutViewModel = workoutDetailViewModel,
+//                        onBack = {
+//                            backStack.removeLastOrNull()
+//                        }
+//                    )
 
-                    WorkoutDetailScreenRoot(
-                        workoutViewModel = workoutDetailViewModel,
+                    val workoutChallengeCalenderViewModel : WorkoutChallengeCalenderViewModel = koinViewModel()
+
+                    WorkoutChallengeCalenderScreenRoot(
+                        viewModel = workoutChallengeCalenderViewModel,
                         onBack = {
-                            backStack.removeLastOrNull()
+
+                        },
+                        onNavigateToWorkoutDetail = {
+
                         }
                     )
 
