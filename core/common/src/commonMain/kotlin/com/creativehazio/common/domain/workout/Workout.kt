@@ -7,8 +7,8 @@ data class Workout(
     val details: String? = null,
     val duration: String = "",
     val level: WorkoutLevel = WorkoutLevel.NONE,
-    val workoutType: WorkoutType = WorkoutType.TIME,
-    val workoutCategory: WorkoutCategory = WorkoutCategory.ALL,
+    val type: WorkoutType = WorkoutType.TIME,
+    val category: WorkoutCategory = WorkoutCategory.ALL,
     val exercises: List<Exercise> = emptyList(),
 
     val challenge: Challenge = Challenge()

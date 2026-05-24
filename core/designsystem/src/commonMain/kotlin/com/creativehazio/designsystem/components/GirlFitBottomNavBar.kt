@@ -51,12 +51,13 @@ fun <T> GirlFitBottomBar(
 ) {
     Surface(
         modifier = modifier
-            .fillMaxWidth()
-            .navigationBarsPadding(),
+            .fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface
     ) {
 
-        Column {
+        Column(
+            modifier = Modifier.navigationBarsPadding()
+        ) {
             HorizontalDivider(thickness = 0.2.dp, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
             Row(
