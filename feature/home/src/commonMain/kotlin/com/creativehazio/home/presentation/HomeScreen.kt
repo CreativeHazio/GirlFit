@@ -87,7 +87,6 @@ internal fun HomeScreen(
 
     LazyColumn(
         modifier = Modifier.padding(
-            top = Spacing.Medium,
             start = Spacing.Medium,
             end = Spacing.Medium
         ),
@@ -96,6 +95,7 @@ internal fun HomeScreen(
     ) {
 
         item {
+            Spacer(Modifier.size(Spacing.Medium))
             HomeScreenWelcomeSection()
         }
 

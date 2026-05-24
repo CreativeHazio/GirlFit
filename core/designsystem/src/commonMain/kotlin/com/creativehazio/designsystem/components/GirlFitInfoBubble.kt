@@ -1,6 +1,7 @@
 package com.creativehazio.designsystem.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ fun GirlFitInfoBubble(
     icon: DrawableResource? = null,
     text: String,
     subText: String? = null,
+    onClick: () -> Unit = {}
 ) {
 
     Card(
@@ -42,7 +44,10 @@ fun GirlFitInfoBubble(
             .shadow(
                 elevation = Sizing.CardElevation,
                 shape = MaterialTheme.shapes.extraLarge.copy(topStart = CornerSize(0.dp))
-            ),
+            )
+            .clickable {
+                onClick()
+            },
         colors = CardDefaults.cardColors(
             containerColor = color
         ),
