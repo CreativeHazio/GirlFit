@@ -144,7 +144,8 @@ sealed interface WorkoutChallengeCalenderEffect : Effect {
     data object NavigateBack : WorkoutChallengeCalenderEffect
 }
 
-class WorkoutChallengeCalenderViewModel(
+class WorkoutChallengeCalenderViewModel (
+    private val id: String
 ) : BaseViewModel<WorkoutChallengeCalenderState, WorkoutChallengeCalenderEvent, WorkoutChallengeCalenderEffect>(
     WorkoutChallengeCalenderState()
 ) {

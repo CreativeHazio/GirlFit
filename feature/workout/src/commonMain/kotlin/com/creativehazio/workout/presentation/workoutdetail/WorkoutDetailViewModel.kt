@@ -8,7 +8,6 @@ import com.creativehazio.common.State
 import com.creativehazio.common.domain.workout.Exercise
 import com.creativehazio.common.domain.workout.Workout
 import com.creativehazio.common.domain.workout.WorkoutCategory
-import com.creativehazio.common.domain.workout.WorkoutLevel
 import com.creativehazio.common.domain.workout.WorkoutType
 
 data class WorkoutDetailState(
@@ -21,7 +20,8 @@ sealed interface WorkoutDetailEvent : Event {}
 sealed interface WorkoutDetailEffect : Effect {}
 
 class WorkoutDetailViewModel(
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val id: String
 ) : BaseViewModel<WorkoutDetailState, WorkoutDetailEvent, WorkoutDetailEffect>(
     WorkoutDetailState()
 ) {
@@ -115,8 +115,8 @@ fun getDummyWorkout() : Workout {
         details = "",
         duration = "15 mins",
 //        level = WorkoutLevel.BEGINNER,
-        workoutType = WorkoutType.TIME,
-        workoutCategory = WorkoutCategory.RELAX,
+        type = WorkoutType.TIME,
+        category = WorkoutCategory.RELAX,
         exercises = exercises
     )
 }

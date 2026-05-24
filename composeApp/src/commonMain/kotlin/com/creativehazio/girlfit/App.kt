@@ -1,5 +1,12 @@
 package com.creativehazio.girlfit
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -57,12 +64,15 @@ import girlfit.composeapp.generated.resources.progress
 import girlfit.composeapp.generated.resources.progress_selected
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
+import io.ktor.http.parameters
+import io.ktor.http.parametersOf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
 import okio.FileSystem
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalSerializationApi::class)
 private val navConfig = SavedStateConfiguration {
@@ -102,6 +112,33 @@ fun App() {
             backStack = backStack,
             onBack = {
                 if (backStack.size > 1) backStack.removeLastOrNull()
+            },
+            transitionSpec = {
+                // New screen slides in from the right
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> fullWidth },
+                    animationSpec = tween(450, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(450)) togetherWith
+
+                        // Old screen slides slightly left (parallax) and fades
+                        slideOutHorizontally(
+                            targetOffsetX = { fullWidth -> -(fullWidth / 3) },
+                            animationSpec = tween(450, easing = FastOutSlowInEasing)
+                        ) + fadeOut(animationSpec = tween(450))
+            },
+            // 2. BACKWARD NAVIGATION (e.g., Pressing Back or Predictive Swipe)
+            popTransitionSpec = {
+                // Old screen (underneath) slides back in from the slight left
+                slideInHorizontally(
+                    initialOffsetX = { fullWidth -> -(fullWidth / 3) },
+                    animationSpec = tween(450, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(450)) togetherWith
+
+                        // Current screen slides out fast to the right
+                        slideOutHorizontally(
+                            targetOffsetX = { fullWidth -> fullWidth },
+                            animationSpec = tween(450, easing = FastOutSlowInEasing)
+                        ) + fadeOut(animationSpec = tween(450))
             },
             entryProvider = entryProvider {
                 entry<Login>{
@@ -155,8 +192,8 @@ fun App() {
                             backStack.clear()
                             backStack.add(Login)
                         },
-                        onNavigateToWorkoutChallengeCalender = {
-
+                        onNavigateToWorkoutChallengeCalender = { workoutId ->
+                            backStack.add(WorkoutChallengeCalender(workoutId))
                         },
                         onNavigateToWorkoutDetail = { workoutId ->
                             backStack.add(WorkoutDetail(workoutId))
@@ -164,9 +201,11 @@ fun App() {
                     )
                 }
 
-                entry<WorkoutChallengeCalender> {
+                entry<WorkoutChallengeCalender> { key ->
 
-                    val workoutChallengeCalenderViewModel : WorkoutChallengeCalenderViewModel = koinViewModel()
+                    val workoutChallengeCalenderViewModel : WorkoutChallengeCalenderViewModel = koinViewModel(
+                        parameters = { parametersOf(key.id) }
+                    )
 
                     WorkoutChallengeCalenderScreenRoot(
                         viewModel = workoutChallengeCalenderViewModel,
@@ -181,7 +220,9 @@ fun App() {
 
                 entry<WorkoutDetail> { key ->
 
-                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel()
+                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel(
+                        parameters = { parametersOf(key.id) }
+                    )
 
                     WorkoutDetailScreenRoot(
                         workoutViewModel = workoutDetailViewModel,
@@ -259,6 +300,12 @@ fun MainAppContainer(
         //TODO: Add onback to only close app when its homescreen
         NavDisplay(
             backStack = tabBackStack,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(200)) togetherWith fadeOut(animationSpec = tween(200))
+            },
+            popTransitionSpec = {
+                fadeIn(animationSpec = tween(200)) togetherWith fadeOut(animationSpec = tween(200))
+            },
             entryProvider = entryProvider {
                 entry<Home> {
                     val homeViewModel : HomeViewModel = koinViewModel()
