@@ -155,6 +155,9 @@ fun App() {
                             backStack.clear()
                             backStack.add(Login)
                         },
+                        onNavigateToWorkoutChallengeCalender = {
+
+                        },
                         onNavigateToWorkoutDetail = { workoutId ->
                             backStack.add(WorkoutDetail(workoutId))
                         }
@@ -168,10 +171,10 @@ fun App() {
                     WorkoutChallengeCalenderScreenRoot(
                         viewModel = workoutChallengeCalenderViewModel,
                         onBack = {
-
+                            backStack.removeLastOrNull()
                         },
-                        onNavigateToWorkoutDetail = {
-
+                        onNavigateToWorkoutDetail = { workoutId ->
+                            backStack.add(WorkoutDetail(workoutId))
                         }
                     )
                 }
@@ -198,7 +201,8 @@ fun App() {
 @Composable
 fun MainAppContainer(
     onLogout: () -> Unit,
-    onNavigateToWorkoutDetail: (String) -> Unit
+    onNavigateToWorkoutDetail: (String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (String) -> Unit
 ) {
 
     val tabBackStack = rememberNavBackStack(navConfig, Home)
@@ -261,6 +265,7 @@ fun MainAppContainer(
                     HomeScreenRoot(
                         contentPaddingValues = innerPadding,
                         homeViewModel = homeViewModel,
+                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender,
                         onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
                     )
                 }

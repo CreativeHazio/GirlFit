@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.creativehazio.common.domain.workout.ChallengeDay
 import com.creativehazio.common.domain.workout.Workout
 import com.creativehazio.common.domain.workout.WorkoutCategory
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
@@ -45,7 +46,8 @@ import org.jetbrains.compose.resources.painterResource
 fun HomeScreenRoot(
     homeViewModel: HomeViewModel,
     contentPaddingValues: PaddingValues,
-    onNavigateToWorkoutDetail: (String) -> Unit
+    onNavigateToWorkoutDetail: (String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
 ) {
     // TODO: Create a script to generate this boilerplate and also viewmodel boilerplate
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
@@ -323,7 +325,11 @@ internal fun RelaxWorkoutSection(
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.Small)
     ) {
-        Text("Relax instead?")
+        Text(
+            "Relax instead?",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
         Spacer(Modifier.size(Spacing.ExtraSmall))
         relaxWorkouts.forEach { workout ->
             GirlFitWorkoutCard(
