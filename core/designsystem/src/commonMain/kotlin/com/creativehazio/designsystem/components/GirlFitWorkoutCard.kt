@@ -98,15 +98,36 @@ fun GirlFitWorkoutCard(
             }
 
             buttonText?.let {
-                GirlFitPrimaryButton(
-                    modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
-                        .padding(Spacing.Medium),
-                    shape = MaterialTheme.shapes.medium,
-                    text = buttonText,
-                    onClick = {
-                        onCardClick()
-                    }
-                )
+                Box(
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .padding(Spacing.Medium)
+                        .size(37.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.primary,
+                            shape = MaterialTheme.shapes.medium
+                        )
+                        .clickable {
+                            onCardClick()
+
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = buttonText,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+//                GirlFitPrimaryButton(
+//                    modifier = Modifier.align(Alignment.BottomCenter).fillMaxWidth()
+//                        .padding(Spacing.Medium),
+//                    shape = MaterialTheme.shapes.medium,
+//                    text = buttonText,
+//                    onClick = {
+//                        onCardClick()
+//                    }
+//                )
             }
 
         }

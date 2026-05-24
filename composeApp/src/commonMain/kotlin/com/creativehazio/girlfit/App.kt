@@ -48,6 +48,8 @@ import com.creativehazio.navigation.SignUp
 import com.creativehazio.navigation.Workout
 import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
+import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailScreenRoot
@@ -112,33 +114,6 @@ fun App() {
             backStack = backStack,
             onBack = {
                 if (backStack.size > 1) backStack.removeLastOrNull()
-            },
-            transitionSpec = {
-                // New screen slides in from the right
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> fullWidth },
-                    animationSpec = tween(450, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(450)) togetherWith
-
-                        // Old screen slides slightly left (parallax) and fades
-                        slideOutHorizontally(
-                            targetOffsetX = { fullWidth -> -(fullWidth / 3) },
-                            animationSpec = tween(450, easing = FastOutSlowInEasing)
-                        ) + fadeOut(animationSpec = tween(450))
-            },
-            // 2. BACKWARD NAVIGATION (e.g., Pressing Back or Predictive Swipe)
-            popTransitionSpec = {
-                // Old screen (underneath) slides back in from the slight left
-                slideInHorizontally(
-                    initialOffsetX = { fullWidth -> -(fullWidth / 3) },
-                    animationSpec = tween(450, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(450)) togetherWith
-
-                        // Current screen slides out fast to the right
-                        slideOutHorizontally(
-                            targetOffsetX = { fullWidth -> fullWidth },
-                            animationSpec = tween(450, easing = FastOutSlowInEasing)
-                        ) + fadeOut(animationSpec = tween(450))
             },
             entryProvider = entryProvider {
                 entry<Login>{
@@ -300,12 +275,6 @@ fun MainAppContainer(
         //TODO: Add onback to only close app when its homescreen
         NavDisplay(
             backStack = tabBackStack,
-            transitionSpec = {
-                fadeIn(animationSpec = tween(200)) togetherWith fadeOut(animationSpec = tween(200))
-            },
-            popTransitionSpec = {
-                fadeIn(animationSpec = tween(200)) togetherWith fadeOut(animationSpec = tween(200))
-            },
             entryProvider = entryProvider {
                 entry<Home> {
                     val homeViewModel : HomeViewModel = koinViewModel()
@@ -318,7 +287,14 @@ fun MainAppContainer(
                 }
 
                 entry<Workout> {
+                    val workoutViewModel : WorkoutViewModel = koinViewModel()
 
+                    WorkoutScreenRoot(
+                        paddingValues = innerPadding,
+                        viewModel = workoutViewModel,
+                        onNavigateToFavourite = {},
+                        onNavigateToPersonalPlan = {},
+                    )
                 }
 
                 entry<Progress> {

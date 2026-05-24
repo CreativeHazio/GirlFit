@@ -27,8 +27,7 @@ fun GirlFitSearchBar(
     val isDark = isSystemInDarkTheme()
 
     GirlFitTextField(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         value = query,
         onValueChange = onQueryChange,
         leadingIcon = Res.drawable.search_ic,
