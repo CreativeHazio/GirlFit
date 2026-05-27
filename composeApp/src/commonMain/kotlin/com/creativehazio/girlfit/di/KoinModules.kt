@@ -1,6 +1,7 @@
 package com.creativehazio.girlfit.di
 
 import com.creativehazio.auth.di.authModule
+import com.creativehazio.data.di.dataModule
 import com.creativehazio.fitnessbuddy.di.fitnessBuddyModule
 import com.creativehazio.home.di.homeModule
 import com.creativehazio.me.di.meModule
@@ -14,6 +15,7 @@ expect val platformModules: Module
 
 val sharedModules = listOf(
     authModule,
+    dataModule,
     homeModule,
     workoutModule,
     progressModule,

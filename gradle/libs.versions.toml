@@ -28,7 +28,7 @@ koin-compose = "4.2.1"
 # Local Storage / Caching
 room = "2.8.4"
 sqlite-bundled = "2.6.2"
-ksp = "2.3.20"
+ksp = "2.3.8"
 
 # Media Loading
 imagePickerKMP = "1.0.41"
@@ -46,6 +46,9 @@ material = "1.13.0"
 kotlinStdlib = "2.3.21"
 runner = "1.7.0"
 core = "1.7.0"
+
+# Paging
+paging_version = "3.5.0"
 
 
 [libraries]
@@ -92,6 +95,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 # Room (Local Persistence)
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite-bundled" }
 
 # Image Loading
@@ -113,6 +117,10 @@ material = { group = "com.google.android.material", name = "material", version.r
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+
+#Paging
+paging-common = { module = "androidx.paging:paging-common", version.ref = "paging_version" }
+paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging_version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

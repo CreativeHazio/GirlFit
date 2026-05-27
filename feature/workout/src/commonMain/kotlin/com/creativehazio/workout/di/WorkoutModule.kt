@@ -1,7 +1,5 @@
 package com.creativehazio.workout.di
 
-import androidx.compose.ui.input.key.Key.Companion.W
-import com.creativehazio.common.domain.workout.Workout
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel

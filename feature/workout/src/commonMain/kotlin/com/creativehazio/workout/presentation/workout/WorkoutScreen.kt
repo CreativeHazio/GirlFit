@@ -30,11 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.creativehazio.common.domain.workout.Workout
-import com.creativehazio.common.domain.workout.WorkoutCategory
-import com.creativehazio.common.domain.workout.WorkoutType
+import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.data.workout.domain.WorkoutCategory
+import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard

@@ -5,9 +5,8 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.domain.workout.Workout
-import com.creativehazio.common.domain.workout.WorkoutCategory
-import com.creativehazio.common.domain.workout.WorkoutType
+import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.workout.presentation.workoutdetail.getDummyWorkout
 import kotlinx.coroutines.launch
 

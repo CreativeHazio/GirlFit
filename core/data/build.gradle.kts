@@ -1,15 +1,16 @@
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKMPLibrary)
-    alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.android.lint)
+
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
 
     android {
-        namespace = "com.creativehazio.workout"
+        namespace = "com.creativehazio.data"
         compileSdk {
             version = release(36) {
                 minorApiLevel = 1
@@ -25,10 +26,9 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
-        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
-    val xcfName = "feature:workoutKit"
+    val xcfName = "core:dataKit"
 
     iosX64 {
         binaries.framework {
@@ -52,14 +52,12 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                implementation(projects.core.common)
-                implementation(projects.core.designsystem)
-                implementation(projects.core.data)
+                implementation(project.dependencies.platform(libs.koin.bom))
+                implementation(libs.koin.core)
 
-                implementation(libs.compose.components.resources)
-
-                implementation(libs.paging.common)
-                implementation(libs.paging.compose)
+                implementation(libs.room.runtime)
+                implementation(libs.room.paging)
+                implementation(libs.sqlite.bundled)
             }
         }
 
@@ -90,4 +88,14 @@ kotlin {
         }
     }
 
+}
+
+dependencies {
+    add("kspAndroid", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
