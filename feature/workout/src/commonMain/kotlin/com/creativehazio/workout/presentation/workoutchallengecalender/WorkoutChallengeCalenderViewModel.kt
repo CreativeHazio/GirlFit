@@ -47,7 +47,6 @@ data class WorkoutChallengeCalenderState(
                 ChallengeDay(
                     number = 8,
                     state = ChallengeDayState.CURRENT,
-                    workout = getDummyWorkout()
                 ),
                 ChallengeDay(
                     number = 9,

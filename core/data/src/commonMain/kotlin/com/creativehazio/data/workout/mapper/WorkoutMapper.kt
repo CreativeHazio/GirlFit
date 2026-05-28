@@ -1,9 +1,8 @@
 package com.creativehazio.data.workout.mapper
 
-import com.creativehazio.data.workout.data.local.WorkoutEntities
-import com.creativehazio.data.workout.data.local.WorkoutEntities.ChallengeDayEntity
-import com.creativehazio.data.workout.data.local.WorkoutEntities.ExerciseEntity
-import com.creativehazio.data.workout.data.local.WorkoutEntities.WorkoutEntity
+import com.creativehazio.data.workout.data.local.ChallengeDayEntity
+import com.creativehazio.data.workout.data.local.ExerciseEntity
+import com.creativehazio.data.workout.data.local.WorkoutEntity
 import com.creativehazio.data.workout.data.local.WorkoutWithExercises
 import com.creativehazio.data.workout.data.remote.ChallengeDayDto
 import com.creativehazio.data.workout.data.remote.ExerciseDto
@@ -20,6 +19,7 @@ import com.creativehazio.data.workout.domain.WorkoutType
 fun WorkoutDto.toWorkoutEntity() : WorkoutEntity {
     return WorkoutEntity(
         id = this.id,
+        createdAt = this.createdAt,
         title = this.title,
         imageUrl = this.imageUrl,
         details = this.details,
@@ -33,7 +33,7 @@ fun WorkoutDto.toWorkoutEntity() : WorkoutEntity {
 fun ChallengeDayDto.toChallengeDayEntity(
     workoutId: String,
     state : String
-) : ChallengeDayEntity{
+) : ChallengeDayEntity {
     return ChallengeDayEntity(
         id = this.id,
         workoutId = workoutId,
@@ -61,6 +61,7 @@ fun ExerciseDto.toExerciseEntity(
 fun WorkoutWithExercises.toWorkout() : Workout {
     return Workout(
         id = workout.id,
+        createdAt = workout.createdAt,
         title = workout.title,
         imageUrl = workout.imageUrl,
         details = workout.details,

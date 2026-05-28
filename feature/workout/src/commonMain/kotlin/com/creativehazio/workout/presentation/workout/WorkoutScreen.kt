@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil3.compose.AsyncImage
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
@@ -42,6 +43,7 @@ import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.heart_icon_selected
 import girlfit.feature.workout.generated.resources.premium_icon
+import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -56,7 +58,7 @@ fun WorkoutScreenRoot(
 
     LaunchedEffect(viewModel.effect) {
         viewModel.effect.collect {
-            when(it) {
+            when (it) {
                 WorkoutEffect.NavigateToFavourite -> onNavigateToFavourite()
                 WorkoutEffect.NavigateToPersonalPlan -> onNavigateToPersonalPlan()
             }
@@ -74,7 +76,7 @@ fun WorkoutScreenRoot(
 internal fun WorkoutScreen(
     paddingValues: PaddingValues,
     uiState: WorkoutState,
-    event: (WorkoutEvent) -> Unit
+    event: (WorkoutEvent) -> Unit,
 ) {
 
     LazyColumn(
@@ -103,8 +105,10 @@ internal fun WorkoutScreen(
         }
 
         item {
+            val workouts = uiState.workouts.collectAsLazyPagingItems()
             YourGoalSection(
-                workouts = uiState.workouts,
+                workouts = workouts.itemSnapshotList.items,
+                workoutCategory = uiState.workoutCategory,
                 onWorkoutCategoryPillClicked = {
                     event(WorkoutEvent.OnWorkoutCategoryPillClicked(it))
                 }
@@ -228,9 +232,10 @@ internal fun PersonalPlanSection(
 @Composable
 internal fun YourGoalSection(
     workouts: List<Workout>,
+    workoutCategory: WorkoutCategory,
     onWorkoutCategoryPillClicked: (WorkoutCategory) -> Unit
 ) {
-    var selectedCategory by remember { mutableStateOf(WorkoutCategory.ALL) }
+    var selectedCategory by remember { mutableStateOf(workoutCategory) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
@@ -271,7 +276,7 @@ internal fun YourGoalSection(
                             title = workout.title,
                             imageUrl = workout.imageUrl,
                             durationText = workout.duration.ifEmpty { null },
-                            detailsText = workout.challenge.id.ifEmpty { null },
+                            detailsText = if (workout.type == WorkoutType.CHALLENGE) "${workout.challenge.challengeTitle} Challenge" else null,
                             buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day 8 👏" else "Start",
                             onCardClick = { }
                         )

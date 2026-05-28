@@ -5,6 +5,7 @@ plugins {
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -30,12 +31,6 @@ kotlin {
 
     val xcfName = "core:dataKit"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
     iosArm64 {
         binaries.framework {
             baseName = xcfName
@@ -55,9 +50,12 @@ kotlin {
                 implementation(project.dependencies.platform(libs.koin.bom))
                 implementation(libs.koin.core)
 
-                implementation(libs.room.runtime)
-                implementation(libs.room.paging)
+                api(libs.room.runtime)
+                api(libs.room.paging)
                 implementation(libs.sqlite.bundled)
+
+                implementation(libs.firebase.auth)
+                implementation(libs.firebase.firestore)
             }
         }
 
@@ -69,7 +67,8 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation("com.google.firebase:firebase-auth")
             }
         }
 

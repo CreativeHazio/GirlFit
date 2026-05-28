@@ -4,6 +4,8 @@ import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.creativehazio.data.localdb.GirlFitDatabase
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import platform.Foundation.NSDocumentDirectory
@@ -26,6 +28,8 @@ fun getAppDatabase() : GirlFitDatabase {
     return Room.databaseBuilder<GirlFitDatabase>(
         name = dbFilePath
     ).setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(true)
         .build()
 }
 

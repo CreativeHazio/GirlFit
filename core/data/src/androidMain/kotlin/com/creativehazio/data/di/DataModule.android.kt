@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.creativehazio.data.localdb.GirlFitDatabase
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -24,5 +25,7 @@ fun getAppDatabase(context: Context) : GirlFitDatabase {
         context = context.applicationContext,
         name = dbFile.absolutePath
     ).setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .fallbackToDestructiveMigration(true)
         .build()
 }

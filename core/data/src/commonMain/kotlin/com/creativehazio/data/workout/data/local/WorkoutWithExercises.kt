@@ -2,9 +2,6 @@ package com.creativehazio.data.workout.data.local
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.creativehazio.data.workout.data.local.WorkoutEntities.ExerciseEntity
-import com.creativehazio.data.workout.data.local.WorkoutEntities.WorkoutEntity
-import com.creativehazio.data.workout.data.local.WorkoutEntities.ChallengeDayEntity
 
 private const val ID = "id"
 private const val WORKOUT_ID = "workoutId"

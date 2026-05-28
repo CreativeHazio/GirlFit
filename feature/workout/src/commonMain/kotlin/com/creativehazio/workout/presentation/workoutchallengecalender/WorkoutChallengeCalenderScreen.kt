@@ -331,7 +331,7 @@ internal fun ChallengeDayPill(
                     .clip(CircleShape)
                     .background(Color.Transparent)
                     .clickable {
-                        onNavigateToWorkoutDetail(challengeDay.workout.id)
+//                        onNavigateToWorkoutDetail(challengeDay.workout.id)
                     },
                 contentAlignment = Alignment.Center
             ) {

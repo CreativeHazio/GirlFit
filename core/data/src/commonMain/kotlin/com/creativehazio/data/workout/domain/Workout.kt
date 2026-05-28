@@ -2,6 +2,7 @@ package com.creativehazio.data.workout.domain
 
 data class Workout(
     val id: String = "",
+    val createdAt: Long = 0L,
     val title: String = "",
     val imageUrl: String = "",
     val details: String? = null,
@@ -76,7 +77,6 @@ enum class WorkoutCategory {
     YOGA,
     QUICK,
     STRENGTH,
-    RECOMMENDED,
     RELAX
 }
 
