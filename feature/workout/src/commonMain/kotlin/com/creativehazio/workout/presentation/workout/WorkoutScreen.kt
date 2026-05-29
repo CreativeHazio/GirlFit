@@ -52,6 +52,8 @@ fun WorkoutScreenRoot(
     viewModel: WorkoutViewModel,
     onNavigateToFavourite: () -> Unit,
     onNavigateToPersonalPlan: () -> Unit,
+    onNavigateToWorkoutDetail: (String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val event = viewModel::onEvent
@@ -61,6 +63,12 @@ fun WorkoutScreenRoot(
             when (it) {
                 WorkoutEffect.NavigateToFavourite -> onNavigateToFavourite()
                 WorkoutEffect.NavigateToPersonalPlan -> onNavigateToPersonalPlan()
+                is WorkoutEffect.NavigateToWorkoutDetail -> {
+                    onNavigateToWorkoutDetail(it.workoutId)
+                }
+                is WorkoutEffect.NavigateToWorkoutChallengeCalender -> {
+                    onNavigateToWorkoutChallengeCalender(it.workoutId)
+                }
             }
         }
     }
@@ -111,6 +119,9 @@ internal fun WorkoutScreen(
                 workoutCategory = uiState.workoutCategory,
                 onWorkoutCategoryPillClicked = {
                     event(WorkoutEvent.OnWorkoutCategoryPillClicked(it))
+                },
+                onWorkoutCardClicked = {
+                    event(WorkoutEvent.OnWorkoutCardClicked(it))
                 }
             )
         }
@@ -233,7 +244,8 @@ internal fun PersonalPlanSection(
 internal fun YourGoalSection(
     workouts: List<Workout>,
     workoutCategory: WorkoutCategory,
-    onWorkoutCategoryPillClicked: (WorkoutCategory) -> Unit
+    onWorkoutCategoryPillClicked: (WorkoutCategory) -> Unit,
+    onWorkoutCardClicked: (Workout) -> Unit
 ) {
     var selectedCategory by remember { mutableStateOf(workoutCategory) }
 
@@ -278,7 +290,9 @@ internal fun YourGoalSection(
                             durationText = workout.duration.ifEmpty { null },
                             detailsText = if (workout.type == WorkoutType.CHALLENGE) "${workout.challenge.challengeTitle} Challenge" else null,
                             buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day 8 👏" else "Start",
-                            onCardClick = { }
+                            onCardClick = {
+                                onWorkoutCardClicked(workout)
+                            }
                         )
                     }
 

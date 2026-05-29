@@ -323,7 +323,7 @@ internal fun ExerciseCard(
 @Composable
 fun WorkoutDetailPreview() {
     WorkoutDetailScreen(
-        workout = getDummyWorkout(),
+        workout = Workout(),
         onBack = {},
     )
 }

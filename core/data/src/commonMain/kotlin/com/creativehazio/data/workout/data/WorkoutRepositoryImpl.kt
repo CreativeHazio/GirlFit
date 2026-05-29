@@ -9,15 +9,17 @@ import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
-import com.creativehazio.data.workout.data.local.WorkoutWithExercises
 import com.creativehazio.data.workout.data.remote.ChallengeDayDto
 import com.creativehazio.data.workout.data.remote.ChallengeDto
 import com.creativehazio.data.workout.data.remote.ExerciseDto
 import com.creativehazio.data.workout.data.remote.WorkoutDataSource
 import com.creativehazio.data.workout.data.remote.WorkoutDto
+import com.creativehazio.data.workout.domain.Challenge
+import com.creativehazio.data.workout.domain.ChallengeDay
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
+import com.creativehazio.data.workout.mapper.toChallengeDay
 import com.creativehazio.data.workout.mapper.toExerciseEntity
 import com.creativehazio.data.workout.mapper.toWorkout
 import com.creativehazio.data.workout.mapper.toWorkoutEntity
@@ -62,9 +64,32 @@ class WorkoutRepositoryImpl(
         }
     }
 
+    override suspend fun getWorkout(workoutId: String): Workout {
+        return girlFitDatabase.workoutDao().getWorkoutById(workoutId).toWorkout()
+    }
+
+    override suspend fun getWorkoutChallenge(workoutId: String): Challenge {
+        val challengeDaysFlow = girlFitDatabase.workoutDao().getWorkoutChallengeDaysById(workoutId)
+        var challengeDays = emptyList<ChallengeDay>()
+
+        withContext(Dispatchers.Default) {
+            challengeDaysFlow.collect { challengeDayEntities ->
+                challengeDays = challengeDayEntities.map { it.toChallengeDay() }
+            }
+        }
+
+        challengeDays.forEach {
+            println(it.number)
+        }
+
+        return Challenge(
+            id = workoutId,
+            challengeDays = challengeDays
+        )
+    }
+
     override fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> {
         return emptyFlow()
-
     }
 
     override suspend fun getRelaxWorkouts(): Flow<List<Workout>> = withContext(Dispatchers.IO){

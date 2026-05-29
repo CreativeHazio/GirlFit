@@ -14,17 +14,10 @@ import com.creativehazio.data.workout.data.FirestoreSeeder
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
-import com.creativehazio.workout.presentation.workoutdetail.getDummyWorkout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.IO
+import com.creativehazio.data.workout.domain.WorkoutType
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
 
 private const val WORKOUT_CATEGORY = "category"
 
@@ -38,6 +31,7 @@ sealed interface WorkoutEvent : Event {
 
     data class OnSearchWorkoutClicked(val query: String) : WorkoutEvent
     data class OnWorkoutCategoryPillClicked(val category: WorkoutCategory) : WorkoutEvent
+    data class OnWorkoutCardClicked(val workout: Workout) : WorkoutEvent
     data object OnPersonalCardClicked : WorkoutEvent
     data object OnFavouriteInfoBubbleClicked : WorkoutEvent
 }
@@ -45,6 +39,8 @@ sealed interface WorkoutEvent : Event {
 sealed interface WorkoutEffect : Effect {
     data object NavigateToPersonalPlan : WorkoutEffect
     data object NavigateToFavourite : WorkoutEffect
+    data class NavigateToWorkoutDetail(val workoutId: String) : WorkoutEffect
+    data class NavigateToWorkoutChallengeCalender(val workoutId: String) : WorkoutEffect
 }
 
 class WorkoutViewModel(
@@ -77,6 +73,12 @@ class WorkoutViewModel(
             }
 
             is WorkoutEvent.OnSearchWorkoutClicked -> searchWorkout(event.query)
+            is WorkoutEvent.OnWorkoutCardClicked -> {
+                when(event.workout.type) {
+                    WorkoutType.CHALLENGE -> sendEffect(WorkoutEffect.NavigateToWorkoutChallengeCalender(event.workout.id))
+                    WorkoutType.TIME -> sendEffect(WorkoutEffect.NavigateToWorkoutDetail(event.workout.id))
+                }
+            }
         }
     }
 

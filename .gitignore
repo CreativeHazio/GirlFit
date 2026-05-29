@@ -21,3 +21,5 @@ node_modules/
 # Firebase configurations
 google-services.json
 GoogleService-Info.plist
+
+**/core/data/schemas/

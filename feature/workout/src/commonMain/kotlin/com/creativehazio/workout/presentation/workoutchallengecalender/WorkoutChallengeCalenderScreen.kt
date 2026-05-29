@@ -104,7 +104,7 @@ internal fun WorkoutChallengeCalenderScreen(
                 .height(200.dp)
         ) {
             AsyncImage(
-                model = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                model = uiState.workout.imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -331,7 +331,7 @@ internal fun ChallengeDayPill(
                     .clip(CircleShape)
                     .background(Color.Transparent)
                     .clickable {
-//                        onNavigateToWorkoutDetail(challengeDay.workout.id)
+                        onNavigateToWorkoutDetail(challengeDay.workoutId)
                     },
                 contentAlignment = Alignment.Center
             ) {

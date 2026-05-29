@@ -27,6 +27,13 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts ORDER BY createdAt ASC LIMIT 1")
     suspend fun getLastWorkout(): WorkoutWithExercises?
 
+    @Transaction
+    @Query("SELECT * FROM workouts WHERE id = :workoutId")
+    suspend fun getWorkoutById(workoutId: String) : WorkoutWithExercises
+
+    @Query("SELECT * FROM challenge_days WHERE workoutId = :workoutId")
+    fun getWorkoutChallengeDaysById(workoutId: String) : Flow<List<ChallengeDayEntity>>
+
     @Query("DELETE FROM workouts")
     suspend fun clearAllWorkouts()
 

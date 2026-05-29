@@ -29,7 +29,7 @@ data object Workout : Route
 data class WorkoutChallengeCalender(val id: String) : Route
 
 @Serializable
-data class WorkoutDetail(val id: String) : Route
+data class WorkoutDetail(val workoutId: String) : Route
 
 @Serializable
 data object Progress : Route
