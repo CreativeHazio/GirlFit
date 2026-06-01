@@ -2,6 +2,7 @@ package com.creativehazio.data.workout.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.workout.domain.ChallengeDayState
 
 private const val WORKOUT_TABLE_NAME = "workouts"
@@ -15,7 +16,8 @@ data class WorkoutEntity(
     val title: String,
     val imageUrl: String,
     val details: String?,
-    val duration: String,
+    val duration: Int,
+    val cyclePhase: String? = null,
     val level: String,
     val type: String,
     val category: String,
@@ -34,7 +36,7 @@ data class ExerciseEntity(
     @PrimaryKey val id: String,
     val workoutId: String,
     val title: String,
-    val duration: String,
+    val duration: Int,
     val description: String,
     val thumbnailGifUrl: String,
     val gifUrl: String,

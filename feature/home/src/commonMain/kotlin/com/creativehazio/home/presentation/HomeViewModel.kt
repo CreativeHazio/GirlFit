@@ -6,7 +6,9 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
+import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
+import com.creativehazio.data.workout.data.Seeder
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
@@ -30,12 +32,18 @@ sealed interface HomeEffect : Effect {
 
 class HomeViewModel(
     private val savedStateHandle: SavedStateHandle,
-    private val workoutRepository: WorkoutRepository
+    private val workoutRepository: WorkoutRepository,
+    private val girlFitDatabase: GirlFitDatabase
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
-        getRecommendedWorkouts()
-        getRelaxWorkouts()
+        viewModelScope.launch {
+            // TODO: Fix this making the workouts disappear
+            val seeder = Seeder(girlFitDatabase = girlFitDatabase)
+            seeder.addRelaxAndRecommendedWorkouts()
+        }
+        getRecommendedWorkouts(CyclePhase.OVULATION)
+        getRelaxWorkouts(CyclePhase.OVULATION)
     }
 
     override fun onEvent(event: HomeEvent) {
@@ -53,17 +61,17 @@ class HomeViewModel(
         }
     }
 
-    private fun getRecommendedWorkouts() {
+    private fun getRecommendedWorkouts(cyclePhase: CyclePhase) {
         viewModelScope.launch {
-            workoutRepository.getRecommendedWorkouts(CyclePhase.OVULATION).collect {
+            workoutRepository.getRecommendedWorkouts(cyclePhase).collect {
                 updateState { copy(recommendedWorkouts = it) }
             }
         }
     }
 
-    private fun getRelaxWorkouts() {
+    private fun getRelaxWorkouts(cyclePhase: CyclePhase) {
         viewModelScope.launch {
-            workoutRepository.getRelaxWorkouts().collect {
+            workoutRepository.getRelaxWorkouts(cyclePhase).collect {
                 updateState { copy(relaxWorkouts = it) }
             }
         }

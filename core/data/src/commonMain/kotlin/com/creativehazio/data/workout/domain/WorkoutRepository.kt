@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun getWorkouts(category: WorkoutCategory) : Flow<PagingData<Workout>>
     suspend fun getWorkout(workoutId: String) : Workout
-    suspend fun getWorkoutChallenge(workoutId: String) : Challenge
-    fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>>
-    suspend fun getRelaxWorkouts(): Flow<List<Workout>>
+    suspend fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>>
+    suspend fun getRelaxWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>>
 }

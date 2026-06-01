@@ -8,7 +8,11 @@ import androidx.paging.map
 import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
+import com.creativehazio.data.user.data.remote.UserDto
 import com.creativehazio.data.user.domain.CyclePhase
+import com.creativehazio.data.user.domain.User
+import com.creativehazio.data.workout.data.local.ExerciseEntity
+import com.creativehazio.data.workout.data.local.WorkoutEntity
 import com.creativehazio.data.workout.data.remote.ChallengeDayDto
 import com.creativehazio.data.workout.data.remote.ChallengeDto
 import com.creativehazio.data.workout.data.remote.ExerciseDto
@@ -68,72 +72,36 @@ class WorkoutRepositoryImpl(
         return girlFitDatabase.workoutDao().getWorkoutById(workoutId).toWorkout()
     }
 
-    override suspend fun getWorkoutChallenge(workoutId: String): Challenge {
-        val challengeDaysFlow = girlFitDatabase.workoutDao().getWorkoutChallengeDaysById(workoutId)
-        var challengeDays = emptyList<ChallengeDay>()
-
-        withContext(Dispatchers.Default) {
-            challengeDaysFlow.collect { challengeDayEntities ->
-                challengeDays = challengeDayEntities.map { it.toChallengeDay() }
+    // TODO: For relax and recommended, add cloud sync incase user wipes app's data
+    // TODO: And change this to a list instead of flow
+    override suspend fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                girlFitDatabase.workoutDao().getRecommendedWorkoutByPhase(currentCyclePhase.name)
+                    .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                flowOf(emptyList())
             }
         }
 
-        challengeDays.forEach {
-            println(it.number)
-        }
-
-        return Challenge(
-            id = workoutId,
-            challengeDays = challengeDays
-        )
-    }
-
-    override fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> {
-        return emptyFlow()
-    }
-
-    override suspend fun getRelaxWorkouts(): Flow<List<Workout>> = withContext(Dispatchers.IO){
-        return@withContext try {
-            val firestoreWorkouts = workoutDataSource.getWorkoutsByCategory (
-                limit = 5,
-                category = "RELAX"
-            )
-
-            girlFitDatabase.useWriterConnection { transactor ->
-                transactor.immediateTransaction {
-                    val workoutEntities = firestoreWorkouts.map { it.toWorkoutEntity() }
-
-                    val exerciseEntities = firestoreWorkouts.flatMap { workoutDto ->
-                        workoutDto.exercises.map { exerciseDto ->
-                            exerciseDto.toExerciseEntity(
-                                workoutId = workoutDto.id,
-                                // TODO: Also query progress doc and add isFavourite from there
-                                isFavourite = false
-                            )
-                        }
-                    }
-
-                    girlFitDatabase.workoutDao().insertWorkouts(workoutEntities)
-                    girlFitDatabase.workoutDao().insertExercises(exerciseEntities)
-                }
+    override suspend fun getRelaxWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                girlFitDatabase.workoutDao().getRelaxWorkoutByPhase(currentCyclePhase.name)
+                    .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                flowOf(emptyList())
             }
 
-            girlFitDatabase.workoutDao().getWorkoutsByCategoryAsFlow("RELAX").map { workoutsFlow ->
-                workoutsFlow.map {
-                    it.toWorkout()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            flowOf(emptyList())
         }
-
-    }
 
 }
 
-class FirestoreSeeder(
-    private val firestore: FirebaseFirestore = Firebase.firestore
+class Seeder(
+    private val firestore: FirebaseFirestore = Firebase.firestore,
+    private val girlFitDatabase: GirlFitDatabase
 ) {
 
     private val imageUrls = listOf(
@@ -178,6 +146,183 @@ class FirestoreSeeder(
         }
     }
 
+    suspend fun addRelaxAndRecommendedWorkouts() {
+        val workouts = listOf(
+
+            // --- MENSTRUAL PHASE ---
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Bedtime Unwind",
+                imageUrl = "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2070&auto=format&fit=crop",
+                duration = 1200,
+                details = "Maximize rest and recovery during your heaviest fatigue days.",
+                cyclePhase = "MENSTRUAL",
+                level = "BEGINNER",
+                type = "TIME",
+                category = "RELAX",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Upper Body Sculpt",
+                imageUrl = "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop",
+                duration = 1800,
+                details = "Keep the body moving without putting heavy stress on the lower abdomen.",
+                cyclePhase = "MENSTRUAL",
+                level = "INTERMEDIATE",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Glute Activation",
+                imageUrl = "https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=2069&auto=format&fit=crop",
+                duration = 1500,
+                details = "Mat-based, low-impact strength that won't spike your heart rate.",
+                cyclePhase = "MENSTRUAL",
+                level = "BEGINNER",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+
+            // --- FOLLICULAR PHASE ---
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Morning Warm Up",
+                imageUrl = "https://images.unsplash.com/photo-1552286450-32128ce6097a?q=80&w=2070&auto=format&fit=crop",
+                duration = 900,
+                details = "Harness your rising morning energy levels to start the day right.",
+                cyclePhase = "FOLLICULAR",
+                level = "BEGINNER",
+                type = "TIME",
+                category = "RELAX",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Lower Body Power",
+                imageUrl = "https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?q=80&w=2070&auto=format&fit=crop",
+                duration = 2400,
+                details = "Your body is primed for muscle building. Time to focus on large muscle groups.",
+                cyclePhase = "FOLLICULAR",
+                level = "EXPERT",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Core Burner",
+                imageUrl = "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop",
+                duration = 1200,
+                details = "Rising estrogen helps with stamina. Push through this intense core circuit.",
+                cyclePhase = "FOLLICULAR",
+                level = "INTERMEDIATE",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+
+            // --- OVULATION PHASE ---
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Deep Tissue Stretch",
+                imageUrl = "https://images.unsplash.com/photo-1552196563-5527ee323d47?q=80&w=2069&auto=format&fit=crop",
+                duration = 1200,
+                details = "Essential recovery between your high-intensity sessions to prevent injury.",
+                cyclePhase = "OVULATION",
+                level = "BEGINNER",
+                type = "TIME",
+                category = "RELAX",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "HIIT Cardio Blast",
+                imageUrl = "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=2070&auto=format&fit=crop",
+                duration = 1800,
+                details = "Estrogen and testosterone are peaking. Maximize your highest energy point of the month.",
+                cyclePhase = "OVULATION",
+                level = "EXPERT",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Lower Body Power",
+                imageUrl = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
+                duration = 2400,
+                details = "Capitalize on peak hormones for maximum strength output.",
+                cyclePhase = "OVULATION",
+                level = "EXPERT",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+
+            // --- LUTEAL PHASE ---
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Evening Relax",
+                imageUrl = "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=2070&auto=format&fit=crop",
+                duration = 1500,
+                details = "Calm the central nervous system as progesterone naturally makes the body feel sleepier.",
+                cyclePhase = "LUTEAL",
+                level = "BEGINNER",
+                type = "TIME",
+                category = "RELAX",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Glute Activation",
+                imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop",
+                duration = 1800,
+                details = "Maintain strength with moderate, focused effort rather than exhausting compound lifts.",
+                cyclePhase = "LUTEAL",
+                level = "INTERMEDIATE",
+                type = "TIME",
+                category = "STRENGTH",
+            ),
+            WorkoutEntity(
+                id = generateFirestoreId(),
+                createdAt = Clock.System.now().toEpochMilliseconds(),
+                title = "Core Burner",
+                imageUrl = "https://images.unsplash.com/photo-1554284126-aa88f22d8b74?q=80&w=2094&auto=format&fit=crop",
+                duration = 1200,
+                details = "Highly effective moderate core work before transitioning to full rest.",
+                cyclePhase = "LUTEAL",
+                level = "INTERMEDIATE",
+                type = "TIME",
+                category = "STRENGTH",
+            )
+        )
+
+
+        val exercises = workouts.flatMap { workout ->
+            List(3) { index ->
+                ExerciseEntity(
+                    id = generateFirestoreId(),
+                    workoutId = workout.id,
+                    title = "Exercise ${index + 1}",
+                    duration = workout.duration / 3,
+                    description = "Focus on form and steady breathing.",
+                    thumbnailGifUrl = "https://example.com/thumb.gif",
+                    gifUrl = "https://example.com/full.gif",
+                    isFavourite = false
+                )
+            }
+        }
+
+        // Insert both into the database
+        girlFitDatabase.workoutDao().insertWorkouts(workouts)
+        girlFitDatabase.workoutDao().insertExercises(exercises)
+    }
+
     private fun generateWorkouts(): List<WorkoutDto> {
         val workouts = mutableListOf<WorkoutDto>()
         val currentTime = Clock.System.now().toEpochMilliseconds()
@@ -220,7 +365,7 @@ class FirestoreSeeder(
                     title = relaxTitles[i],
                     imageUrl = imageUrls[i],
                     details = "A perfect way to de-stress and stretch your body.",
-                    duration = "${10 + (i * 5)} mins",
+                    duration = (10 + (i * 5)) * 60,
                     level = "BEGINNER",
                     type = "TIME",
                     category = if (i % 2 == 0) "RELAX" else "YOGA",
@@ -238,7 +383,7 @@ class FirestoreSeeder(
                     title = strengthTitles[i - 5],
                     imageUrl = imageUrls[i],
                     details = "Build strength and tone muscles effectively.",
-                    duration = "20 mins",
+                    duration = 1200,
                     level = "INTERMEDIATE",
                     type = "TIME",
                     category = if (i % 2 == 0) "STRENGTH" else "QUICK",
@@ -259,18 +404,20 @@ class FirestoreSeeder(
                     title = challengeTitles[i - 10],
                     imageUrl = imageUrls[i],
                     details = "Commit to days of consistent growth.",
-                    duration = "", // 🔑 Duration set to empty string for challenges
+                    duration = 0,
                     level = "EXPERT",
                     type = "CHALLENGE",
                     category = "CHALLENGE",
-                    exercises = generateDummyExercises(4),
+                    exercises = emptyList(),
                     challenge = ChallengeDto(
                         id = generateFirestoreId(),
                         challengeDays = List(daysInChallenge) { dayIndex ->
+                            val linkedTimeWorkoutId = workouts.take(10).random().id
+
                             ChallengeDayDto(
                                 id = generateFirestoreId(),
                                 number = dayIndex + 1,
-                                workoutId = workoutId
+                                workoutId = linkedTimeWorkoutId
                             )
                         }
                     )
@@ -286,7 +433,7 @@ class FirestoreSeeder(
             ExerciseDto(
                 id = generateFirestoreId(),
                 title = "Exercise ${index + 1}",
-                duration = "45s",
+                duration = 45,
                 description = "Keep your core tight and breathe steadily.",
                 thumbnailGifUrl = "https://example.com/thumb.gif",
                 gifUrl = "https://example.com/full.gif"

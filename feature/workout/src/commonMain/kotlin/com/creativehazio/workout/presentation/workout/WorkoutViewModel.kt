@@ -10,11 +10,11 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.data.workout.data.FirestoreSeeder
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -53,7 +53,7 @@ class WorkoutViewModel(
 ) {
 
     init {
-        getWorkouts(WorkoutCategory.ALL)
+        getWorkouts(uiState.value.workoutCategory)
     }
 
     override fun onEvent(event: WorkoutEvent) {

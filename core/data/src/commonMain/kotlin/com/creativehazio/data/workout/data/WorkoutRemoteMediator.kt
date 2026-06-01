@@ -64,12 +64,13 @@ class WorkoutRemoteMediator(
                             }
                         }
 
-                        // TODO: Also query progress doc and add state from there
+                        // TODO: Also query progress doc and add state from there, if file doesnt exist make the first day current
                         val challengeDayEntities = firestoreWorkouts.flatMap { workoutDto ->
-                            workoutDto.challenge?.challengeDays?.map { dayDto ->
+                            workoutDto.challenge?.challengeDays?.mapIndexed { index, dayDto ->
                                 dayDto.toChallengeDayEntity(
-                                    workoutId = workoutDto.id,
-                                    state = "UPCOMING"
+                                    workoutId = dayDto.workoutId,
+                                    state = if (index == 0) "CURRENT"
+                                            else "UPCOMING"
                                 )
                             } ?: emptyList()
                         }

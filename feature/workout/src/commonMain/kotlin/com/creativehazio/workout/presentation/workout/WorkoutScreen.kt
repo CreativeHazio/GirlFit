@@ -3,6 +3,7 @@ package com.creativehazio.workout.presentation.workout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableDefaults.overscrollEffect
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,8 +17,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularWavyProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -30,8 +38,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
+import com.creativehazio.common.util.DateTimeUtil
+import com.creativehazio.data.workout.domain.ChallengeDayState
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutType
@@ -66,6 +78,7 @@ fun WorkoutScreenRoot(
                 is WorkoutEffect.NavigateToWorkoutDetail -> {
                     onNavigateToWorkoutDetail(it.workoutId)
                 }
+
                 is WorkoutEffect.NavigateToWorkoutChallengeCalender -> {
                     onNavigateToWorkoutChallengeCalender(it.workoutId)
                 }
@@ -80,6 +93,7 @@ fun WorkoutScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 internal fun WorkoutScreen(
     paddingValues: PaddingValues,
@@ -87,16 +101,20 @@ internal fun WorkoutScreen(
     event: (WorkoutEvent) -> Unit,
 ) {
 
-    LazyColumn(
-        modifier = Modifier.padding(
-            start = Spacing.Medium,
-            end = Spacing.Medium
-        ),
-        verticalArrangement = Arrangement.spacedBy(Spacing.ExtraLarge),
-        contentPadding = paddingValues
+    val workouts = uiState.workouts.collectAsLazyPagingItems()
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier.padding(horizontal = Spacing.Medium),
+        verticalArrangement = Arrangement.spacedBy(Spacing.Medium),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Medium),
+        contentPadding = paddingValues,
     ) {
 
-        item {
+        item(
+            span = { GridItemSpan(maxLineSpan) },
+            contentType = "welcome_and_search"
+        ) {
             Spacer(Modifier.size(Spacing.Medium))
             WelcomeAndSearchSection(
                 onSearchWorkoutClicked = {
@@ -105,25 +123,52 @@ internal fun WorkoutScreen(
             )
         }
 
-        item {
+        item(
+            span = { GridItemSpan(maxLineSpan) },
+            contentType = "personal_plan"
+        ) {
             PersonalPlanSection(
                 onPersonalPlanCardClicked = {},
                 onFavouriteInfoBubbleClicked = {}
             )
         }
 
-        item {
-            val workouts = uiState.workouts.collectAsLazyPagingItems()
-            YourGoalSection(
-                workouts = workouts.itemSnapshotList.items,
+        item(
+            span = { GridItemSpan(maxLineSpan) },
+            contentType = "goal_header_and_pill"
+        ) {
+            GoalHeaderAndPills(
                 workoutCategory = uiState.workoutCategory,
-                onWorkoutCategoryPillClicked = {
-                    event(WorkoutEvent.OnWorkoutCategoryPillClicked(it))
-                },
-                onWorkoutCardClicked = {
-                    event(WorkoutEvent.OnWorkoutCardClicked(it))
-                }
+                onWorkoutCategoryPillClicked = { event(WorkoutEvent.OnWorkoutCategoryPillClicked(it)) }
             )
+        }
+
+        items(
+            count = workouts.itemCount,
+            key = workouts.itemKey { it.id },
+            contentType = { "workout_section" }
+        ) { index ->
+
+            val workout = workouts[index]
+
+            if (workout != null) {
+                val currentDay = workout.challenge.challengeDays.find {
+                    it.state == ChallengeDayState.CURRENT
+                }
+
+                GirlFitWorkoutCard(
+                    modifier = Modifier.height(Sizing.CardHeightLarge),
+                    title = workout.title,
+                    imageUrl = workout.imageUrl,
+                    durationText = if (workout.duration == 0) null else DateTimeUtil.durationFormatter(
+                        workout.duration
+                    ),
+                    detailsText = if (workout.type == WorkoutType.CHALLENGE) "${workout.challenge.challengeTitle} Challenge" else null,
+                    buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
+                    onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
+                )
+            }
+
         }
 
     }
@@ -241,13 +286,10 @@ internal fun PersonalPlanSection(
 }
 
 @Composable
-internal fun YourGoalSection(
-    workouts: List<Workout>,
+internal fun GoalHeaderAndPills(
     workoutCategory: WorkoutCategory,
     onWorkoutCategoryPillClicked: (WorkoutCategory) -> Unit,
-    onWorkoutCardClicked: (Workout) -> Unit
 ) {
-    var selectedCategory by remember { mutableStateOf(workoutCategory) }
 
     Column(
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
@@ -264,42 +306,11 @@ internal fun YourGoalSection(
             items(WorkoutCategory.entries.toTypedArray(), key = { it.name }) {
                 WorkoutCategoryPill(
                     title = it.name.lowercase().replaceFirstChar { it.uppercase() },
-                    isSelected = it == selectedCategory,
+                    isSelected = it == workoutCategory,
                     onClick = {
-                        selectedCategory = it
                         onWorkoutCategoryPillClicked(it)
                     }
                 )
-            }
-        }
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
-        ) {
-
-            workouts.chunked(2).forEach { rowItems ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
-                ) {
-                    rowItems.forEach { workout ->
-                        GirlFitWorkoutCard(
-                            modifier = Modifier.weight(1f).height(Sizing.CardHeightLarge),
-                            title = workout.title,
-                            imageUrl = workout.imageUrl,
-                            durationText = workout.duration.ifEmpty { null },
-                            detailsText = if (workout.type == WorkoutType.CHALLENGE) "${workout.challenge.challengeTitle} Challenge" else null,
-                            buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day 8 👏" else "Start",
-                            onCardClick = {
-                                onWorkoutCardClicked(workout)
-                            }
-                        )
-                    }
-
-                    if (rowItems.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-                }
             }
         }
     }

@@ -9,12 +9,13 @@ data class WorkoutDto(
     val title: String = "",
     val imageUrl: String = "",
     val details: String? = null,
-    val duration: String = "",
+    val duration: Int = 0,
     val level: String = "NONE",
     val type: String = "TIME",
     val category: String = "ALL",
     val exercises: List<ExerciseDto> = emptyList(),
-    val challenge: ChallengeDto? = null
+    val challenge: ChallengeDto? = null,
+    val challengeDuration: String = "",
 )
 
 @Serializable
@@ -35,7 +36,7 @@ data class ChallengeDayDto(
 data class ExerciseDto(
     val id: String = "",
     val title: String = "",
-    val duration: String = "",
+    val duration: Int = 0,
     val description: String = "",
     val thumbnailGifUrl: String = "",
     val gifUrl: String = ""

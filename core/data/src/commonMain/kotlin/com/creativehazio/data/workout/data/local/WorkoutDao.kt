@@ -31,9 +31,6 @@ interface WorkoutDao {
     @Query("SELECT * FROM workouts WHERE id = :workoutId")
     suspend fun getWorkoutById(workoutId: String) : WorkoutWithExercises
 
-    @Query("SELECT * FROM challenge_days WHERE workoutId = :workoutId")
-    fun getWorkoutChallengeDaysById(workoutId: String) : Flow<List<ChallengeDayEntity>>
-
     @Query("DELETE FROM workouts")
     suspend fun clearAllWorkouts()
 
@@ -51,4 +48,12 @@ interface WorkoutDao {
 
     @Query("DELETE FROM challenge_days")
     suspend fun clearAllChallengeDays()
+
+    @Transaction
+    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'RELAX'")
+    fun getRelaxWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
+
+    @Transaction
+    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'STRENGTH'")
+    fun getRecommendedWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
 }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.creativehazio.common.util.DateTimeUtil
 import com.creativehazio.data.workout.domain.Challenge
 import com.creativehazio.data.workout.domain.ChallengeDay
 import com.creativehazio.data.workout.domain.ChallengeDayState
@@ -59,10 +60,11 @@ fun HomeScreenRoot(
 
     LaunchedEffect(homeViewModel.effect) {
         homeViewModel.effect.collect {
-            when(it) {
+            when (it) {
                 is HomeEffect.NavigateToWorkoutChallengeCalender -> {
                     onNavigateToWorkoutChallengeCalender(it.workoutId)
                 }
+
                 is HomeEffect.NavigateToWorkoutDetail -> {
                     onNavigateToWorkoutDetail(it.workoutId)
                 }
@@ -307,8 +309,12 @@ internal fun RecommendedWorkoutSection(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
-                durationText = if (workout.type == WorkoutType.TIME) workout.duration else null,
-                detailsText = if (workout.type == WorkoutType.CHALLENGE) { "${workout.challenge.challengeTitle} Challenge" } else null,
+                durationText = if (workout.type == WorkoutType.TIME) DateTimeUtil.durationFormatter(
+                    workout.duration
+                ) else null,
+                detailsText = if (workout.type == WorkoutType.CHALLENGE) {
+                    "${workout.challenge.challengeTitle} Challenge"
+                } else null,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout)
@@ -338,8 +344,12 @@ internal fun RelaxWorkoutSection(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
-                durationText = if (workout.type == WorkoutType.TIME) workout.duration else null,
-                detailsText = if (workout.type == WorkoutType.CHALLENGE) { "${workout.challenge.challengeTitle} Challenge" } else null,
+                durationText = if (workout.type == WorkoutType.TIME) DateTimeUtil.durationFormatter(
+                    workout.duration
+                ) else null,
+                detailsText = if (workout.type == WorkoutType.CHALLENGE) {
+                    "${workout.challenge.challengeTitle} Challenge"
+                } else null,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout)

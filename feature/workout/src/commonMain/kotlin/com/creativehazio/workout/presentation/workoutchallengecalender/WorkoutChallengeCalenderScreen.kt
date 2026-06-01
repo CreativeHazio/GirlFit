@@ -155,6 +155,8 @@ internal fun WorkoutChallengeCalenderScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
                 )
+
+                // TODO: Rewrite entire screen based in reforms I did
                 Text(
                     modifier = Modifier.padding(start = Spacing.Medium),
                     text = "${uiState.workout.challenge.challengeTitle} Challenge",
