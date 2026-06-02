@@ -29,12 +29,6 @@ kotlin {
 
     val xcfName = "core:navigationKit"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
     iosArm64 {
         binaries.framework {
             baseName = xcfName

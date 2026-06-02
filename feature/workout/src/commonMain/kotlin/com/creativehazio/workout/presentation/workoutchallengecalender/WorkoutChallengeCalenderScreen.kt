@@ -43,10 +43,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.creativehazio.common.domain.workout.Challenge
-import com.creativehazio.common.domain.workout.ChallengeDay
-import com.creativehazio.common.domain.workout.ChallengeDayState
-import com.creativehazio.common.domain.workout.Workout
+import com.creativehazio.data.workout.domain.Challenge
+import com.creativehazio.data.workout.domain.ChallengeDay
+import com.creativehazio.data.workout.domain.ChallengeDayState
+import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
@@ -104,7 +104,7 @@ internal fun WorkoutChallengeCalenderScreen(
                 .height(200.dp)
         ) {
             AsyncImage(
-                model = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                model = uiState.workout.imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -155,6 +155,8 @@ internal fun WorkoutChallengeCalenderScreen(
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
                 )
+
+                // TODO: Rewrite entire screen based in reforms I did
                 Text(
                     modifier = Modifier.padding(start = Spacing.Medium),
                     text = "${uiState.workout.challenge.challengeTitle} Challenge",
@@ -331,7 +333,7 @@ internal fun ChallengeDayPill(
                     .clip(CircleShape)
                     .background(Color.Transparent)
                     .clickable {
-                        onNavigateToWorkoutDetail(challengeDay.workout.id)
+                        onNavigateToWorkoutDetail(challengeDay.workoutId)
                     },
                 contentAlignment = Alignment.Center
             ) {

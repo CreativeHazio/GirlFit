@@ -2,6 +2,7 @@ package com.creativehazio.home.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,12 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.creativehazio.common.domain.workout.Challenge
-import com.creativehazio.common.domain.workout.ChallengeDay
-import com.creativehazio.common.domain.workout.ChallengeDayState
-import com.creativehazio.common.domain.workout.Workout
-import com.creativehazio.common.domain.workout.WorkoutCategory
-import com.creativehazio.common.domain.workout.WorkoutType
+import com.creativehazio.common.util.DateTimeUtil
+import com.creativehazio.data.workout.domain.Challenge
+import com.creativehazio.data.workout.domain.ChallengeDay
+import com.creativehazio.data.workout.domain.ChallengeDayState
+import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.data.workout.domain.WorkoutCategory
+import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
@@ -53,16 +55,16 @@ fun HomeScreenRoot(
     onNavigateToWorkoutDetail: (String) -> Unit,
     onNavigateToWorkoutChallengeCalender: (String) -> Unit,
 ) {
-    // TODO: Create a script to generate this boilerplate and also viewmodel boilerplate
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
     val event = homeViewModel::onEvent
 
     LaunchedEffect(homeViewModel.effect) {
         homeViewModel.effect.collect {
-            when(it) {
+            when (it) {
                 is HomeEffect.NavigateToWorkoutChallengeCalender -> {
                     onNavigateToWorkoutChallengeCalender(it.workoutId)
                 }
+
                 is HomeEffect.NavigateToWorkoutDetail -> {
                     onNavigateToWorkoutDetail(it.workoutId)
                 }
@@ -104,24 +106,8 @@ internal fun HomeScreen(
         }
 
         item {
-            val recommendedWorkouts = remember {
-                mutableStateListOf(
-                    Workout(
-                        title = "Full body workout",
-                        duration = "15 mins",
-                        imageUrl = "https://images.unsplash.com/photo-1714646442330-9068099f5521?q=80&w=2532&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                        category = WorkoutCategory.RECOMMENDED
-                    ),
-                    Workout(
-                        title = "Full body stretch",
-                        duration = "12 mins",
-                        imageUrl = "https://images.unsplash.com/photo-1630225760711-ac8eaa0c8947?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                        category = WorkoutCategory.RECOMMENDED
-                    ),
-                )
-            }
             RecommendedWorkoutSection(
-                recommendedWorkouts = recommendedWorkouts,
+                recommendedWorkouts = uiState.recommendedWorkouts,
                 onNavigateToWorkoutDetail = {
                     event(HomeEvent.OnWorkoutCardClicked(it))
                 }
@@ -129,134 +115,8 @@ internal fun HomeScreen(
         }
 
         item {
-            val relaxWorkouts = remember {
-                mutableStateListOf(
-                    Workout(
-                        title = "De-stress",
-                        type = WorkoutType.CHALLENGE,
-                        imageUrl = "https://images.unsplash.com/photo-1571103774229-c4e9305aaad1?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                        category = WorkoutCategory.RELAX,
-                        challenge = Challenge(
-                            challengeDays = listOf(
-                                ChallengeDay(
-                                    number = 1,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 2,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 3,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 4,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 5,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 6,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 7,
-                                    state = ChallengeDayState.COMPLETED,
-                                ),
-                                ChallengeDay(
-                                    number = 8,
-                                    state = ChallengeDayState.CURRENT,
-                                ),
-                                ChallengeDay(
-                                    number = 9,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 10,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 11,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 12,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 13,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 14,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 15,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 16,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 17,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 18,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 19,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 20,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 21,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 22,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 23,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 24,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 25,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 26,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 27,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                                ChallengeDay(
-                                    number = 28,
-                                    state = ChallengeDayState.UPCOMING,
-                                ),
-                            )
-                        )
-                    )
-                )
-            }
             RelaxWorkoutSection(
-                relaxWorkouts = relaxWorkouts,
+                relaxWorkouts = uiState.relaxWorkouts,
                 onNavigateToWorkoutDetail = {
                     event(HomeEvent.OnWorkoutCardClicked(it))
                 }
@@ -270,7 +130,6 @@ internal fun HomeScreen(
 
 @Composable
 internal fun HomeScreenWelcomeSection() {
-    // TODO: Create a data class?
     val feelings = remember {
         mutableStateMapOf(
             "Happy" to Res.drawable.smile_emoji,
@@ -328,6 +187,9 @@ internal fun HomeScreenWelcomeSection() {
         ) {
             feelings.forEach { resource ->
                 Column(
+                    modifier = Modifier.clickable {
+
+                    },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
                 ) {
@@ -447,8 +309,12 @@ internal fun RecommendedWorkoutSection(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
-                durationText = if (workout.type == WorkoutType.TIME) workout.duration else null,
-                detailsText = if (workout.type == WorkoutType.CHALLENGE) { "${workout.challenge.challengeTitle} Challenge" } else null,
+                durationText = if (workout.type == WorkoutType.TIME) DateTimeUtil.durationFormatter(
+                    workout.duration
+                ) else null,
+                detailsText = if (workout.type == WorkoutType.CHALLENGE) {
+                    "${workout.challenge.challengeTitle} Challenge"
+                } else null,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout)
@@ -478,8 +344,12 @@ internal fun RelaxWorkoutSection(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
-                durationText = if (workout.type == WorkoutType.TIME) workout.duration else null,
-                detailsText = if (workout.type == WorkoutType.CHALLENGE) { "${workout.challenge.challengeTitle} Challenge" } else null,
+                durationText = if (workout.type == WorkoutType.TIME) DateTimeUtil.durationFormatter(
+                    workout.duration
+                ) else null,
+                detailsText = if (workout.type == WorkoutType.CHALLENGE) {
+                    "${workout.challenge.challengeTitle} Challenge"
+                } else null,
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout)

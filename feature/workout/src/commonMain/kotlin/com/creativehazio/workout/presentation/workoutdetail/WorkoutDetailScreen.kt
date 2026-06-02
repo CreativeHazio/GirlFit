@@ -8,50 +8,42 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.capitalize
-import androidx.compose.ui.text.font.FontVariation.weight
-import androidx.compose.ui.text.toLowerCase
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import com.creativehazio.common.domain.workout.Exercise
-import com.creativehazio.common.domain.workout.Workout
-import com.creativehazio.common.domain.workout.WorkoutLevel
+import com.creativehazio.common.util.DateTimeUtil
+import com.creativehazio.data.workout.domain.ChallengeDayState
+import com.creativehazio.data.workout.domain.Exercise
+import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.data.workout.domain.WorkoutLevel
+import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
@@ -155,6 +147,20 @@ internal fun WorkoutDetailScreen(
             modifier = Modifier.padding(start = Spacing.Medium, end = Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(Spacing.Large)
         ) {
+            if (workout.type == WorkoutType.CHALLENGE) {
+                val currentDay by remember {
+                    mutableStateOf(
+                        workout.challenge.challengeDays.find {
+                            it.state == ChallengeDayState.CURRENT
+                        }
+                    )
+                }
+                Text(
+                    text = "Week ${currentDay?.weekNumber}, Day ${currentDay?.number} 🎈",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
             Text(
                 workout.title,
                 style = MaterialTheme.typography.headlineSmall,
@@ -185,7 +191,7 @@ internal fun WorkoutDetailScreen(
                         ) {
                             Text(text = "Duration:", style = MaterialTheme.typography.bodyMedium)
                             Text(
-                                text = workout.duration,
+                                text = DateTimeUtil.durationFormatter(workout.duration),
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -308,7 +314,10 @@ internal fun ExerciseCard(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            Text(exercise.duration, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = DateTimeUtil.durationFormatter(exercise.duration),
+                style = MaterialTheme.typography.bodySmall
+            )
         }
         IconButton(
             modifier = Modifier.size(Sizing.IconExtraLarge),
@@ -336,7 +345,7 @@ internal fun ExerciseCard(
 @Composable
 fun WorkoutDetailPreview() {
     WorkoutDetailScreen(
-        workout = getDummyWorkout(),
+        workout = Workout(),
         onBack = {},
     )
 }

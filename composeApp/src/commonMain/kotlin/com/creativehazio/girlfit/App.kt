@@ -1,14 +1,6 @@
 package com.creativehazio.girlfit
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,7 +14,6 @@ import coil3.SingletonImageLoader
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.CachePolicy
-import com.creativehazio.auth.data.FirebaseAuthService
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
 import com.creativehazio.auth.presentation.login.LoginScreenRoot
@@ -32,8 +23,6 @@ import com.creativehazio.auth.presentation.signup.SignUpViewModel
 import com.creativehazio.designsystem.components.BottomBarTab
 import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
-import com.creativehazio.girlfit.MainAppContainer
-import com.creativehazio.girlfit.navConfig
 import com.creativehazio.home.presentation.HomeScreenRoot
 import com.creativehazio.home.presentation.HomeViewModel
 import com.creativehazio.navigation.EmailVerification
@@ -50,10 +39,11 @@ import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
+import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEvent
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
+import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailEvent
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailScreenRoot
-import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailState
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel
 import girlfit.composeapp.generated.resources.Res
 import girlfit.composeapp.generated.resources.home
@@ -66,8 +56,6 @@ import girlfit.composeapp.generated.resources.progress
 import girlfit.composeapp.generated.resources.progress_selected
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
-import io.ktor.http.parameters
-import io.ktor.http.parametersOf
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -116,8 +104,8 @@ fun App() {
                 if (backStack.size > 1) backStack.removeLastOrNull()
             },
             entryProvider = entryProvider {
-                entry<Login>{
-                    val loginViewModel : LoginViewModel = koinViewModel()
+                entry<Login> {
+                    val loginViewModel: LoginViewModel = koinViewModel()
 
                     LoginScreenRoot(
                         loginViewModel = loginViewModel,
@@ -135,7 +123,7 @@ fun App() {
                 }
 
                 entry<EmailVerification> { key ->
-                    val emailVerificationViewModel : EmailVerificationViewModel = koinViewModel()
+                    val emailVerificationViewModel: EmailVerificationViewModel = koinViewModel()
 
                     EmailVerificationScreenRoot(
                         email = key.email,
@@ -148,7 +136,7 @@ fun App() {
                 }
 
                 entry<SignUp> {
-                    val signUpViewModel : SignUpViewModel = koinViewModel()
+                    val signUpViewModel: SignUpViewModel = koinViewModel()
 
                     SignUpScreenRoot(
                         signUpViewModel = signUpViewModel,
@@ -178,9 +166,16 @@ fun App() {
 
                 entry<WorkoutChallengeCalender> { key ->
 
-                    val workoutChallengeCalenderViewModel : WorkoutChallengeCalenderViewModel = koinViewModel(
-                        parameters = { parametersOf(key.id) }
-                    )
+                    val workoutChallengeCalenderViewModel: WorkoutChallengeCalenderViewModel =
+                        koinViewModel()
+
+                    LaunchedEffect(key.id) {
+                        workoutChallengeCalenderViewModel.onEvent(
+                            WorkoutChallengeCalenderEvent.GetWorkoutChallengeById(
+                                key.id
+                            )
+                        )
+                    }
 
                     WorkoutChallengeCalenderScreenRoot(
                         viewModel = workoutChallengeCalenderViewModel,
@@ -195,9 +190,11 @@ fun App() {
 
                 entry<WorkoutDetail> { key ->
 
-                    val workoutDetailViewModel : WorkoutDetailViewModel = koinViewModel(
-                        parameters = { parametersOf(key.id) }
-                    )
+                    val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel()
+
+                    LaunchedEffect(key.workoutId) {
+                        workoutDetailViewModel.onEvent(WorkoutDetailEvent.GetWorkoutById(key.workoutId))
+                    }
 
                     WorkoutDetailScreenRoot(
                         workoutViewModel = workoutDetailViewModel,
@@ -277,7 +274,7 @@ fun MainAppContainer(
             backStack = tabBackStack,
             entryProvider = entryProvider {
                 entry<Home> {
-                    val homeViewModel : HomeViewModel = koinViewModel()
+                    val homeViewModel: HomeViewModel = koinViewModel()
                     HomeScreenRoot(
                         contentPaddingValues = innerPadding,
                         homeViewModel = homeViewModel,
@@ -287,13 +284,15 @@ fun MainAppContainer(
                 }
 
                 entry<Workout> {
-                    val workoutViewModel : WorkoutViewModel = koinViewModel()
+                    val workoutViewModel: WorkoutViewModel = koinViewModel()
 
                     WorkoutScreenRoot(
                         paddingValues = innerPadding,
                         viewModel = workoutViewModel,
                         onNavigateToFavourite = {},
                         onNavigateToPersonalPlan = {},
+                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail,
+                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender
                     )
                 }
 

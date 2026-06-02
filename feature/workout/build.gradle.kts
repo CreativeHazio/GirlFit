@@ -30,12 +30,6 @@ kotlin {
 
     val xcfName = "feature:workoutKit"
 
-    iosX64 {
-        binaries.framework {
-            baseName = xcfName
-        }
-    }
-
     iosArm64 {
         binaries.framework {
             baseName = xcfName
@@ -54,8 +48,12 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(projects.core.common)
                 implementation(projects.core.designsystem)
+                implementation(projects.core.data)
 
                 implementation(libs.compose.components.resources)
+
+                implementation(libs.paging.common)
+                implementation(libs.paging.compose)
             }
         }
 
