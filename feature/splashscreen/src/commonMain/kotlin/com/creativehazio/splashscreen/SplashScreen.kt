@@ -62,7 +62,7 @@ fun SplashScreenRoot(
 }
 
 @Composable
-private fun SplashScreen(gradientAlpha: Float) {
+internal fun SplashScreen(gradientAlpha: Float) {
     val backgroundColor = MaterialTheme.colorScheme.background
 
     Box(
@@ -74,6 +74,7 @@ private fun SplashScreen(gradientAlpha: Float) {
         Image(
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .offset(y = 67.dp)
                 .alpha(gradientAlpha),
             painter = painterResource(Res.drawable.green_gradient),
             contentDescription = null
@@ -82,6 +83,7 @@ private fun SplashScreen(gradientAlpha: Float) {
         Image(
             modifier = Modifier
                 .align(Alignment.BottomStart)
+                .offset(y = (-67).dp)
                 .alpha(gradientAlpha),
             painter = painterResource(Res.drawable.pink_gradient),
             contentDescription = null
