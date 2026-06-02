@@ -5,6 +5,7 @@ import androidx.room.Relation
 
 private const val ID = "id"
 private const val WORKOUT_ID = "workoutId"
+private const val PARENT_CHALLENGE_ID = "parentChallengeId"
 
 data class WorkoutWithExercises(
     @Embedded
@@ -18,7 +19,7 @@ data class WorkoutWithExercises(
 
     @Relation(
         parentColumn = ID,
-        entityColumn = WORKOUT_ID
+        entityColumn = PARENT_CHALLENGE_ID
     )
     val challengeDays: List<ChallengeDayEntity>
 )

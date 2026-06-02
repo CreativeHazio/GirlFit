@@ -31,12 +31,13 @@ fun WorkoutDto.toWorkoutEntity() : WorkoutEntity {
 }
 
 fun ChallengeDayDto.toChallengeDayEntity(
-    workoutId: String,
+    parentChallengeId: String,
     state : String
 ) : ChallengeDayEntity {
     return ChallengeDayEntity(
-        id = this.id,
-        workoutId = workoutId,
+        challengeDayId = this.id,
+        parentChallengeId = parentChallengeId,
+        workoutId = this.workoutId,
         number = this.number,
         state = state
     )
@@ -47,7 +48,7 @@ fun ExerciseDto.toExerciseEntity(
     isFavourite: Boolean
 ) : ExerciseEntity {
     return ExerciseEntity(
-        id = this.id,
+        exerciseId = this.id,
         workoutId = workoutId,
         title = this.title,
         duration = this.duration,
@@ -72,7 +73,7 @@ fun WorkoutWithExercises.toWorkout() : Workout {
         exercises = exercises.map { it.toExercise() },
         challenge = Challenge(
             // TODO: What should be the challenge ID
-            id = "",
+            id = workout.id,
             challengeDays = challengeDays.map { it.toChallengeDay() }
         )
     )
@@ -80,7 +81,7 @@ fun WorkoutWithExercises.toWorkout() : Workout {
 
 fun ExerciseEntity.toExercise(): Exercise {
     return Exercise(
-        id = id,
+        id = exerciseId,
         title = title,
         duration = duration,
         description = description,
@@ -93,9 +94,9 @@ fun ExerciseEntity.toExercise(): Exercise {
 
 fun ChallengeDayEntity.toChallengeDay(): ChallengeDay {
     return ChallengeDay(
-        id = id,
-        number = number,
-        state = ChallengeDayState.valueOf(state),
-        workoutId = workoutId
+        id = this.challengeDayId,
+        number = this.number,
+        state = ChallengeDayState.valueOf(this.state),
+        workoutId = this.workoutId
     )
 }

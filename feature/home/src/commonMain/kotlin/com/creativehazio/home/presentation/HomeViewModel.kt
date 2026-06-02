@@ -39,8 +39,12 @@ class HomeViewModel(
     init {
         viewModelScope.launch {
             // TODO: Fix this making the workouts disappear
-            val seeder = Seeder(girlFitDatabase = girlFitDatabase)
-            seeder.addRelaxAndRecommendedWorkouts()
+            val existingWorkout = girlFitDatabase.workoutDao().getLastWorkout()
+
+            if (existingWorkout == null) {
+                val seeder = Seeder(girlFitDatabase = girlFitDatabase)
+                seeder.addRelaxAndRecommendedWorkouts()
+            }
         }
         getRecommendedWorkouts(CyclePhase.OVULATION)
         getRelaxWorkouts(CyclePhase.OVULATION)

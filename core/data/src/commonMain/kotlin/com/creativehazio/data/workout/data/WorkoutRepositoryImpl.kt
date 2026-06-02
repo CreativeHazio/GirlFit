@@ -5,12 +5,8 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
-import androidx.room.immediateTransaction
-import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
-import com.creativehazio.data.user.data.remote.UserDto
 import com.creativehazio.data.user.domain.CyclePhase
-import com.creativehazio.data.user.domain.User
 import com.creativehazio.data.workout.data.local.ExerciseEntity
 import com.creativehazio.data.workout.data.local.WorkoutEntity
 import com.creativehazio.data.workout.data.remote.ChallengeDayDto
@@ -18,22 +14,16 @@ import com.creativehazio.data.workout.data.remote.ChallengeDto
 import com.creativehazio.data.workout.data.remote.ExerciseDto
 import com.creativehazio.data.workout.data.remote.WorkoutDataSource
 import com.creativehazio.data.workout.data.remote.WorkoutDto
-import com.creativehazio.data.workout.domain.Challenge
-import com.creativehazio.data.workout.domain.ChallengeDay
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
-import com.creativehazio.data.workout.mapper.toChallengeDay
-import com.creativehazio.data.workout.mapper.toExerciseEntity
 import com.creativehazio.data.workout.mapper.toWorkout
-import com.creativehazio.data.workout.mapper.toWorkoutEntity
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -69,7 +59,13 @@ class WorkoutRepositoryImpl(
     }
 
     override suspend fun getWorkout(workoutId: String): Workout {
-        return girlFitDatabase.workoutDao().getWorkoutById(workoutId).toWorkout()
+        return try {
+            girlFitDatabase.workoutDao().getWorkoutById(workoutId).toWorkout()
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+            Workout()
+        }
     }
 
     // TODO: For relax and recommended, add cloud sync incase user wipes app's data
@@ -155,7 +151,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Bedtime Unwind",
                 imageUrl = "https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=2070&auto=format&fit=crop",
-                duration = 1200,
+                duration = 180,
                 details = "Maximize rest and recovery during your heaviest fatigue days.",
                 cyclePhase = "MENSTRUAL",
                 level = "BEGINNER",
@@ -167,7 +163,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Upper Body Sculpt",
                 imageUrl = "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=2070&auto=format&fit=crop",
-                duration = 1800,
+                duration = 180,
                 details = "Keep the body moving without putting heavy stress on the lower abdomen.",
                 cyclePhase = "MENSTRUAL",
                 level = "INTERMEDIATE",
@@ -179,7 +175,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Glute Activation",
                 imageUrl = "https://images.unsplash.com/photo-1574680096145-d05b474e2155?q=80&w=2069&auto=format&fit=crop",
-                duration = 1500,
+                duration = 180,
                 details = "Mat-based, low-impact strength that won't spike your heart rate.",
                 cyclePhase = "MENSTRUAL",
                 level = "BEGINNER",
@@ -193,7 +189,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Morning Warm Up",
                 imageUrl = "https://images.unsplash.com/photo-1552286450-32128ce6097a?q=80&w=2070&auto=format&fit=crop",
-                duration = 900,
+                duration = 180,
                 details = "Harness your rising morning energy levels to start the day right.",
                 cyclePhase = "FOLLICULAR",
                 level = "BEGINNER",
@@ -205,7 +201,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Lower Body Power",
                 imageUrl = "https://images.unsplash.com/photo-1601422407692-ec4eeec1d9b3?q=80&w=2070&auto=format&fit=crop",
-                duration = 2400,
+                duration = 180,
                 details = "Your body is primed for muscle building. Time to focus on large muscle groups.",
                 cyclePhase = "FOLLICULAR",
                 level = "EXPERT",
@@ -217,7 +213,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Core Burner",
                 imageUrl = "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?q=80&w=2070&auto=format&fit=crop",
-                duration = 1200,
+                duration = 180,
                 details = "Rising estrogen helps with stamina. Push through this intense core circuit.",
                 cyclePhase = "FOLLICULAR",
                 level = "INTERMEDIATE",
@@ -231,7 +227,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Deep Tissue Stretch",
                 imageUrl = "https://images.unsplash.com/photo-1552196563-5527ee323d47?q=80&w=2069&auto=format&fit=crop",
-                duration = 1200,
+                duration = 180,
                 details = "Essential recovery between your high-intensity sessions to prevent injury.",
                 cyclePhase = "OVULATION",
                 level = "BEGINNER",
@@ -243,7 +239,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "HIIT Cardio Blast",
                 imageUrl = "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=2070&auto=format&fit=crop",
-                duration = 1800,
+                duration = 180,
                 details = "Estrogen and testosterone are peaking. Maximize your highest energy point of the month.",
                 cyclePhase = "OVULATION",
                 level = "EXPERT",
@@ -255,7 +251,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Lower Body Power",
                 imageUrl = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=2070&auto=format&fit=crop",
-                duration = 2400,
+                duration = 180,
                 details = "Capitalize on peak hormones for maximum strength output.",
                 cyclePhase = "OVULATION",
                 level = "EXPERT",
@@ -269,7 +265,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Evening Relax",
                 imageUrl = "https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=2070&auto=format&fit=crop",
-                duration = 1500,
+                duration = 180,
                 details = "Calm the central nervous system as progesterone naturally makes the body feel sleepier.",
                 cyclePhase = "LUTEAL",
                 level = "BEGINNER",
@@ -281,7 +277,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Glute Activation",
                 imageUrl = "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop",
-                duration = 1800,
+                duration = 180,
                 details = "Maintain strength with moderate, focused effort rather than exhausting compound lifts.",
                 cyclePhase = "LUTEAL",
                 level = "INTERMEDIATE",
@@ -293,7 +289,7 @@ class Seeder(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
                 title = "Core Burner",
                 imageUrl = "https://images.unsplash.com/photo-1554284126-aa88f22d8b74?q=80&w=2094&auto=format&fit=crop",
-                duration = 1200,
+                duration = 180,
                 details = "Highly effective moderate core work before transitioning to full rest.",
                 cyclePhase = "LUTEAL",
                 level = "INTERMEDIATE",
@@ -306,7 +302,7 @@ class Seeder(
         val exercises = workouts.flatMap { workout ->
             List(3) { index ->
                 ExerciseEntity(
-                    id = generateFirestoreId(),
+                    exerciseId = generateFirestoreId(),
                     workoutId = workout.id,
                     title = "Exercise ${index + 1}",
                     duration = workout.duration / 3,
@@ -358,6 +354,7 @@ class Seeder(
 
         // 1. Generate 5 "Relax / Yoga" Workouts (Time Based)
         for (i in 0..4) {
+            val es = generateDummyExercises(3)
             workouts.add(
                 WorkoutDto(
                     id = generateFirestoreId(),
@@ -365,17 +362,18 @@ class Seeder(
                     title = relaxTitles[i],
                     imageUrl = imageUrls[i],
                     details = "A perfect way to de-stress and stretch your body.",
-                    duration = (10 + (i * 5)) * 60,
                     level = "BEGINNER",
                     type = "TIME",
                     category = if (i % 2 == 0) "RELAX" else "YOGA",
-                    exercises = generateDummyExercises(3)
+                    exercises = generateDummyExercises(3),
+                    duration = es.sumOf { it.duration }
                 )
             )
         }
 
         // 2. Generate 5 "Strength / Quick" Workouts (Time Based)
         for (i in 5..9) {
+            val es = generateDummyExercises(5)
             workouts.add(
                 WorkoutDto(
                     id = generateFirestoreId(),
@@ -383,11 +381,11 @@ class Seeder(
                     title = strengthTitles[i - 5],
                     imageUrl = imageUrls[i],
                     details = "Build strength and tone muscles effectively.",
-                    duration = 1200,
+                    duration = es.sumOf { it.duration },
                     level = "INTERMEDIATE",
                     type = "TIME",
                     category = if (i % 2 == 0) "STRENGTH" else "QUICK",
-                    exercises = generateDummyExercises(5)
+                    exercises = es
                 )
             )
         }
@@ -410,9 +408,9 @@ class Seeder(
                     category = "CHALLENGE",
                     exercises = emptyList(),
                     challenge = ChallengeDto(
-                        id = generateFirestoreId(),
+                        id = workoutId,
                         challengeDays = List(daysInChallenge) { dayIndex ->
-                            val linkedTimeWorkoutId = workouts.take(10).random().id
+                            val linkedTimeWorkoutId = workouts[i - 10].id
 
                             ChallengeDayDto(
                                 id = generateFirestoreId(),

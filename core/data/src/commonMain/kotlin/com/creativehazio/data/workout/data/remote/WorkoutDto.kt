@@ -15,7 +15,6 @@ data class WorkoutDto(
     val category: String = "ALL",
     val exercises: List<ExerciseDto> = emptyList(),
     val challenge: ChallengeDto? = null,
-    val challengeDuration: String = "",
 )
 
 @Serializable

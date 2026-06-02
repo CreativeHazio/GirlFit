@@ -46,11 +46,12 @@ class WorkoutRemoteMediator(
             girlFitDatabase.useWriterConnection { transactor ->
                 transactor.immediateTransaction {
                     try {
-                        if (loadType == LoadType.REFRESH) {
-                            girlFitDatabase.workoutDao().clearAllWorkouts()
-                            girlFitDatabase.workoutDao().clearAllExercises()
-                            girlFitDatabase.workoutDao().clearAllChallengeDays()
-                        }
+                        // TODO: Uncomment after debug mode
+//                        if (loadType == LoadType.REFRESH) {
+//                            girlFitDatabase.workoutDao().clearAllWorkouts()
+//                            girlFitDatabase.workoutDao().clearAllExercises()
+//                            girlFitDatabase.workoutDao().clearAllChallengeDays()
+//                        }
 
                         val workoutEntities = firestoreWorkouts.map { it.toWorkoutEntity() }
 
@@ -68,7 +69,7 @@ class WorkoutRemoteMediator(
                         val challengeDayEntities = firestoreWorkouts.flatMap { workoutDto ->
                             workoutDto.challenge?.challengeDays?.mapIndexed { index, dayDto ->
                                 dayDto.toChallengeDayEntity(
-                                    workoutId = dayDto.workoutId,
+                                    parentChallengeId = workoutDto.id,
                                     state = if (index == 0) "CURRENT"
                                             else "UPCOMING"
                                 )
