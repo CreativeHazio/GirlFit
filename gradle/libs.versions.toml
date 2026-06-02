@@ -50,6 +50,8 @@ core = "1.7.0"
 # Paging
 paging_version = "3.5.0"
 
+# Splash Screen
+android-splash-screen = "1.2.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -123,7 +125,7 @@ paging-common = { module = "androidx.paging:paging-common", version.ref = "pagin
 paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging_version" }
 paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging_version" }
 
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.8.0" }
+android-splash-screen = { module = "androidx.core:core-splashscreen", version.ref = "android-splash-screen" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -34,9 +34,11 @@ import com.creativehazio.navigation.Meals
 import com.creativehazio.navigation.Progress
 import com.creativehazio.navigation.Route
 import com.creativehazio.navigation.SignUp
+import com.creativehazio.navigation.Splash
 import com.creativehazio.navigation.Workout
 import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.splashscreen.SplashScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEvent
@@ -94,7 +96,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Splash)
 
     GirlFitTheme {
 
@@ -104,6 +106,12 @@ fun App() {
                 if (backStack.size > 1) backStack.removeLastOrNull()
             },
             entryProvider = entryProvider {
+                entry<Splash> {
+                    SplashScreenRoot {
+                        backStack.clear()
+                        backStack.add(Main)
+                    }
+                }
                 entry<Login> {
                     val loginViewModel: LoginViewModel = koinViewModel()
 
