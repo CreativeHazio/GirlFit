@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="stay_healthy">Stay Healthy</string>
+    <string name="without_pressure">Without Pressure</string>
+    <string name="get_gentle_motivations">Get Gentle Motivations</string>
+    <string name="during_workouts">During Workouts</string>
+    <string name="workout">Workout</string>
+    <string name="with_friends">With Friends 🎉</string>
+    <string name="personal_workout">Get Personal Workouts</string>
+    <string name="routine_based">Based On Your Routine</string>
+    <string name="workout_based_on">Workout Based On</string>
+    <string name="your_mood">Your Mood</string>
+    <string name="get_meals_suggestions">Get Meals Suggestion</string>
+    <string name="goals_based">Based On Your Goals</string>
+
+</resources>

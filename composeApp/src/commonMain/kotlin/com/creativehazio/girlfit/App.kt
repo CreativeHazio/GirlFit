@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -31,6 +32,7 @@ import com.creativehazio.navigation.Login
 import com.creativehazio.navigation.Main
 import com.creativehazio.navigation.Me
 import com.creativehazio.navigation.Meals
+import com.creativehazio.navigation.Onboarding
 import com.creativehazio.navigation.Progress
 import com.creativehazio.navigation.Route
 import com.creativehazio.navigation.SignUp
@@ -38,7 +40,10 @@ import com.creativehazio.navigation.Splash
 import com.creativehazio.navigation.Workout
 import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
-import com.creativehazio.splashscreen.SplashScreenRoot
+import com.creativehazio.startup.onboarding.OnboardingScreenRoot
+import com.creativehazio.startup.onboarding.OnboardingViewModel
+import com.creativehazio.startup.splash.SplashScreenRoot
+import com.creativehazio.startup.splash.SplashViewModel
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEvent
@@ -107,11 +112,38 @@ fun App() {
             },
             entryProvider = entryProvider {
                 entry<Splash> {
-                    SplashScreenRoot {
-                        backStack.clear()
-                        backStack.add(Main)
-                    }
+
+                    val splashViewModel : SplashViewModel = koinViewModel()
+
+                    SplashScreenRoot(
+                        viewModel = splashViewModel,
+                        onNavigateToOnboarding = {
+                            backStack.clear()
+                            backStack.add(Onboarding)
+                        },
+                        onNavigateToAuth = {
+                            backStack.clear()
+                            backStack.add(Login)
+                        },
+                        onNavigateToMain = {
+                            backStack.clear()
+                            backStack.add(Main)
+                        },
+                    )
                 }
+
+                entry<Onboarding> {
+                    val onboardingViewModel : OnboardingViewModel = koinViewModel()
+
+                    OnboardingScreenRoot(
+                        viewModel = onboardingViewModel,
+                        onNavigateToAuth = {
+                            backStack.clear()
+                            backStack.add(Login)
+                        },
+                    )
+                }
+
                 entry<Login> {
                     val loginViewModel: LoginViewModel = koinViewModel()
 

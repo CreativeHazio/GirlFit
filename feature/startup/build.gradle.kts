@@ -4,12 +4,13 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.android.lint)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
 
     android {
-        namespace = "com.creativehazio.splashscreen"
+        namespace = "com.creativehazio.startup"
         compileSdk {
             version = release(36) {
                 minorApiLevel = 1
@@ -51,6 +52,7 @@ kotlin {
 
                 implementation(libs.compose.components.resources)
 
+                implementation(libs.firebase.auth)
 
             }
         }
@@ -63,7 +65,8 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation("com.google.firebase:firebase-auth")
             }
         }
 

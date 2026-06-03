@@ -1,4 +1,4 @@
-package com.creativehazio.splashscreen
+package com.creativehazio.startup
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
