@@ -52,6 +52,8 @@ kotlin {
                 api(libs.androidx.lifecycle.viewmodelCompose)
                 api(libs.androidx.lifecycle.runtimeCompose)
                 implementation(libs.compose.components.resources)
+                implementation(libs.datastore)
+                implementation(libs.datastore.prefs)
             }
         }
 

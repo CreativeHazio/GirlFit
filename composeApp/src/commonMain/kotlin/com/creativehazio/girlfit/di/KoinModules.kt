@@ -1,6 +1,7 @@
 package com.creativehazio.girlfit.di
 
 import com.creativehazio.auth.di.authModule
+import com.creativehazio.common.di.commonModule
 import com.creativehazio.data.di.dataModule
 import com.creativehazio.fitnessbuddy.di.fitnessBuddyModule
 import com.creativehazio.home.di.homeModule
@@ -15,6 +16,7 @@ import org.koin.dsl.module
 expect val platformModules: Module
 
 val sharedModules = listOf(
+    commonModule,
     startUpModule,
     authModule,
     dataModule,

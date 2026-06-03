@@ -5,10 +5,11 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.util.SecureStorage
+import com.creativehazio.common.util.AppPreferences
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class SplashState(
@@ -26,6 +27,7 @@ sealed interface SplashEffect : Effect {
 }
 
 class SplashViewModel(
+    private val appPreferences: AppPreferences
 ) : BaseViewModel<SplashState, SplashEvent, SplashEffect>(
     SplashState()
 ) {
@@ -34,7 +36,6 @@ class SplashViewModel(
         onEvent(SplashEvent.StartSplashTimer)
     }
 
-    // TODO: Add datastore value for hasBeenOnboarded
     override fun onEvent(event: SplashEvent) {
         when(event) {
             SplashEvent.StartSplashTimer -> {
@@ -42,9 +43,8 @@ class SplashViewModel(
                     updateState { copy(startAnimation = true) }
 
                     val user = Firebase.auth.currentUser
-                    val isOnboarded = SecureStorage.isOnboarded()
 
-                    delay(2000)
+                    delay(1500)
 
                     if (user != null) {
                         if (user.isEmailVerified) {
@@ -53,10 +53,12 @@ class SplashViewModel(
                             sendEffect(SplashEffect.NavigateToAuth)
                         }
                     } else {
-                        if (!isOnboarded) {
-                            sendEffect(SplashEffect.NavigateToOnboarding)
-                        } else {
+                        val isOnboarded = appPreferences.isOnboarded().first()
+
+                        if (isOnboarded) {
                             sendEffect(SplashEffect.NavigateToAuth)
+                        } else {
+                            sendEffect(SplashEffect.NavigateToOnboarding)
                         }
                     }
                 }

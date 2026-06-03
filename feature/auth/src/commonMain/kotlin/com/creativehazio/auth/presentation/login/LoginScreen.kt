@@ -130,7 +130,7 @@ internal fun LoginScreen(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(Res.string.app_name),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
+            style = MaterialTheme.typography.headlineSmall
         )
 
         Column {

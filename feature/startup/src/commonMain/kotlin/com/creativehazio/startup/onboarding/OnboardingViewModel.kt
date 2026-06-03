@@ -2,11 +2,13 @@ package com.creativehazio.startup.onboarding
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.common.resulthandler.UiText
+import com.creativehazio.common.util.AppPreferences
 import girlfit.feature.startup.generated.resources.Res
 import girlfit.feature.startup.generated.resources.during_workouts
 import girlfit.feature.startup.generated.resources.gentle_motivation
@@ -26,6 +28,7 @@ import girlfit.feature.startup.generated.resources.workout
 import girlfit.feature.startup.generated.resources.workout_based_on
 import girlfit.feature.startup.generated.resources.workout_with_friends
 import girlfit.feature.startup.generated.resources.your_mood
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 
 data class OnboardingState(
@@ -42,12 +45,16 @@ sealed interface OnboardingEffect : Effect {
 }
 
 class OnboardingViewModel(
+    private val appPreferences: AppPreferences
 ) : BaseViewModel<OnboardingState, OnboardingEvent, OnboardingEffect>(
     OnboardingState()
 ) {
     override fun onEvent(event: OnboardingEvent) {
         when(event) {
             OnboardingEvent.OnSkipOrContinuePressed -> {
+                viewModelScope.launch {
+                    appPreferences.saveOnboardingState(true)
+                }
                 sendEffect(OnboardingEffect.NavigateToAuth)
             }
         }
@@ -96,8 +103,8 @@ internal fun getAllOnboardingItems() : List<OnboardingItem> {
             image = Res.drawable.mood_workout,
             topText = UiText.Resource(Res.string.workout_based_on),
             bottomText = UiText.Resource(Res.string.your_mood),
-            topTextPadding = 64.dp,
-            bottomTextPadding = 64.dp,
+            topTextPadding = 39.dp,
+            bottomTextPadding = 39.dp,
         ),
         OnboardingItem(
             image = Res.drawable.meals_suggestions,
