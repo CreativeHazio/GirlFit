@@ -18,7 +18,7 @@ actual fun dataPlatformModule(): Module {
     }
 }
 
-fun getAppDatabase(context: Context) : GirlFitDatabase {
+internal fun getAppDatabase(context: Context) : GirlFitDatabase {
     val dbFile = context.getDatabasePath(DATABASE_PATH)
 
     return Room.databaseBuilder<GirlFitDatabase>(

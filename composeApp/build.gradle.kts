@@ -55,6 +55,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.data)
+            implementation(projects.feature.startup)
             implementation(projects.feature.auth)
             implementation(projects.feature.home)
             implementation(projects.feature.workout)
