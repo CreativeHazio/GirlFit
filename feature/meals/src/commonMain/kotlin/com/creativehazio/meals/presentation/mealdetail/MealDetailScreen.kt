@@ -1,4 +1,4 @@
-package com.creativehazio.meals.presentation.mealsdetail
+package com.creativehazio.meals.presentation.mealdetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,12 +29,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import com.creativehazio.common.resulthandler.UiText
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.theme.Spacing
+import com.creativehazio.meals.util.Utils
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.back_icon
 import girlfit.feature.meals.generated.resources.cal
@@ -65,15 +63,10 @@ fun MealDetailScreenRoot(
         }
     }
 
-    Scaffold(
-        modifier = Modifier.padding(paddingValues)
-    ) { innerPadding ->
-        MealDetailScreen(
-            modifier = Modifier.padding(innerPadding),
-            uiState = uiState,
-            onEvent = event
-        )
-    }
+    MealDetailScreen(
+        uiState = uiState,
+        onEvent = event
+    )
 }
 
 @Composable
@@ -155,7 +148,7 @@ internal fun MealDetailScreen(
 
             items(uiState.meal.mealNutrients, key = { it.id }) { mealNutrient ->
                 GirlFitInfoBubble(
-                    icon = getIconForNutrient(mealNutrient.name),
+                    icon = Utils.getIconForNutrient(mealNutrient.name),
                     text = mealNutrient.name,
                     subText = "${mealNutrient.gramTotal}g"
                 )
@@ -187,20 +180,9 @@ internal fun MealIngredientsList(
     }
 }
 
-@Composable
-internal fun getIconForNutrient(name: String) : DrawableResource? {
-    return when (name) {
-        stringResource(Res.string.carbohydrate) -> Res.drawable.carbohydrate
-        stringResource(Res.string.fat) -> Res.drawable.fat
-        stringResource(Res.string.protein) -> Res.drawable.protein
-        stringResource(Res.string.fiber) -> Res.drawable.fiber
-        else -> null
-    }
-}
-
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-internal fun ppp() {
+internal fun MealDetailPreview() {
     MealDetailScreen(
         uiState = MealDetailState(
             meal = Meal(

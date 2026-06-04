@@ -1,4 +1,4 @@
-package com.creativehazio.meals.presentation.meals
+package com.creativehazio.meals.presentation.meal
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.IconButton
@@ -33,7 +31,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.theme.Sizing
@@ -139,13 +136,14 @@ internal fun HeaderSection() {
         }
 
         GirlFitInfoBubble(
-            modifier = Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = 26.dp),
+            modifier = Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = Spacing.Medium),
             text = stringResource(Res.string.camera_track_calories),
         )
 
         Image(
             modifier = Modifier.align(Alignment.TopEnd)
-                .padding(top = 87.dp, end = 180.dp),
+                .padding(top = 87.dp, end = 180.dp)
+                .size(60.dp),
             painter = painterResource(Res.drawable.gradient_cam),
             contentDescription = null
         )
@@ -216,7 +214,7 @@ internal fun MealCard(
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
-internal fun pp() {
+internal fun MealPreview() {
     MealsScreen(
         uiState = MealsState(),
         onEvent = {},

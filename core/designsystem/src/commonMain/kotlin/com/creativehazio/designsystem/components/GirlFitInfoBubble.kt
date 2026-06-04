@@ -67,7 +67,11 @@ fun GirlFitInfoBubble(
         ) {
             icon?.let {
                 Image(
-                    modifier = Modifier.size(Sizing.IconSmall),
+                    modifier = Modifier
+                        .modifyIf(centerItems) {
+                            size(Sizing.IconMedium)
+                        }
+                        .size(Sizing.IconSmall),
                     painter = painterResource(icon),
                     contentDescription = null
                 )

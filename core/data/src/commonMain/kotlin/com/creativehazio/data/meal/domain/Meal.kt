@@ -14,3 +14,13 @@ data class MealNutrient(
     val name: String = "",
     val gramTotal: Int = 0,
 )
+
+data class MealScanResult(
+    val id: String = "",
+    val name: String = "",
+    val imageUrl: String = "",
+    val ingredients: List<String> = emptyList(),
+    val totalCalories: Int = 0,
+    val mealNutrients: List<MealNutrient> = emptyList(),
+    val score: Float = 0f
+)

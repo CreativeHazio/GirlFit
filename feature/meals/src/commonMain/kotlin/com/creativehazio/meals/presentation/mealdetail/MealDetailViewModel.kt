@@ -1,21 +1,13 @@
-package com.creativehazio.meals.presentation.mealsdetail
+package com.creativehazio.meals.presentation.mealdetail
 
 import androidx.lifecycle.viewModelScope
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.resulthandler.UiText
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
-import girlfit.feature.meals.generated.resources.Res
-import girlfit.feature.meals.generated.resources.carbohydrate
-import girlfit.feature.meals.generated.resources.fat
-import girlfit.feature.meals.generated.resources.fiber
-import girlfit.feature.meals.generated.resources.protein
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.stringResource
 
 data class MealDetailState(
     val isLoading: Boolean = false,

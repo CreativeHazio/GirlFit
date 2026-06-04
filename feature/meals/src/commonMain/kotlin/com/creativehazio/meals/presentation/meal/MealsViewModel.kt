@@ -1,4 +1,4 @@
-package com.creativehazio.meals.presentation.meals
+package com.creativehazio.meals.presentation.meal
 
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
