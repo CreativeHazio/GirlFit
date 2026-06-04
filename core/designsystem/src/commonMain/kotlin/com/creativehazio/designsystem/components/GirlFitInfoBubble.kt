@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -22,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.creativehazio.designsystem.modifyIf
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.core.designsystem.generated.resources.Res
-import girlfit.core.designsystem.generated.resources.carbohydrate
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -36,6 +37,7 @@ fun GirlFitInfoBubble(
     icon: DrawableResource? = null,
     text: String,
     subText: String? = null,
+    centerItems: Boolean = false,
     onClick: () -> Unit = {}
 ) {
 
@@ -54,18 +56,22 @@ fun GirlFitInfoBubble(
         shape = MaterialTheme.shapes.extraLarge.copy(topStart = CornerSize(0.dp)),
     ) {
         Row(
-            modifier = Modifier.padding(Spacing.Medium),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
+            modifier = Modifier
+                .modifyIf(centerItems) {
+                    fillMaxWidth()
+                }
+                .padding(Spacing.Medium),
+            horizontalArrangement = if (centerItems) Arrangement.Center
+                                        else Arrangement.spacedBy(Spacing.Small),
             verticalAlignment = Alignment.CenterVertically
         ) {
             icon?.let {
-                Column {
-                    Image(
-                        modifier = Modifier.size(Sizing.IconSmall),
-                        painter = painterResource(icon),
-                        contentDescription = null
-                    )
-                }
+                Image(
+                    modifier = Modifier.size(Sizing.IconSmall),
+                    painter = painterResource(icon),
+                    contentDescription = null
+                )
+                if (centerItems) Spacer(Modifier.size(Spacing.Small))
             }
             Column {
                 Text(
@@ -83,15 +89,4 @@ fun GirlFitInfoBubble(
         }
     }
 
-}
-
-@Preview
-@Composable
-fun GirlFitInfoBubblePreview() {
-    GirlFitInfoBubble(
-
-        icon = Res.drawable.carbohydrate,
-        text = "Carbohydrates",
-        subText = "100g"
-    )
 }

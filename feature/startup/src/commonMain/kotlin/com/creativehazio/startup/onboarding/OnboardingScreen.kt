@@ -95,7 +95,8 @@ internal fun OnboardingScreen(
 
     Box(
         modifier = modifier.fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, bottom = 80.dp, top = 16.dp)
+            .padding(Spacing.Medium)
+            .padding(bottom = 64.dp)
     ) {
 
         Row(

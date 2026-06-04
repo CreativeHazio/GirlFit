@@ -26,11 +26,17 @@ import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.home.presentation.HomeScreenRoot
 import com.creativehazio.home.presentation.HomeViewModel
+import com.creativehazio.meals.presentation.meals.MealsScreenRoot
+import com.creativehazio.meals.presentation.meals.MealsViewModel
+import com.creativehazio.meals.presentation.mealsdetail.MealDetailEvent
+import com.creativehazio.meals.presentation.mealsdetail.MealDetailScreenRoot
+import com.creativehazio.meals.presentation.mealsdetail.MealDetailViewModel
 import com.creativehazio.navigation.EmailVerification
 import com.creativehazio.navigation.Home
 import com.creativehazio.navigation.Login
 import com.creativehazio.navigation.Main
 import com.creativehazio.navigation.Me
+import com.creativehazio.navigation.MealDetail
 import com.creativehazio.navigation.Meals
 import com.creativehazio.navigation.Onboarding
 import com.creativehazio.navigation.Progress
@@ -101,7 +107,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Splash)
+    val backStack = rememberNavBackStack(navConfig, MealDetail(""))
 
     GirlFitTheme {
 
@@ -200,6 +206,9 @@ fun App() {
                         },
                         onNavigateToWorkoutDetail = { workoutId ->
                             backStack.add(WorkoutDetail(workoutId))
+                        },
+                        onNavigateToMealDetail = { mealId ->
+                            backStack.add(MealDetail(mealId))
                         }
                     )
                 }
@@ -245,6 +254,23 @@ fun App() {
 
                 }
 
+                entry<MealDetail> { key ->
+
+                    val mealDetailViewModel: MealDetailViewModel = koinViewModel()
+
+                    LaunchedEffect(key.mealId) {
+                        mealDetailViewModel.onEvent(MealDetailEvent.GetMealDetailById(key.mealId))
+                    }
+
+                    MealDetailScreenRoot(
+                        viewModel = mealDetailViewModel,
+                        onBack = {
+                            backStack.removeLastOrNull()
+                        }
+                    )
+
+                }
+
             }
         )
 
@@ -255,7 +281,8 @@ fun App() {
 fun MainAppContainer(
     onLogout: () -> Unit,
     onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit
+    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToMealDetail: (String) -> Unit
 ) {
 
     val tabBackStack = rememberNavBackStack(navConfig, Home)
@@ -341,7 +368,15 @@ fun MainAppContainer(
                 }
 
                 entry<Meals> {
+                    val mealsViewModel : MealsViewModel = koinViewModel()
 
+                    MealsScreenRoot(
+                        paddingValues = innerPadding,
+                        viewModel = mealsViewModel,
+                        onNavigateToMealDetail = { mealId ->
+                            onNavigateToMealDetail(mealId)
+                        }
+                    )
                 }
 
                 entry<Me> {
