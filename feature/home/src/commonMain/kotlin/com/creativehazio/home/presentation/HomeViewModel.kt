@@ -46,8 +46,8 @@ class HomeViewModel(
                 seeder.addRelaxAndRecommendedWorkouts()
             }
         }
-        getRecommendedWorkouts(CyclePhase.OVULATION)
-        getRelaxWorkouts(CyclePhase.OVULATION)
+        getRecommendedWorkouts(CyclePhase.MENSTRUAL)
+        getRelaxWorkouts(CyclePhase.MENSTRUAL)
     }
 
     override fun onEvent(event: HomeEvent) {

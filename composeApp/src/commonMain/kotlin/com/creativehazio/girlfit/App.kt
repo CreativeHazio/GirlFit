@@ -111,7 +111,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Splash)
 
     GirlFitTheme {
 
@@ -151,6 +151,10 @@ fun App() {
                             backStack.clear()
                             backStack.add(Login)
                         },
+                        onNavigateToMain = {
+                            backStack.clear()
+                            backStack.add(Main)
+                        }
                     )
                 }
 
@@ -210,6 +214,9 @@ fun App() {
                         },
                         onNavigateToWorkoutDetail = { workoutId ->
                             backStack.add(WorkoutDetail(workoutId))
+                        },
+                        onNavigateToMealScan = {
+                            backStack.add(MealScan)
                         },
                         onNavigateToMealDetail = { mealId ->
                             backStack.add(MealDetail(mealId))
@@ -306,6 +313,7 @@ fun MainAppContainer(
     onLogout: () -> Unit,
     onNavigateToWorkoutDetail: (String) -> Unit,
     onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToMealScan: () -> Unit,
     onNavigateToMealDetail: (String) -> Unit
 ) {
 
@@ -397,6 +405,9 @@ fun MainAppContainer(
                     MealsScreenRoot(
                         paddingValues = innerPadding,
                         viewModel = mealsViewModel,
+                        onNavigateToMealScan = {
+                            onNavigateToMealScan()
+                        },
                         onNavigateToMealDetail = { mealId ->
                             onNavigateToMealDetail(mealId)
                         }

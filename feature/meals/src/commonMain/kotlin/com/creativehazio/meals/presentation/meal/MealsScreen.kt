@@ -18,12 +18,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,7 +34,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -45,7 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import coil3.compose.AsyncImage
+import com.creativehazio.data.meal.domain.MealFilter
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.theme.Sizing
@@ -65,6 +65,7 @@ import org.jetbrains.compose.resources.stringResource
 fun MealsScreenRoot(
     paddingValues: PaddingValues = PaddingValues.Zero,
     viewModel: MealsViewModel,
+    onNavigateToMealScan: () -> Unit,
     onNavigateToMealDetail: (String) -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -73,8 +74,12 @@ fun MealsScreenRoot(
     LaunchedEffect(viewModel.effect) {
         viewModel.effect.collect {
             when (it) {
-                is MealsEffect.NavigateToMealsDetail -> {
+                is MealsEffect.NavigateToMealDetail -> {
                     onNavigateToMealDetail(it.mealId)
+                }
+
+                MealsEffect.NavigateToMealScan -> {
+                    onNavigateToMealScan()
                 }
             }
         }
@@ -93,6 +98,8 @@ internal fun MealsScreen(
     onEvent: (MealsEvent) -> Unit,
     paddingValues: PaddingValues
 ) {
+    val meals = uiState.meals.collectAsLazyPagingItems()
+
     var showMealFilterCard by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -105,7 +112,11 @@ internal fun MealsScreen(
             contentPadding = paddingValues
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                HeaderSection()
+                HeaderSection(
+                    onMealScanCamClicked = {
+                        onEvent(MealsEvent.OnMealScanCamClicked)
+                    }
+                )
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -131,11 +142,18 @@ internal fun MealsScreen(
                 )
             }
 
-            items(items = uiState.meals, key = { it.id }) {
-                MealCard(
-                    imageUrl = it.imageUrl,
-                    onMealCardClicked = { onEvent(MealsEvent.OnMealCardClicked(it.id)) }
-                )
+            items(
+                count = meals.itemCount,
+                key = meals.itemKey { it.id },
+            ) { index ->
+                val meal = meals[index]
+
+                if (meal != null) {
+                    MealCard(
+                        imageUrl = meal.imageUrl,
+                        onMealCardClicked = { onEvent(MealsEvent.OnMealCardClicked(meal.id)) }
+                    )
+                }
             }
         }
 
@@ -158,7 +176,9 @@ internal fun MealsScreen(
 }
 
 @Composable
-internal fun HeaderSection() {
+internal fun HeaderSection(
+    onMealScanCamClicked: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -176,6 +196,7 @@ internal fun HeaderSection() {
         GirlFitInfoBubble(
             modifier = Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = Spacing.Medium),
             text = stringResource(Res.string.camera_track_calories),
+            onClick = onMealScanCamClicked
         )
 
         Image(
@@ -186,7 +207,7 @@ internal fun HeaderSection() {
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-
+                    onMealScanCamClicked()
                 },
             painter = painterResource(Res.drawable.gradient_cam),
             contentDescription = null
@@ -363,9 +384,5 @@ internal fun MealsFilterCard(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 internal fun MealPreview() {
-    MealsFilterCard(
-        mealFilters = getDummyFilters(),
-        onFilterItemClicked = {},
-        filterItemIds = listOf(),
-    )
+
 }

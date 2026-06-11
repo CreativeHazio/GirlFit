@@ -4,7 +4,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.androidKMPLibrary)
     alias(libs.plugins.android.lint)
-
 }
 
 kotlin {
@@ -52,7 +51,8 @@ kotlin {
                 implementation(projects.core.designsystem)
                 implementation(libs.compose.components.resources)
 
-//                implementation(libs.firebase.firestore)
+                implementation(libs.paging.common)
+                implementation(libs.paging.compose)
             }
         }
 

@@ -42,6 +42,7 @@ sealed interface OnboardingEvent : Event {
 
 sealed interface OnboardingEffect : Effect {
     data object NavigateToAuth : OnboardingEffect
+    data object NavigateToMain : OnboardingEffect
 }
 
 class OnboardingViewModel(
@@ -53,9 +54,10 @@ class OnboardingViewModel(
         when(event) {
             OnboardingEvent.OnSkipOrContinuePressed -> {
                 viewModelScope.launch {
-                    appPreferences.saveOnboardingState(true)
+//                    appPreferences.saveOnboardingState(true)
                 }
-                sendEffect(OnboardingEffect.NavigateToAuth)
+//                sendEffect(OnboardingEffect.NavigateToAuth)
+                sendEffect(OnboardingEffect.NavigateToMain)
             }
         }
     }

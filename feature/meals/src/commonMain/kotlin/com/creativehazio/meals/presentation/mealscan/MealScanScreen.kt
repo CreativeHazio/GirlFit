@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.back_icon
@@ -57,12 +58,12 @@ internal fun MealScanScreen(
         modifier = modifier.fillMaxSize()
     ) {
 
-        Box(
+        Row (
             modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                modifier = Modifier.align(Alignment.TopStart)
-                    .padding(top = 6.dp),
                 onClick = {}
             ) {
                 Icon(
@@ -71,11 +72,10 @@ internal fun MealScanScreen(
                 )
             }
             Text(
-                modifier = Modifier.align(Alignment.TopCenter)
-                    .padding(top = Spacing.Medium),
                 text = "Scan ",
                 style = MaterialTheme.typography.titleLarge
             )
+            Box(Modifier.size(Sizing.IconLarge))
 
         }
 

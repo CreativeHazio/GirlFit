@@ -53,13 +53,15 @@ class SplashViewModel(
                             sendEffect(SplashEffect.NavigateToAuth)
                         }
                     } else {
-                        val isOnboarded = appPreferences.isOnboarded().first()
+//                        val isOnboarded = appPreferences.isOnboarded().first()
+//
+//                        if (isOnboarded) {
+////                            sendEffect(SplashEffect.NavigateToAuth)
+//                        } else {
+//                            sendEffect(SplashEffect.NavigateToOnboarding)
+//                        }
 
-                        if (isOnboarded) {
-                            sendEffect(SplashEffect.NavigateToAuth)
-                        } else {
-                            sendEffect(SplashEffect.NavigateToOnboarding)
-                        }
+                        sendEffect(SplashEffect.NavigateToOnboarding)
                     }
                 }
             }

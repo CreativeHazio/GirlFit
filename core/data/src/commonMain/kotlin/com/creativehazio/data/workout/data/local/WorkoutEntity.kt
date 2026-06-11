@@ -3,11 +3,11 @@ package com.creativehazio.data.workout.data.local
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-private const val WORKOUT_TABLE_NAME = "workouts"
-private const val EXERCISE_TABLE_NAME = "exercises"
-private const val CHALLENGE_DAY_TABLE_NAME = "challenge_days"
+private const val WORKOUT = "workouts"
+private const val EXERCISE = "exercises"
+private const val CHALLENGE_DAY = "challenge_days"
 
-@Entity(tableName = WORKOUT_TABLE_NAME)
+@Entity(tableName = WORKOUT)
 data class WorkoutEntity(
     @PrimaryKey val id: String,
     val createdAt: Long,
@@ -21,7 +21,7 @@ data class WorkoutEntity(
     val category: String,
 )
 
-@Entity(tableName = CHALLENGE_DAY_TABLE_NAME)
+@Entity(tableName = CHALLENGE_DAY)
 data class ChallengeDayEntity(
     @PrimaryKey val challengeDayId: String,
     val parentChallengeId: String,
@@ -30,7 +30,7 @@ data class ChallengeDayEntity(
     val state: String
 )
 
-@Entity(tableName = EXERCISE_TABLE_NAME)
+@Entity(tableName = EXERCISE)
 data class ExerciseEntity(
     @PrimaryKey val exerciseId: String,
     val workoutId: String,
