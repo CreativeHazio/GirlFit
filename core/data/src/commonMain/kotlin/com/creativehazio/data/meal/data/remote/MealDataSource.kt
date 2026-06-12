@@ -4,7 +4,7 @@ import dev.gitlive.firebase.firestore.Direction
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 private const val MEALS = "meals"
-private const val MEAL_FILTERS = "mealFilters"
+private const val MEAL_FILTERS = "meal_filters"
 private const val CREATED_AT = "createdAt"
 
 class MealDataSource(

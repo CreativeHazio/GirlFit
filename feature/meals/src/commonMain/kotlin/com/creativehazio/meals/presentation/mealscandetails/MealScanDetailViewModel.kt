@@ -6,11 +6,10 @@ import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
-import com.creativehazio.data.meal.domain.MealScanResult
 
 data class MealScanDetailState(
     val isLoading: Boolean = false,
-    val meal: MealScanResult = MealScanResult(
+    val meal: Meal = Meal(
         id = "",
         name = "",
         imageUrl = "",
@@ -48,7 +47,9 @@ data class MealScanDetailState(
     ),
 ) : State
 
-sealed interface MealScanDetailEvent : Event {}
+sealed interface MealScanDetailEvent : Event {
+
+}
 
 sealed interface MealScanDetailEffect : Effect {}
 

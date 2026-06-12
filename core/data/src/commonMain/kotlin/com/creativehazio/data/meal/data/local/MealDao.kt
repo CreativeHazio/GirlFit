@@ -38,7 +38,7 @@ interface MealDao {
         var queryString = "SELECT * FROM meals"
 
         if (filters.isNotEmpty()) {
-            val conditions = filters.map { "filters LIKE ?" }
+            val conditions = filters.map { "',' || filterIds || ',' LIKE ?" }
 
             queryString += " WHERE " + conditions.joinToString(" OR ")
         }
@@ -49,10 +49,12 @@ interface MealDao {
             sql = queryString,
             onBindStatement = { statement ->
                 filters.forEachIndexed { index, filterId ->
-                    statement.bindText(index + 1, "%$filterId%")
+                    statement.bindText(index + 1, "%,$filterId%,")
                 }
             }
         )
+
+        println("Room query is" + query.sql)
 
         return getMealsRawQuery(query)
     }
@@ -63,7 +65,7 @@ interface MealDao {
 
     @Transaction
     @Query("SELECT * FROM meals WHERE id = :mealId")
-    fun getMealById(mealId: String): MealWithNutrients
+    suspend fun getMealById(mealId: String): MealWithNutrients
 
     @Transaction
     @Query("SELECT * FROM meal_filters ORDER BY createdAt DESC")

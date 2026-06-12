@@ -7,6 +7,7 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
+import com.creativehazio.data.meal.data.MealSeeder
 import com.creativehazio.data.meal.domain.FilterItem
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealFilter
@@ -22,6 +23,7 @@ data class MealsState(
     val searchQuery: String = "",
     val meals: Flow<PagingData<Meal>> = flowOf(PagingData.empty()),
     val mealFilters: List<MealFilter> = emptyList(),
+    val currentFilterItemIds: List<String> = emptyList(),
     val filterItemIds: List<String> = emptyList()
 ) : State
 
@@ -48,6 +50,11 @@ class MealsViewModel(
     init {
         getMeals(emptyList())
         getMealFilters()
+
+//        viewModelScope.launch {
+//            val seeder = MealSeeder()
+//            seeder.seedDatabaseToFirestore()
+//        }
     }
     override fun onEvent(event: MealsEvent) {
         when(event) {
@@ -66,6 +73,10 @@ class MealsViewModel(
         }
     }
 
+    private fun applyFilters() {
+        getMeals(uiState.value.filterItemIds)
+    }
+
     private fun getMeals(filters: List<String>) {
         viewModelScope.launch {
             updateState { copy(isLoading = true) }
@@ -79,12 +90,6 @@ class MealsViewModel(
             updateState { copy(isLoading = true) }
             val mealFilters = mealRepository.getMealFilters()
             updateState { copy(isLoading = false, mealFilters = mealFilters) }
-        }
-    }
-
-    private fun applyFilters() {
-        viewModelScope.launch {
-            getMeals(uiState.value.filterItemIds)
         }
     }
 

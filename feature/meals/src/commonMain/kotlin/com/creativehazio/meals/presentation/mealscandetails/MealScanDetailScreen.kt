@@ -55,7 +55,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
-import com.creativehazio.data.meal.domain.MealScanResult
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
@@ -211,7 +210,7 @@ internal fun MealScanDetailScreen(
 internal fun MealScanDetailPreview() {
     MealScanDetailScreen(
         uiState = MealScanDetailState(
-            meal = MealScanResult(
+            meal = Meal(
                 id = "",
                 name = "",
                 imageUrl = "",

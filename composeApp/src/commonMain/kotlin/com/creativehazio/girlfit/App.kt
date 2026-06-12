@@ -111,7 +111,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Splash)
+    val backStack = rememberNavBackStack(navConfig, Main)
 
     GirlFitTheme {
 

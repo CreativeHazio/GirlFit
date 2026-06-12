@@ -162,14 +162,6 @@ internal fun MealsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            showMealFilterCard = false
-                            onEvent(MealsEvent.ApplyFilters)
-                        }
-                    )
             )
         }
     }

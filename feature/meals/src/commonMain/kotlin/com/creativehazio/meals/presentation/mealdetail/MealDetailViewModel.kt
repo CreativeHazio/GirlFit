@@ -7,45 +7,12 @@ import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
+import com.creativehazio.data.meal.domain.MealRepository
 import kotlinx.coroutines.launch
 
 data class MealDetailState(
     val isLoading: Boolean = false,
-    val meal: Meal = Meal(
-        id = "",
-        name = "",
-        imageUrl = "",
-        ingredients = listOf(
-            "Grilled skinless chicken thighs",
-            "Rice",
-            "Green peas",
-            "Red ball peppers",
-            "Lemon slices",
-        ),
-        totalCalories = 1540,
-        mealNutrients = listOf(
-            MealNutrient(
-                id = "1",
-                name = "Carbohydrate",
-                gramTotal = 100
-            ),
-            MealNutrient(
-                id = "2",
-                name = "Fat",
-                gramTotal = 25
-            ),
-            MealNutrient(
-                id = "3",
-                name = "Protein",
-                gramTotal = 100
-            ),
-            MealNutrient(
-                id = "4",
-                name = "Fiber",
-                gramTotal = 15
-            ),
-        )
-    ),
+    val meal: Meal = Meal(),
 ) : State
 
 sealed interface MealDetailEvent : Event {
@@ -58,6 +25,7 @@ sealed interface MealDetailEffect : Effect {
 }
 
 class MealDetailViewModel(
+    private val mealRepository: MealRepository
 ) : BaseViewModel<MealDetailState, MealDetailEvent, MealDetailEffect>(
     MealDetailState()
 ) {
@@ -70,7 +38,8 @@ class MealDetailViewModel(
 
     private fun getMealDetailById(mealId: String) {
         viewModelScope.launch {
-
+            val meal = mealRepository.getMeal(mealId)
+            updateState { copy(meal = meal) }
         }
     }
 }

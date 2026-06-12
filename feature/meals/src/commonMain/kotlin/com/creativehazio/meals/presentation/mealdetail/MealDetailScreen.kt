@@ -29,6 +29,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
@@ -84,27 +85,12 @@ internal fun MealDetailScreen(
             Modifier.fillMaxWidth()
                 .height(400.dp)
         ) {
-            //        AsyncImage(
-//            modifier = Modifier.fillMaxWidth()
-//                .height(400.dp),
-//            model = uiState.meal.imageUrl,
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop
-//        )
-
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(Res.drawable.protein),
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth()
+                    .height(400.dp),
+                model = uiState.meal.imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f)
-                    )
             )
 
             IconButton(
@@ -139,6 +125,7 @@ internal fun MealDetailScreen(
             ) {
                 GirlFitInfoBubble(
                     modifier = Modifier.fillMaxWidth(),
+                    color = MaterialTheme.colorScheme.background,
                     icon = Res.drawable.cal,
                     text = stringResource(Res.string.total_calories),
                     subText = "${ uiState.meal.totalCalories } ",
@@ -148,6 +135,7 @@ internal fun MealDetailScreen(
 
             items(uiState.meal.mealNutrients, key = { it.id }) { mealNutrient ->
                 GirlFitInfoBubble(
+                    color = MaterialTheme.colorScheme.background,
                     icon = Utils.getIconForNutrient(mealNutrient.name),
                     text = mealNutrient.name,
                     subText = "${mealNutrient.gramTotal}g"
@@ -174,6 +162,7 @@ internal fun MealIngredientsList(
         List(mealIngredients.size) {
             Text(
                 text = " · ${ mealIngredients[it] } ",
+                color = MaterialTheme.colorScheme.onBackground,
                 style = MaterialTheme.typography.labelLarge
             )
         }
