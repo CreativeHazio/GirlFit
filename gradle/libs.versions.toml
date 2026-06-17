@@ -57,6 +57,10 @@ android-splash-screen = "1.2.0"
 # Secure storage
 datastore = "1.2.1"
 
+# Camera
+camerax = "1.6.1"
+mokoPermissions = "0.20.1"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -136,6 +140,13 @@ android-splash-screen = { module = "androidx.core:core-splashscreen", version.re
 # Secure Storage
 datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 datastore-prefs = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
+# CameraX
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
+moko-permissions = { group = "dev.icerock.moko", name = "permissions-compose", version.ref = "mokoPermissions" }
+moko-camera-permissions = { group = "dev.icerock.moko", name = "permissions-camera", version.ref = "mokoPermissions" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

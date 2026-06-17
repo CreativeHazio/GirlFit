@@ -53,6 +53,9 @@ kotlin {
 
                 implementation(libs.paging.common)
                 implementation(libs.paging.compose)
+
+                implementation(libs.moko.permissions)
+                implementation(libs.moko.camera.permissions)
             }
         }
 
@@ -64,7 +67,9 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(libs.androidx.camera.camera2)
+                implementation(libs.androidx.camera.lifecycle)
+                implementation(libs.androidx.camera.view)
             }
         }
 
