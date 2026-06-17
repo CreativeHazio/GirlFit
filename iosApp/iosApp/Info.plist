@@ -4,6 +4,10 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+
+    <key>NSCameraUsageDescription</key>
+    <string>GirlFit needs camera access to scan your food and track your calories.</string>
+
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>

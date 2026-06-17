@@ -64,7 +64,6 @@ fun SplashScreenRoot(
 
 @Composable
 internal fun SplashScreen(
-    modifier: Modifier = Modifier,
     gradientAlpha: Float,
 ) {
 

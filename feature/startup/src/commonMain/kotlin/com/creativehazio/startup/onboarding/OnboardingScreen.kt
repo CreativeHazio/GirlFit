@@ -58,6 +58,7 @@ import org.jetbrains.compose.resources.painterResource
 fun OnboardingScreenRoot(
     viewModel: OnboardingViewModel,
     onNavigateToAuth: () -> Unit,
+    onNavigateToMain: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val event = viewModel::onEvent
@@ -68,6 +69,8 @@ fun OnboardingScreenRoot(
                 OnboardingEffect.NavigateToAuth -> {
                     onNavigateToAuth()
                 }
+
+                OnboardingEffect.NavigateToMain -> onNavigateToMain()
             }
         }
     }
@@ -95,7 +98,8 @@ internal fun OnboardingScreen(
 
     Box(
         modifier = modifier.fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, bottom = 80.dp, top = 16.dp)
+            .padding(Spacing.Medium)
+            .padding(bottom = 64.dp)
     ) {
 
         Row(

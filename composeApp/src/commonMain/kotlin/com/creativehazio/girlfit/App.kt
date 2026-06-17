@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -26,11 +25,23 @@ import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.home.presentation.HomeScreenRoot
 import com.creativehazio.home.presentation.HomeViewModel
+import com.creativehazio.meals.presentation.meal.MealsScreenRoot
+import com.creativehazio.meals.presentation.meal.MealsViewModel
+import com.creativehazio.meals.presentation.mealdetail.MealDetailEvent
+import com.creativehazio.meals.presentation.mealdetail.MealDetailScreenRoot
+import com.creativehazio.meals.presentation.mealdetail.MealDetailViewModel
+import com.creativehazio.meals.presentation.mealscan.MealScanScreenRoot
+import com.creativehazio.meals.presentation.mealscan.MealScanViewModel
+import com.creativehazio.meals.presentation.mealscandetails.MealScanDetailScreenRoot
+import com.creativehazio.meals.presentation.mealscandetails.MealScanDetailViewModel
 import com.creativehazio.navigation.EmailVerification
 import com.creativehazio.navigation.Home
 import com.creativehazio.navigation.Login
 import com.creativehazio.navigation.Main
 import com.creativehazio.navigation.Me
+import com.creativehazio.navigation.MealDetail
+import com.creativehazio.navigation.MealScan
+import com.creativehazio.navigation.MealScanDetail
 import com.creativehazio.navigation.Meals
 import com.creativehazio.navigation.Onboarding
 import com.creativehazio.navigation.Progress
@@ -69,7 +80,6 @@ import kotlinx.serialization.modules.polymorphic
 
 import okio.FileSystem
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalSerializationApi::class)
 private val navConfig = SavedStateConfiguration {
@@ -101,7 +111,7 @@ fun App() {
             .build()
     }
 
-    val backStack = rememberNavBackStack(navConfig, Splash)
+    val backStack = rememberNavBackStack(navConfig, Main)
 
     GirlFitTheme {
 
@@ -141,6 +151,10 @@ fun App() {
                             backStack.clear()
                             backStack.add(Login)
                         },
+                        onNavigateToMain = {
+                            backStack.clear()
+                            backStack.add(Main)
+                        }
                     )
                 }
 
@@ -200,6 +214,12 @@ fun App() {
                         },
                         onNavigateToWorkoutDetail = { workoutId ->
                             backStack.add(WorkoutDetail(workoutId))
+                        },
+                        onNavigateToMealScan = {
+                            backStack.add(MealScan)
+                        },
+                        onNavigateToMealDetail = { mealId ->
+                            backStack.add(MealDetail(mealId))
                         }
                     )
                 }
@@ -245,6 +265,43 @@ fun App() {
 
                 }
 
+                entry<MealDetail> { key ->
+
+                    val mealDetailViewModel: MealDetailViewModel = koinViewModel()
+
+                    LaunchedEffect(key.mealId) {
+                        mealDetailViewModel.onEvent(MealDetailEvent.GetMealDetailById(key.mealId))
+                    }
+
+                    MealDetailScreenRoot(
+                        viewModel = mealDetailViewModel,
+                        onBack = {
+                            backStack.removeLastOrNull()
+                        }
+                    )
+
+                }
+
+                entry<MealScan> {
+
+                    val mealScanViewModel : MealScanViewModel = koinViewModel()
+
+                    MealScanScreenRoot(
+                        viewModel = mealScanViewModel
+                    )
+
+                }
+
+                entry<MealScanDetail> {
+
+                    val mealScanDetailViewModel : MealScanDetailViewModel = koinViewModel()
+
+                    MealScanDetailScreenRoot(
+                        viewModel = mealScanDetailViewModel
+                    )
+
+                }
+
             }
         )
 
@@ -255,7 +312,9 @@ fun App() {
 fun MainAppContainer(
     onLogout: () -> Unit,
     onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit
+    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToMealScan: () -> Unit,
+    onNavigateToMealDetail: (String) -> Unit
 ) {
 
     val tabBackStack = rememberNavBackStack(navConfig, Home)
@@ -341,7 +400,18 @@ fun MainAppContainer(
                 }
 
                 entry<Meals> {
+                    val mealsViewModel : MealsViewModel = koinViewModel()
 
+                    MealsScreenRoot(
+                        paddingValues = innerPadding,
+                        viewModel = mealsViewModel,
+                        onNavigateToMealScan = {
+                            onNavigateToMealScan()
+                        },
+                        onNavigateToMealDetail = { mealId ->
+                            onNavigateToMealDetail(mealId)
+                        }
+                    )
                 }
 
                 entry<Me> {

@@ -43,4 +43,13 @@ data object Progress : Route
 data object Meals : Route
 
 @Serializable
+data class MealDetail(val mealId: String) : Route
+
+@Serializable
+data object MealScan : Route
+
+@Serializable
+data object MealScanDetail : Route
+
+@Serializable
 data object Me : Route

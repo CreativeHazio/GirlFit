@@ -1,0 +1,13 @@
+<resources>
+    <string name="camera_track_calories"> Track your calories with just\na picture in just a click 📸</string>
+    <string name="meals_suggestions">Meals suggestions</string>
+    <string name="meals_search_hint">e.g., weight loss meals</string>
+    <string name="total_calories">Total calories</string>
+    <string name="carbohydrate">Carbohydrate</string>
+    <string name="fat">Fat</string>
+    <string name="protein">Protein</string>
+    <string name="fiber">Fiber</string>
+    <string name="score_0_to_49">This meal digests quickly and may leave you hungry, increasing the urge to snack soon after, which can slow down weight loss.</string>
+    <string name="score_50_to_89">This meal provides moderate fullness and energy, helping you maintain a balanced diet, though you might want a healthy snack later.</string>
+    <string name="score_90_to_100">This meal keeps you full for longer, hence reducing how often you eat, which aids weight loss.</string>
+</resources>
