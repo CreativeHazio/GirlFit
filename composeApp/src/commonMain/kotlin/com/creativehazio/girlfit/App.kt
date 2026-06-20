@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -25,6 +26,8 @@ import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.home.presentation.HomeScreenRoot
 import com.creativehazio.home.presentation.HomeViewModel
+import com.creativehazio.me.presentation.MeScreenRoot
+import com.creativehazio.me.presentation.MeViewModel
 import com.creativehazio.meals.presentation.meal.MealsScreenRoot
 import com.creativehazio.meals.presentation.meal.MealsViewModel
 import com.creativehazio.meals.presentation.mealdetail.MealDetailEvent
@@ -113,6 +116,7 @@ fun App() {
 
     val backStack = rememberNavBackStack(navConfig, Main)
 
+    // TODO: Split all complex main screens into composable functions
     GirlFitTheme {
 
         NavDisplay(
@@ -416,6 +420,12 @@ fun MainAppContainer(
 
                 entry<Me> {
 
+                    val meViewModel : MeViewModel = koinViewModel()
+
+                    MeScreenRoot(
+                        paddingValues = innerPadding,
+                        viewModel = meViewModel
+                    )
                 }
             }
         )
