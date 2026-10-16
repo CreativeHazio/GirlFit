@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -29,10 +28,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.common.resulthandler.UiText
-import com.creativehazio.designsystem.components.GirlFitTextField
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.components.GirlFitSecondaryButton
+import com.creativehazio.designsystem.components.GirlFitTextField
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.auth.generated.resources.Res
 import girlfit.feature.auth.generated.resources.app_name

@@ -11,7 +11,6 @@ import com.creativehazio.progress.di.progressModule
 import com.creativehazio.startup.di.startUpModule
 import com.creativehazio.workout.di.workoutModule
 import org.koin.core.module.Module
-import org.koin.dsl.module
 
 expect val platformModules: Module
 

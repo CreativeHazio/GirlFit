@@ -8,8 +8,8 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.resulthandler.UiText
 import com.creativehazio.common.resulthandler.Result
+import com.creativehazio.common.resulthandler.UiText
 import kotlinx.coroutines.launch
 
 private const val NAME = "name"

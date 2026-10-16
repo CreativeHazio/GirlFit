@@ -4,18 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.creativehazio.auth.data.AuthService
 import com.creativehazio.auth.error.LoginError
-import com.creativehazio.auth.presentation.emailverification.EmailVerificationError
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.common.resulthandler.Error
-import com.creativehazio.common.resulthandler.UiText
-import com.creativehazio.common.resulthandler.UiText.*
-import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.auth.FirebaseAuthException
-import dev.gitlive.firebase.auth.auth
 import com.creativehazio.common.resulthandler.Result
+import com.creativehazio.common.resulthandler.UiText
 import kotlinx.coroutines.launch
 
 private const val EMAIL = "email"

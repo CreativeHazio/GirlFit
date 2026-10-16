@@ -1,8 +1,6 @@
 package com.creativehazio.data.workout.data.remote
 
-import com.creativehazio.data.workout.domain.WorkoutCategory
 import dev.gitlive.firebase.firestore.Direction
-import dev.gitlive.firebase.firestore.Filter
 import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 private const val WORKOUTS = "workouts"

@@ -6,7 +6,6 @@ import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.data.meal.domain.Meal
-import com.creativehazio.data.meal.domain.MealNutrient
 import com.creativehazio.data.meal.domain.MealRepository
 import kotlinx.coroutines.launch
 

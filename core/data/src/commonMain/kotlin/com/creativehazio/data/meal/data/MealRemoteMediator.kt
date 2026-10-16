@@ -7,7 +7,6 @@ import androidx.paging.RemoteMediator
 import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
-import com.creativehazio.data.meal.data.local.MealEntity
 import com.creativehazio.data.meal.data.local.MealWithNutrients
 import com.creativehazio.data.meal.data.remote.MealDataSource
 import com.creativehazio.data.meal.mapper.toMealEntity

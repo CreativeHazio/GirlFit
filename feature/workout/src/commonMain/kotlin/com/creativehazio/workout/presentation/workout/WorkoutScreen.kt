@@ -3,7 +3,6 @@ package com.creativehazio.workout.presentation.workout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.ScrollableDefaults.overscrollEffect
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,36 +14,31 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil3.compose.AsyncImage
 import com.creativehazio.common.util.DateTimeUtil
 import com.creativehazio.data.workout.domain.ChallengeDayState
-import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
@@ -52,10 +46,15 @@ import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.crossfade.CrossfadePlugin
+import com.skydoves.landscapist.image.LandscapistImage
+import com.skydoves.landscapist.placeholder.shimmer.Shimmer
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.heart_icon_selected
 import girlfit.feature.workout.generated.resources.premium_icon
-import kotlinx.coroutines.flow.Flow
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -226,11 +225,21 @@ internal fun PersonalPlanSection(
             shape = MaterialTheme.shapes.medium
         ) {
             Box(Modifier.fillMaxSize()) {
-                AsyncImage(
-                    model = "https://images.unsplash.com/photo-1733744577444-ecfd9d9110cc?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                LandscapistImage(
+                    imageModel = { "https://images.unsplash.com/photo-1733744577444-ecfd9d9110cc?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+                    modifier = Modifier.fillMaxSize(),
+                    component = rememberImageComponent {
+                        +ShimmerPlugin(
+                            shimmer = Shimmer.Flash(
+                                baseColor = Color.Gray,
+                                highlightColor = Color.LightGray
+                            )
+                        )
+                        +CrossfadePlugin(duration = 550)
+                    },
+                    imageOptions = ImageOptions(
+                        contentScale = ContentScale.Crop,
+                    ),
                 )
 
                 Box(

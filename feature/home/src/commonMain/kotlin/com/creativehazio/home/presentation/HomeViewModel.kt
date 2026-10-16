@@ -10,7 +10,6 @@ import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.workout.data.Seeder
 import com.creativehazio.data.workout.domain.Workout
-import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
 import kotlinx.coroutines.launch
