@@ -8,14 +8,30 @@ import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
+import com.creativehazio.data.user.domain.User
 import com.creativehazio.data.workout.data.Seeder
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
+import girlfit.feature.home.generated.resources.Res
+import girlfit.feature.home.generated.resources.angry_emoji
+import girlfit.feature.home.generated.resources.exhausted_emoji
+import girlfit.feature.home.generated.resources.sad_emoji
+import girlfit.feature.home.generated.resources.sick_emoji
+import girlfit.feature.home.generated.resources.smile_emoji
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
 
 data class HomeState(
     val isLoading: Boolean = false,
+    val user: User = User("", "Ria", "", CyclePhase.OVULATION),
+    val userFeelings: Map<String, DrawableResource> = mapOf(
+        "Happy" to Res.drawable.smile_emoji,
+        "Sad" to Res.drawable.sad_emoji,
+        "Sick" to Res.drawable.sick_emoji,
+        "Tired" to Res.drawable.exhausted_emoji,
+        "Angry" to Res.drawable.angry_emoji,
+    ),
     val recommendedWorkouts: List<Workout> = emptyList(),
     val relaxWorkouts: List<Workout> = emptyList(),
 ) : State

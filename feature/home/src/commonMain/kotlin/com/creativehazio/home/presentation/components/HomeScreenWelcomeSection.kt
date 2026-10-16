@@ -11,32 +11,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.home.generated.resources.Res
-import girlfit.feature.home.generated.resources.angry_emoji
-import girlfit.feature.home.generated.resources.exhausted_emoji
 import girlfit.feature.home.generated.resources.lollipop
-import girlfit.feature.home.generated.resources.sad_emoji
-import girlfit.feature.home.generated.resources.sick_emoji
-import girlfit.feature.home.generated.resources.smile_emoji
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-internal fun HomeScreenWelcomeSection() {
-    val feelings = remember {
-        mutableStateMapOf(
-            "Happy" to Res.drawable.smile_emoji,
-            "Sad" to Res.drawable.sad_emoji,
-            "Sick" to Res.drawable.sick_emoji,
-            "Tired" to Res.drawable.exhausted_emoji,
-            "Angry" to Res.drawable.angry_emoji,
-        )
-    }
+internal fun HomeScreenWelcomeSection(
+    userName: String,
+    userFeelings: Map<String, DrawableResource>,
+    onUserFeelingClicked: (String) -> Unit
+) {
 
     Column {
         Row(
@@ -48,7 +37,7 @@ internal fun HomeScreenWelcomeSection() {
                 verticalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 Text(
-                    "Hi Ria ❤️",
+                    "Hi $userName ❤️",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -83,10 +72,10 @@ internal fun HomeScreenWelcomeSection() {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            feelings.forEach { resource ->
+            userFeelings.forEach { resource ->
                 Column(
                     modifier = Modifier.clickable {
-
+                        onUserFeelingClicked(resource.key)
                     },
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
