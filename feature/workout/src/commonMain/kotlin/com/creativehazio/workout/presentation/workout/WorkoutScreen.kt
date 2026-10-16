@@ -44,14 +44,9 @@ import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.heart_icon_selected
 import girlfit.feature.workout.generated.resources.premium_icon
@@ -225,21 +220,10 @@ internal fun PersonalPlanSection(
             shape = MaterialTheme.shapes.medium
         ) {
             Box(Modifier.fillMaxSize()) {
-                LandscapistImage(
-                    imageModel = { "https://images.unsplash.com/photo-1733744577444-ecfd9d9110cc?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+                GirlfitImage(
+                    imageUrl = "https://images.unsplash.com/photo-1733744577444-ecfd9d9110cc?q=80&w=2531&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize(),
-                    component = rememberImageComponent {
-                        +ShimmerPlugin(
-                            shimmer = Shimmer.Flash(
-                                baseColor = Color.Gray,
-                                highlightColor = Color.LightGray
-                            )
-                        )
-                        +CrossfadePlugin(duration = 550)
-                    },
-                    imageOptions = ImageOptions(
-                        contentScale = ContentScale.Crop,
-                    ),
                 )
 
                 Box(

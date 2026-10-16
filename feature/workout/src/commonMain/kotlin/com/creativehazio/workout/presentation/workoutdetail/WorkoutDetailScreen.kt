@@ -45,14 +45,9 @@ import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutLevel
 import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.add_friend_icon
 import girlfit.feature.workout.generated.resources.back_icon
@@ -104,22 +99,10 @@ internal fun WorkoutDetailScreen(
                 .height(200.dp)
         ) {
 
-            LandscapistImage(
-                imageModel = { workout.imageUrl },
-                modifier = Modifier
-                    .fillMaxSize(),
-                component = rememberImageComponent {
-                    +ShimmerPlugin(
-                        shimmer = Shimmer.Fade(
-                            baseColor = Color.Gray,
-                            highlightColor = Color.LightGray
-                        )
-                    )
-                    +CrossfadePlugin(duration = 550)
-                },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                ),
+            GirlfitImage(
+                modifier = Modifier.fillMaxSize(),
+                imageUrl = workout.imageUrl,
+                contentScale = ContentScale.Crop
             )
 
             Box(
@@ -318,21 +301,10 @@ internal fun ExerciseCard(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        LandscapistImage(
-            imageModel = { exercise.thumbnailGifUrl },
+        GirlfitImage(
+            imageUrl = exercise.thumbnailGifUrl,
             modifier = Modifier.size(66.dp),
-            component = rememberImageComponent {
-                +ShimmerPlugin(
-                    shimmer = Shimmer.Flash(
-                        baseColor = Color.Gray,
-                        highlightColor = Color.LightGray
-                    )
-                )
-                +CrossfadePlugin(duration = 550)
-            },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-            ),
+            contentScale = ContentScale.Crop
         )
         Column(
             modifier = Modifier.weight(1f),

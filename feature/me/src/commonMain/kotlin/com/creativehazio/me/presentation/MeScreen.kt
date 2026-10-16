@@ -35,16 +35,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
 import com.creativehazio.designsystem.theme.textHighlightedLight
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.me.generated.resources.Res
 import girlfit.feature.me.generated.resources.countdown_time_icon
 import girlfit.feature.me.generated.resources.feedback_icon
@@ -190,22 +185,11 @@ internal fun MeHeader(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        LandscapistImage(
-            imageModel = { userImageUrl },
+        GirlfitImage(
             modifier = Modifier.size(120.dp)
                 .clip(CircleShape),
-            component = rememberImageComponent {
-                +ShimmerPlugin(
-                    shimmer = Shimmer.Fade(
-                        baseColor = Color.Gray,
-                        highlightColor = Color.LightGray
-                    )
-                )
-                +CrossfadePlugin(duration = 550)
-            },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-            ),
+            imageUrl = userImageUrl,
+            contentScale = ContentScale.Crop
         )
 
         Row(

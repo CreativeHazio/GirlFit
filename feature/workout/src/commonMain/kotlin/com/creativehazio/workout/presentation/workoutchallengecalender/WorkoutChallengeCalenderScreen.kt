@@ -46,16 +46,11 @@ import com.creativehazio.data.workout.domain.Challenge
 import com.creativehazio.data.workout.domain.ChallengeDay
 import com.creativehazio.data.workout.domain.ChallengeDayState
 import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
 import com.creativehazio.designsystem.theme.textHighlightedLight
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.add_friend_icon
 import girlfit.feature.workout.generated.resources.back_icon
@@ -109,22 +104,10 @@ internal fun WorkoutChallengeCalenderScreen(
                 .height(200.dp)
         ) {
 
-            LandscapistImage(
-                imageModel = { uiState.workout.imageUrl },
-                modifier = Modifier
-                    .fillMaxSize(),
-                component = rememberImageComponent {
-                    +ShimmerPlugin(
-                        shimmer = Shimmer.Fade(
-                            baseColor = Color.Gray,
-                            highlightColor = Color.LightGray
-                        )
-                    )
-                    +CrossfadePlugin(duration = 550)
-                },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                ),
+            GirlfitImage(
+                modifier = Modifier.fillMaxSize(),
+                imageUrl = uiState.workout.imageUrl,
+                contentScale = ContentScale.Crop
             )
 
             Box(

@@ -76,6 +76,7 @@ import girlfit.composeapp.generated.resources.progress
 import girlfit.composeapp.generated.resources.progress_selected
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
+import kotlinx.io.files.FileSystem
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -92,24 +93,6 @@ private val navConfig = SavedStateConfiguration {
 
 @Composable
 fun App() {
-
-//    SingletonImageLoader.setSafe { context ->
-//        ImageLoader.Builder(context)
-//            .memoryCachePolicy(CachePolicy.ENABLED)
-//            .diskCachePolicy(CachePolicy.ENABLED)
-//            .memoryCache {
-//                MemoryCache.Builder()
-//                    .maxSizePercent(context, 0.25)
-//                    .build()
-//            }
-//            .diskCache {
-//                DiskCache.Builder()
-//                    .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-//                    .maxSizeBytes(50L * 1024 * 1024)
-//                    .build()
-//            }
-//            .build()
-//    }
 
     val backStack = rememberNavBackStack(navConfig, Main)
 

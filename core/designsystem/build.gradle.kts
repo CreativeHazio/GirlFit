@@ -54,8 +54,8 @@ kotlin {
                 api(libs.compose.uiToolingPreview)
                 implementation(libs.compose.components.resources)
 
-                api(libs.landscapist.placeholder)
-                api(libs.landscapist.image)
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
             }
         }
 

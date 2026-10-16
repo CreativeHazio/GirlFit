@@ -21,14 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.core.designsystem.generated.resources.Res
 import girlfit.core.designsystem.generated.resources.time_icon
 import org.jetbrains.compose.resources.painterResource
@@ -52,28 +47,11 @@ fun GirlFitWorkoutCard(
         shape = MaterialTheme.shapes.medium
     ) {
         Box(Modifier.fillMaxSize()) {
-//            AsyncImage(
-//                model = imageUrl,
-//                contentDescription = null,
-//                contentScale = ContentScale.Crop,
-//                modifier = Modifier.fillMaxSize()
-//            )
-
-            LandscapistImage(
-                modifier = Modifier.fillMaxSize(),
-                imageModel = { imageUrl },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                ),
-                component = rememberImageComponent {
-                    +ShimmerPlugin(
-                        shimmer = Shimmer.Flash(
-                            baseColor = Color.Gray,
-                            highlightColor = Color.LightGray
-                        )
-                    )
-                    +CrossfadePlugin(duration = 550)
-                }
+            AsyncImage(
+                model = imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
             )
 
             Box(

@@ -112,8 +112,6 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 # Image Loading
 imagePickerKMP = { module = "io.github.ismoy:imagepickerkmp", version.ref = "imagePickerKMP" }
-landscapist-placeholder ={ module = "com.github.skydoves:landscapist-placeholder", version.ref = "landscapist" }
-landscapist-image ={ module = "com.github.skydoves:landscapist-image", version.ref = "landscapist" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }

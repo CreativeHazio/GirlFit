@@ -30,9 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.skydoves.landscapist.image.LandscapistImage
 import girlfit.core.designsystem.generated.resources.filter_ic
 import girlfit.core.designsystem.generated.resources.time_icon
 import girlfit.feature.progress.generated.resources.Res
@@ -219,9 +219,10 @@ internal fun WorkoutHistoryCard(
     Row(
         horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
-        LandscapistImage(
+
+        GirlfitImage(
             modifier = Modifier.size(60.dp),
-            imageModel = { imageUrl }
+            imageUrl = imageUrl
         )
 
         Column(
