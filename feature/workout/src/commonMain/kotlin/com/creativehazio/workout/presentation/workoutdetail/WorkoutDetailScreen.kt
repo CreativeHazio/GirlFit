@@ -27,7 +27,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,7 +38,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.creativehazio.common.util.DateTimeUtil
 import com.creativehazio.data.workout.domain.ChallengeDayState
 import com.creativehazio.data.workout.domain.Exercise
@@ -47,6 +47,12 @@ import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.crossfade.CrossfadePlugin
+import com.skydoves.landscapist.image.LandscapistImage
+import com.skydoves.landscapist.placeholder.shimmer.Shimmer
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.add_friend_icon
 import girlfit.feature.workout.generated.resources.back_icon
@@ -97,12 +103,23 @@ internal fun WorkoutDetailScreen(
             modifier = Modifier.fillMaxWidth()
                 .height(200.dp)
         ) {
-            AsyncImage(
-                model = workout.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+
+            LandscapistImage(
+                imageModel = { workout.imageUrl },
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize(),
+                component = rememberImageComponent {
+                    +ShimmerPlugin(
+                        shimmer = Shimmer.Fade(
+                            baseColor = Color.Gray,
+                            highlightColor = Color.LightGray
+                        )
+                    )
+                    +CrossfadePlugin(duration = 550)
+                },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                ),
             )
 
             Box(
@@ -300,10 +317,22 @@ internal fun ExerciseCard(
         modifier = Modifier.fillMaxWidth().height(66.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        AsyncImage(
+
+        LandscapistImage(
+            imageModel = { exercise.thumbnailGifUrl },
             modifier = Modifier.size(66.dp),
-            model = exercise.thumbnailGifUrl,
-            contentDescription = null
+            component = rememberImageComponent {
+                +ShimmerPlugin(
+                    shimmer = Shimmer.Flash(
+                        baseColor = Color.Gray,
+                        highlightColor = Color.LightGray
+                    )
+                )
+                +CrossfadePlugin(duration = 550)
+            },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop,
+            ),
         )
         Column(
             modifier = Modifier.weight(1f),

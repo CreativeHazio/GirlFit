@@ -9,7 +9,6 @@ import com.creativehazio.common.util.AppPreferences
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.auth
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class SplashState(

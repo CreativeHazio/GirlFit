@@ -1,6 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
@@ -44,7 +41,6 @@ kotlin {
 
             implementation(libs.compose.components.resources)
 
-            implementation(libs.coil.network.ktor)
             implementation(libs.ktor.client.core)
 
             implementation(libs.jetbrains.navigation3.ui)

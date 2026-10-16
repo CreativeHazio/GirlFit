@@ -30,19 +30,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import coil3.size.Size
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
 import com.creativehazio.designsystem.theme.textHighlightedLight
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.crossfade.CrossfadePlugin
+import com.skydoves.landscapist.image.LandscapistImage
+import com.skydoves.landscapist.placeholder.shimmer.Shimmer
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.me.generated.resources.Res
 import girlfit.feature.me.generated.resources.countdown_time_icon
 import girlfit.feature.me.generated.resources.feedback_icon
@@ -187,12 +189,23 @@ internal fun MeHeader(
         verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AsyncImage(
+
+        LandscapistImage(
+            imageModel = { userImageUrl },
             modifier = Modifier.size(120.dp)
                 .clip(CircleShape),
-            model = userImageUrl,
-            contentScale = ContentScale.Crop,
-            contentDescription = null,
+            component = rememberImageComponent {
+                +ShimmerPlugin(
+                    shimmer = Shimmer.Fade(
+                        baseColor = Color.Gray,
+                        highlightColor = Color.LightGray
+                    )
+                )
+                +CrossfadePlugin(duration = 550)
+            },
+            imageOptions = ImageOptions(
+                contentScale = ContentScale.Crop,
+            ),
         )
 
         Row(

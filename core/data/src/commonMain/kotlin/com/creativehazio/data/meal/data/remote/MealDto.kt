@@ -1,7 +1,5 @@
 package com.creativehazio.data.meal.data.remote
 
-import com.creativehazio.data.meal.domain.FilterItem
-import com.creativehazio.data.meal.domain.MealNutrient
 import kotlinx.serialization.Serializable
 
 @Serializable

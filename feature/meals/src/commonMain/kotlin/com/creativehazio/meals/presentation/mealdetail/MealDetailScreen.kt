@@ -1,7 +1,5 @@
 package com.creativehazio.meals.presentation.mealdetail
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,21 +26,21 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.meals.util.Utils
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.components.rememberImageComponent
+import com.skydoves.landscapist.crossfade.CrossfadePlugin
+import com.skydoves.landscapist.image.LandscapistImage
+import com.skydoves.landscapist.placeholder.shimmer.Shimmer
+import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.back_icon
 import girlfit.feature.meals.generated.resources.cal
-import girlfit.feature.meals.generated.resources.carbohydrate
-import girlfit.feature.meals.generated.resources.fat
-import girlfit.feature.meals.generated.resources.fiber
-import girlfit.feature.meals.generated.resources.protein
 import girlfit.feature.meals.generated.resources.total_calories
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
@@ -85,12 +82,23 @@ internal fun MealDetailScreen(
             Modifier.fillMaxWidth()
                 .height(400.dp)
         ) {
-            AsyncImage(
+
+            LandscapistImage(
+                imageModel = { uiState.meal.imageUrl },
                 modifier = Modifier.fillMaxWidth()
                     .height(400.dp),
-                model = uiState.meal.imageUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop
+                component = rememberImageComponent {
+                    +ShimmerPlugin(
+                        shimmer = Shimmer.Fade(
+                            baseColor = Color.Gray,
+                            highlightColor = Color.LightGray
+                        )
+                    )
+                    +CrossfadePlugin(duration = 550)
+                },
+                imageOptions = ImageOptions(
+                    contentScale = ContentScale.Crop,
+                ),
             )
 
             IconButton(

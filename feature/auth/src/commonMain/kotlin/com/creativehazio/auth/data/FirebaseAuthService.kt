@@ -2,16 +2,14 @@ package com.creativehazio.auth.data
 
 import com.creativehazio.auth.error.LoginError
 import com.creativehazio.auth.error.SignUpError
+import com.creativehazio.common.resulthandler.Result
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseAuthException
 import dev.gitlive.firebase.auth.GoogleAuthProvider
-import dev.gitlive.firebase.auth.OAuthProvider
 import dev.gitlive.firebase.auth.auth
-import com.creativehazio.common.resulthandler.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import okio.IOException
 
 
 class FirebaseAuthService : AuthService {

@@ -3,18 +3,15 @@ package com.creativehazio.girlfit
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
-import coil3.disk.DiskCache
-import coil3.memory.MemoryCache
-import coil3.request.CachePolicy
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationViewModel
 import com.creativehazio.auth.presentation.login.LoginScreenRoot
@@ -54,6 +51,8 @@ import com.creativehazio.navigation.Splash
 import com.creativehazio.navigation.Workout
 import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.progress.presentation.ProgressScreenRoot
+import com.creativehazio.progress.presentation.ProgressViewModel
 import com.creativehazio.startup.onboarding.OnboardingScreenRoot
 import com.creativehazio.startup.onboarding.OnboardingViewModel
 import com.creativehazio.startup.splash.SplashScreenRoot
@@ -80,8 +79,6 @@ import girlfit.composeapp.generated.resources.workout_selected
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-
-import okio.FileSystem
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -96,23 +93,23 @@ private val navConfig = SavedStateConfiguration {
 @Composable
 fun App() {
 
-    SingletonImageLoader.setSafe { context ->
-        ImageLoader.Builder(context)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .memoryCache {
-                MemoryCache.Builder()
-                    .maxSizePercent(context, 0.25)
-                    .build()
-            }
-            .diskCache {
-                DiskCache.Builder()
-                    .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-                    .maxSizeBytes(50L * 1024 * 1024)
-                    .build()
-            }
-            .build()
-    }
+//    SingletonImageLoader.setSafe { context ->
+//        ImageLoader.Builder(context)
+//            .memoryCachePolicy(CachePolicy.ENABLED)
+//            .diskCachePolicy(CachePolicy.ENABLED)
+//            .memoryCache {
+//                MemoryCache.Builder()
+//                    .maxSizePercent(context, 0.25)
+//                    .build()
+//            }
+//            .diskCache {
+//                DiskCache.Builder()
+//                    .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+//                    .maxSizeBytes(50L * 1024 * 1024)
+//                    .build()
+//            }
+//            .build()
+//    }
 
     val backStack = rememberNavBackStack(navConfig, Main)
 
@@ -324,38 +321,40 @@ fun MainAppContainer(
     val tabBackStack = rememberNavBackStack(navConfig, Home)
     val currentTab = tabBackStack.lastOrNull() as? Route
 
-    val tabs = listOf<BottomBarTab<Route>>(
-        BottomBarTab(
-            route = Home,
-            title = "Home",
-            unselectedIcon = Res.drawable.home,
-            selectedIcon = Res.drawable.home_selected
-        ),
-        BottomBarTab(
-            route = Workout,
-            title = "Workout",
-            unselectedIcon = Res.drawable.workout,
-            selectedIcon = Res.drawable.workout_selected
-        ),
-        BottomBarTab(
-            route = Progress,
-            title = "Progress",
-            unselectedIcon = Res.drawable.progress,
-            selectedIcon = Res.drawable.progress_selected
-        ),
-        BottomBarTab(
-            route = Meals,
-            title = "Meals",
-            unselectedIcon = Res.drawable.meals,
-            selectedIcon = Res.drawable.meals_selected
-        ),
-        BottomBarTab(
-            route = Me,
-            title = "Me",
-            unselectedIcon = Res.drawable.me,
-            selectedIcon = Res.drawable.me_selected
+    val tabs = rememberSaveable {
+        listOf<BottomBarTab<Route>>(
+            BottomBarTab(
+                route = Home,
+                title = "Home",
+                unselectedIcon = Res.drawable.home,
+                selectedIcon = Res.drawable.home_selected
+            ),
+            BottomBarTab(
+                route = Workout,
+                title = "Workout",
+                unselectedIcon = Res.drawable.workout,
+                selectedIcon = Res.drawable.workout_selected
+            ),
+            BottomBarTab(
+                route = Progress,
+                title = "Progress",
+                unselectedIcon = Res.drawable.progress,
+                selectedIcon = Res.drawable.progress_selected
+            ),
+            BottomBarTab(
+                route = Meals,
+                title = "Meals",
+                unselectedIcon = Res.drawable.meals,
+                selectedIcon = Res.drawable.meals_selected
+            ),
+            BottomBarTab(
+                route = Me,
+                title = "Me",
+                unselectedIcon = Res.drawable.me,
+                selectedIcon = Res.drawable.me_selected
+            )
         )
-    )
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -400,7 +399,15 @@ fun MainAppContainer(
                 }
 
                 entry<Progress> {
+                    val progressViewModel : ProgressViewModel = koinViewModel()
 
+                    ProgressScreenRoot(
+                        paddingValues = innerPadding,
+                        viewModel = progressViewModel,
+                        onNavigateToProgressCalender = {
+
+                        }
+                    )
                 }
 
                 entry<Meals> {

@@ -5,10 +5,10 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.data.workout.domain.Challenge
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
-import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEffect.*
+import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEffect.NavigateBack
+import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEffect.NavigateToWorkoutDetail
 import kotlinx.coroutines.launch
 
 data class WorkoutChallengeCalenderState(

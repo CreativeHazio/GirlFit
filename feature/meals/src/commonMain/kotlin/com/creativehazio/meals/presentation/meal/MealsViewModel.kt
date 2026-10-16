@@ -7,14 +7,12 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.data.meal.data.MealSeeder
-import com.creativehazio.data.meal.domain.FilterItem
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealFilter
 import com.creativehazio.data.meal.domain.MealRepository
-import com.creativehazio.meals.presentation.meal.MealsEffect.*
+import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealDetail
+import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealScan
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 

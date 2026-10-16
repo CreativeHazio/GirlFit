@@ -15,7 +15,6 @@ import com.creativehazio.data.workout.data.local.ChallengeDayEntity
 import com.creativehazio.data.workout.data.local.ExerciseEntity
 import com.creativehazio.data.workout.data.local.WorkoutDao
 import com.creativehazio.data.workout.data.local.WorkoutEntity
-import com.creativehazio.data.workout.domain.Challenge
 
 @Database(
     entities = [
