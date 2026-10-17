@@ -1,5 +1,12 @@
 package com.creativehazio.girlfit
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
@@ -7,6 +14,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -76,6 +84,7 @@ import girlfit.composeapp.generated.resources.progress
 import girlfit.composeapp.generated.resources.progress_selected
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
+import kotlinx.io.files.FileSystem
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -93,33 +102,27 @@ private val navConfig = SavedStateConfiguration {
 @Composable
 fun App() {
 
-//    SingletonImageLoader.setSafe { context ->
-//        ImageLoader.Builder(context)
-//            .memoryCachePolicy(CachePolicy.ENABLED)
-//            .diskCachePolicy(CachePolicy.ENABLED)
-//            .memoryCache {
-//                MemoryCache.Builder()
-//                    .maxSizePercent(context, 0.25)
-//                    .build()
-//            }
-//            .diskCache {
-//                DiskCache.Builder()
-//                    .directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
-//                    .maxSizeBytes(50L * 1024 * 1024)
-//                    .build()
-//            }
-//            .build()
-//    }
-
     val backStack = rememberNavBackStack(navConfig, Main)
 
     // TODO: Split all complex main screens into composable functions
     GirlFitTheme {
 
+        val snappy = tween<IntOffset>(200, easing = FastOutSlowInEasing)
+        val snappyFade = tween<Float>(200, easing = FastOutSlowInEasing)
+
         NavDisplay(
             backStack = backStack,
             onBack = {
                 if (backStack.size > 1) backStack.removeLastOrNull()
+            },
+            transitionSpec = {
+                (slideInHorizontally(snappy) { it / 3 } + fadeIn(snappyFade)) togetherWith
+                        (slideOutHorizontally(snappy) { -it / 6 } + fadeOut(snappyFade))
+            },
+
+            popTransitionSpec = {
+                (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
+                        (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
             },
             entryProvider = entryProvider {
                 entry<Splash> {
@@ -371,9 +374,21 @@ fun MainAppContainer(
             )
         }
     ) { innerPadding ->
+        val snappy = tween<IntOffset>(200, easing = FastOutSlowInEasing)
+        val snappyFade = tween<Float>(200, easing = FastOutSlowInEasing)
+
         //TODO: Add onback to only close app when its homescreen
         NavDisplay(
             backStack = tabBackStack,
+            transitionSpec = {
+                (slideInHorizontally(snappy) { it / 3 } + fadeIn(snappyFade)) togetherWith
+                        (slideOutHorizontally(snappy) { -it / 6 } + fadeOut(snappyFade))
+            },
+
+            popTransitionSpec = {
+                (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
+                        (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
+            },
             entryProvider = entryProvider {
                 entry<Home> {
                     val homeViewModel: HomeViewModel = koinViewModel()

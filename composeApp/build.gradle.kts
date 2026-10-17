@@ -43,6 +43,7 @@ kotlin {
 
             implementation(libs.ktor.client.core)
 
+
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)

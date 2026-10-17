@@ -29,14 +29,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.meals.util.Utils
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.back_icon
 import girlfit.feature.meals.generated.resources.cal
@@ -83,22 +78,12 @@ internal fun MealDetailScreen(
                 .height(400.dp)
         ) {
 
-            LandscapistImage(
-                imageModel = { uiState.meal.imageUrl },
+            GirlfitImage(
+                imageUrl = uiState.meal.imageUrl,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth()
-                    .height(400.dp),
-                component = rememberImageComponent {
-                    +ShimmerPlugin(
-                        shimmer = Shimmer.Fade(
-                            baseColor = Color.Gray,
-                            highlightColor = Color.LightGray
-                        )
-                    )
-                    +CrossfadePlugin(duration = 550)
-                },
-                imageOptions = ImageOptions(
-                    contentScale = ContentScale.Crop,
-                ),
+                    .height(400.dp)
             )
 
             IconButton(

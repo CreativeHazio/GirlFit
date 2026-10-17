@@ -54,6 +54,7 @@ kotlin {
                 implementation(libs.compose.components.resources)
                 implementation(libs.datastore)
                 implementation(libs.datastore.prefs)
+                implementation(libs.kotlinx.datetime)
             }
         }
 

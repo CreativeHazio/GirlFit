@@ -49,14 +49,9 @@ import androidx.paging.compose.itemKey
 import com.creativehazio.data.meal.domain.MealFilter
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
+import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.components.rememberImageComponent
-import com.skydoves.landscapist.crossfade.CrossfadePlugin
-import com.skydoves.landscapist.image.LandscapistImage
-import com.skydoves.landscapist.placeholder.shimmer.Shimmer
-import com.skydoves.landscapist.placeholder.shimmer.ShimmerPlugin
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.camera_track_calories
 import girlfit.feature.meals.generated.resources.down_arrow
@@ -279,21 +274,12 @@ internal fun MealCard(
                 onMealCardClicked()
             }
     ) {
-        LandscapistImage(
-            imageModel = { imageUrl },
-            modifier = Modifier.fillMaxSize(),
-            component = rememberImageComponent {
-                +ShimmerPlugin(
-                    shimmer = Shimmer.Flash(
-                        baseColor = Color.Gray,
-                        highlightColor = Color.LightGray
-                    )
-                )
-                +CrossfadePlugin(duration = 550)
-            },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-            ),
+
+        GirlfitImage(
+            imageUrl = imageUrl,
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
     }
 
