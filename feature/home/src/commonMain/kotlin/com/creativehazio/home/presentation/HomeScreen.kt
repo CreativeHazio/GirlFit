@@ -12,9 +12,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.designsystem.theme.Spacing
-import com.creativehazio.home.presentation.components.HomeScreenCycleCalenderSection
-import com.creativehazio.home.presentation.components.HomeScreenWelcomeSection
+import com.creativehazio.home.presentation.components.cycleCalender.CycleCalenderSection
+import com.creativehazio.home.presentation.components.WelcomeSection
 import com.creativehazio.home.presentation.components.WorkoutSection
+import com.creativehazio.home.presentation.components.cycleCalender.CycleCalenderViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
@@ -66,7 +68,7 @@ internal fun HomeScreen(
 
         item {
             Spacer(Modifier.size(Spacing.Medium))
-            HomeScreenWelcomeSection(
+            WelcomeSection(
                 userName = uiState.user.name,
                 userFeelings = uiState.userFeelings,
                 onUserFeelingClicked = {
@@ -76,7 +78,10 @@ internal fun HomeScreen(
         }
 
         item {
-            HomeScreenCycleCalenderSection()
+            val cycleCalenderViewModel : CycleCalenderViewModel = koinViewModel()
+            CycleCalenderSection(
+                viewModel = cycleCalenderViewModel
+            )
         }
 
         item {
