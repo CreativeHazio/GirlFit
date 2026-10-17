@@ -4,10 +4,7 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.home.util.DateUtil
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.creativehazio.common.util.DateTimeUtil
 
 data class CycleCalenderState(
     val cycleDayText: String = "",
@@ -43,16 +40,16 @@ class CycleCalenderViewModel(
     }
 
     fun refresh() {
-        val dates = DateUtil.getThisWeekDays()
-        val todayIndex = DateUtil.getTodayIndex()
+        val dates = DateTimeUtil.getThisWeekDays()
+        val todayIndex = DateTimeUtil.getTodayIndex()
 
         // TODO: replace with real cycle data from your repository
         val cycleDay = 14
 
         updateState { copy(
             cycleDayText = "${cycleDay.toOrdinal()} day of Cycle",
-            todayLabel = DateUtil.getTodayFormatted(),
-            weekDays = DateUtil.daysOfTheWeek.mapIndexed { index, label ->
+            todayLabel = DateTimeUtil.getTodayFormatted(),
+            weekDays = DateTimeUtil.daysOfTheWeek.mapIndexed { index, label ->
                 CalendarDay(
                     label = label,
                     date = dates[index],

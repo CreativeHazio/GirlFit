@@ -12,7 +12,24 @@ data class Workout(
     val category: WorkoutCategory = WorkoutCategory.ALL,
     val exercises: List<Exercise> = emptyList(),
     val challenge: Challenge = Challenge(),
-)
+) {
+    fun getDurationText() : String {
+        return if (duration < 60) {
+            "$duration secs"
+        } else {
+            val minutes = duration / 60
+            "$minutes mins"
+        }
+    }
+
+    fun getDetailsText() : String? {
+        return if (type == WorkoutType.CHALLENGE) {
+            "${challenge.challengeTitle} Challenge"
+        } else {
+            null
+        }
+    }
+}
 
 
 enum class WorkoutLevel {

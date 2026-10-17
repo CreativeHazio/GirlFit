@@ -23,7 +23,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
-import com.creativehazio.home.util.DateUtil
 import girlfit.feature.home.generated.resources.Res
 import girlfit.feature.home.generated.resources.drop_emoji
 import org.jetbrains.compose.resources.painterResource

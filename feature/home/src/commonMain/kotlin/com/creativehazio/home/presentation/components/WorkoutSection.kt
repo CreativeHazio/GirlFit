@@ -38,12 +38,8 @@ internal fun WorkoutSection(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
-                durationText = if (workout.type == WorkoutType.TIME) DateTimeUtil.durationFormatter(
-                    workout.duration
-                ) else null,
-                detailsText = if (workout.type == WorkoutType.CHALLENGE) {
-                    "${workout.challenge.challengeTitle} Challenge"
-                } else null,
+                durationText = workout.getDurationText(),
+                detailsText = workout.getDetailsText(),
                 imageUrl = workout.imageUrl,
                 onCardClick = {
                     onNavigateToWorkoutDetail(workout)

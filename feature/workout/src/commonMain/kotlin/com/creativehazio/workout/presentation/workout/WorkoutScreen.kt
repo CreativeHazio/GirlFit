@@ -154,10 +154,8 @@ internal fun WorkoutScreen(
                     modifier = Modifier.height(Sizing.CardHeightLarge),
                     title = workout.title,
                     imageUrl = workout.imageUrl,
-                    durationText = if (workout.duration == 0) null else DateTimeUtil.durationFormatter(
-                        workout.duration
-                    ),
-                    detailsText = if (workout.type == WorkoutType.CHALLENGE) "${workout.challenge.challengeTitle} Challenge" else null,
+                    durationText = workout.getDurationText(),
+                    detailsText = workout.getDetailsText(),
                     buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
                     onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
                 )
