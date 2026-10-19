@@ -207,7 +207,7 @@ internal fun WorkoutDetailScreen(
                                 Text(
                                     text = workout.level.name.lowercase()
                                         .replaceFirstChar { it.uppercase() },
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }
