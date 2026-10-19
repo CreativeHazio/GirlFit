@@ -22,11 +22,15 @@ sealed interface WorkoutDetailEvent : Event {
 sealed interface WorkoutDetailEffect : Effect {}
 
 class WorkoutDetailViewModel(
-    private val savedStateHandle: SavedStateHandle,
+    workoutId: String,
     private val workoutRepository: WorkoutRepository
 ) : BaseViewModel<WorkoutDetailState, WorkoutDetailEvent, WorkoutDetailEffect>(
     WorkoutDetailState()
 ) {
+
+    init {
+        onEvent(WorkoutDetailEvent.GetWorkoutById(workoutId))
+    }
 
     override fun onEvent(event: WorkoutDetailEvent) {
         when(event) {

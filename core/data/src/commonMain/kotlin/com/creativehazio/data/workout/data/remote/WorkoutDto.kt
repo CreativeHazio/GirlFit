@@ -10,6 +10,7 @@ data class WorkoutDto(
     val imageUrl: String = "",
     val details: String? = null,
     val duration: Int = 0,
+    val cyclePhase: String = "NONE",
     val level: String = "NONE",
     val type: String = "TIME",
     val category: String = "ALL",

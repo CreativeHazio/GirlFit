@@ -105,6 +105,7 @@ internal fun WorkoutDetailScreen(
                 contentScale = ContentScale.Crop
             )
 
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -162,7 +163,7 @@ internal fun WorkoutDetailScreen(
                 )
             }
             Text(
-                workout.title,
+                text = workout.title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )
@@ -206,7 +207,7 @@ internal fun WorkoutDetailScreen(
                                 Text(
                                     text = workout.level.name.lowercase()
                                         .replaceFirstChar { it.uppercase() },
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.labelLarge,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                             }

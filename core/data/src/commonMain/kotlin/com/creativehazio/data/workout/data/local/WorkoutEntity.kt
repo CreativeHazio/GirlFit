@@ -15,7 +15,7 @@ data class WorkoutEntity(
     val imageUrl: String,
     val details: String?,
     val duration: Int,
-    val cyclePhase: String? = null,
+    val cyclePhase: String,
     val level: String,
     val type: String,
     val category: String,

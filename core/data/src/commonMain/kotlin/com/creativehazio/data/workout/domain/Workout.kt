@@ -1,5 +1,7 @@
 package com.creativehazio.data.workout.domain
 
+import com.creativehazio.data.user.domain.CyclePhase
+
 data class Workout(
     val id: String = "",
     val createdAt: Long = 0L,
@@ -7,6 +9,7 @@ data class Workout(
     val imageUrl: String = "",
     val duration: Int = 0,
     val details: String? = null,
+    val cyclePhase: CyclePhase = CyclePhase.NONE,
     val level: WorkoutLevel = WorkoutLevel.NONE,
     val type: WorkoutType = WorkoutType.TIME,
     val category: WorkoutCategory = WorkoutCategory.ALL,

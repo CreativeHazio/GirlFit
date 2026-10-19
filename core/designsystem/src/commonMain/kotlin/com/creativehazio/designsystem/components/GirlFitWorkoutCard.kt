@@ -1,5 +1,8 @@
 package com.creativehazio.designsystem.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,11 +20,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.creativehazio.designsystem.SharedElementKey
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
+import com.creativehazio.designsystem.sharedElementIfAvailable
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.core.designsystem.generated.resources.Res
@@ -31,6 +38,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun GirlFitWorkoutCard(
     modifier: Modifier = Modifier,
+    sharedKey: String? = null,
     imageUrl: String,
     title: String,
     titleStyle: TextStyle = MaterialTheme.typography.titleLarge,
@@ -47,11 +55,13 @@ fun GirlFitWorkoutCard(
         shape = MaterialTheme.shapes.medium
     ) {
         Box(Modifier.fillMaxSize()) {
+
             AsyncImage(
                 model = imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
+                    .clip(MaterialTheme.shapes.medium)
             )
 
             Box(
@@ -67,7 +77,11 @@ fun GirlFitWorkoutCard(
                     .padding(Spacing.Medium),
                 verticalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
-                Text(text = title, style = titleStyle, color = Color.White)
+                Text(
+                    text = title,
+                    style = titleStyle,
+                    color = Color.White
+                )
                 detailsText?.let {
                     Text(
                         text = detailsText,
