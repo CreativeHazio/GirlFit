@@ -49,11 +49,20 @@ interface WorkoutDao {
     @Query("DELETE FROM challenge_days")
     suspend fun clearAllChallengeDays()
 
-    @Transaction
-    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'RELAX' LIMIT 3")
-    fun getRelaxWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCycleRelatedWorkouts(workouts: List<CycleRelatedWorkoutEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCycleRelatedExercises(exercises: List<CycleRelatedExerciseEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCycleRelatedChallengeDays(challengeDays: List<CycleRelatedChallengeDayEntity>)
 
     @Transaction
-    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'STRENGTH' LIMIT 3")
-    fun getRecommendedWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
+    @Query("SELECT * FROM cycle_related_workouts WHERE cyclePhase = :phase AND category = 'RELAX' LIMIT 1")
+    fun getRelaxWorkoutByPhase(phase: String): Flow<List<CycleRelatedWorkoutWithExercises>>
+
+    @Transaction
+    @Query("SELECT * FROM cycle_related_workouts WHERE cyclePhase = :phase AND category = 'STRENGTH' LIMIT 2")
+    fun getRecommendedWorkoutByPhase(phase: String): Flow<List<CycleRelatedWorkoutWithExercises>>
 }

@@ -182,6 +182,7 @@ internal fun WorkoutScreen(
 
                         GirlFitWorkoutCard(
                             modifier = Modifier.height(Sizing.CardHeightLarge),
+                            sharedKey = workout.id,
                             title = workout.title,
                             imageUrl = workout.imageUrl,
                             durationText = workout.getDurationText(),

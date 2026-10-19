@@ -98,7 +98,8 @@ internal fun WorkoutDetailScreen(
             .fillMaxSize()
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .height(200.dp)
         ) {
 

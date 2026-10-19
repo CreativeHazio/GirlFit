@@ -6,9 +6,9 @@ import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.user.domain.User
+import com.creativehazio.data.workout.domain.CycleRelatedWorkout
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
@@ -53,8 +53,16 @@ class HomeViewModel(
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
-        getRecommendedWorkouts(CyclePhase.OVULATION)
-        getRelaxWorkouts(CyclePhase.OVULATION)
+        getCycleRelatedWorkouts(
+            limit = 2,
+            cyclePhase = CyclePhase.OVULATION,
+            cycleRelatedWorkout = CycleRelatedWorkout.RECOMMENDED
+        )
+        getCycleRelatedWorkouts(
+            limit = 1,
+            cyclePhase = CyclePhase.OVULATION,
+            cycleRelatedWorkout = CycleRelatedWorkout.RELAX
+        )
     }
 
     override fun onEvent(event: HomeEvent) {
@@ -73,22 +81,38 @@ class HomeViewModel(
         }
     }
 
-    private fun getRecommendedWorkouts(cyclePhase: CyclePhase) {
+    private fun getCycleRelatedWorkouts(
+        limit: Int,
+        cyclePhase: CyclePhase,
+        cycleRelatedWorkout: CycleRelatedWorkout
+    ) {
         viewModelScope.launch {
-            workoutRepository.getRecommendedWorkouts(cyclePhase)
-                .catch { updateState { copy(isRecommendedLoading = false) } }
-                .collect {
-                    updateState { copy(recommendedWorkouts = it, isRecommendedLoading = false) }
+            workoutRepository.getCycleRelatedWorkouts(
+                limit = limit,
+                currentCyclePhase = cyclePhase,
+                cycleRelatedWorkout = cycleRelatedWorkout
+            ).catch {
+                updateState {
+                    when (cycleRelatedWorkout) {
+                        CycleRelatedWorkout.RECOMMENDED -> copy(isRecommendedLoading = false)
+                        CycleRelatedWorkout.RELAX -> copy(isRelaxLoading = false)
+                    }
                 }
-        }
-    }
-
-    private fun getRelaxWorkouts(cyclePhase: CyclePhase) {
-        viewModelScope.launch {
-            workoutRepository.getRelaxWorkouts(cyclePhase)
-                .catch { updateState { copy(isRelaxLoading = false) } }
+            }
                 .collect {
-                    updateState { copy(relaxWorkouts = it, isRelaxLoading = false) }
+                    updateState {
+                        when (cycleRelatedWorkout) {
+                            CycleRelatedWorkout.RECOMMENDED -> copy(
+                                recommendedWorkouts = it,
+                                isRecommendedLoading = false
+                            )
+
+                            CycleRelatedWorkout.RELAX -> copy(
+                                relaxWorkouts = it,
+                                isRelaxLoading = false
+                            )
+                        }
+                    }
                 }
         }
     }

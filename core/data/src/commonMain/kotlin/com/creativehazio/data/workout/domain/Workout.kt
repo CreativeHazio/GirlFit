@@ -111,3 +111,7 @@ data class Exercise(
     val gifUrl: String = "",
     val isFavourite: Boolean = false,
 )
+
+enum class CycleRelatedWorkout {
+    RECOMMENDED, RELAX
+}
