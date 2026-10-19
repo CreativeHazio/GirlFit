@@ -96,6 +96,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @OptIn(ExperimentalSerializationApi::class)
 private val navConfig = SavedStateConfiguration {
@@ -275,10 +276,8 @@ fun App() {
 
                         entry<WorkoutDetail> { key ->
 
-                            val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel()
-
-                            LaunchedEffect(key.workoutId) {
-                                workoutDetailViewModel.onEvent(WorkoutDetailEvent.GetWorkoutById(key.workoutId))
+                            val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel(key = key.workoutId) {
+                                parametersOf(key.workoutId)
                             }
 
                             ProvideEntryAnimatedScope {
