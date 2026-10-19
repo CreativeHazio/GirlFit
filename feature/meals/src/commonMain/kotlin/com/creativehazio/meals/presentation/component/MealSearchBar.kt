@@ -58,6 +58,7 @@ internal fun MealSearchBar(
             placeholderText = stringResource(Res.string.meals_search_hint),
             onSearchPressed = { onSearchPressed() },
             showFilterIcon = true,
+            filterIconBadgeCount = filterItemIds.size,
             onFilterClick = onFilterClicked
         )
 

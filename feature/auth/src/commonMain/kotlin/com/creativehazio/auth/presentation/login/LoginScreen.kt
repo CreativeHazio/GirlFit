@@ -149,7 +149,7 @@ internal fun LoginScreen(
             labelText = stringResource(Res.string.email),
             isError = emailError != null,
             errorText = emailError?.asString() ?: "",
-            singleLine = true
+            singleLine = true,
         )
 
         GirlFitTextField(
@@ -158,10 +158,10 @@ internal fun LoginScreen(
                 event(LoginEvent.OnPasswordChanged(it))
             },
             labelText = stringResource(Res.string.password),
-            visualTransformation = PasswordVisualTransformation(),
             isError = passwordError != null,
             errorText = passwordError?.asString() ?: "",
-            singleLine = true
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
         )
 
         GirlFitPrimaryButton(

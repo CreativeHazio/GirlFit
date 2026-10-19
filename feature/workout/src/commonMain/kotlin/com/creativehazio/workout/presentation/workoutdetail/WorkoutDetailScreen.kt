@@ -44,8 +44,11 @@ import com.creativehazio.data.workout.domain.Exercise
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutLevel
 import com.creativehazio.data.workout.domain.WorkoutType
+import com.creativehazio.designsystem.SharedElementKey
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.components.GirlfitImage
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
+import com.creativehazio.designsystem.sharedElementIfAvailable
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.workout.generated.resources.Res
@@ -100,7 +103,14 @@ internal fun WorkoutDetailScreen(
         ) {
 
             GirlfitImage(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .sharedBoundsIfAvailable(
+                        key = SharedElementKey(
+                            id = workout.id,
+                            type = SharedElementKey.Type.Image
+                        )
+                    )
+                    .fillMaxSize(),
                 imageUrl = workout.imageUrl,
                 contentScale = ContentScale.Crop
             )
@@ -163,6 +173,12 @@ internal fun WorkoutDetailScreen(
                 )
             }
             Text(
+                modifier = Modifier.sharedElementIfAvailable(
+                    key = SharedElementKey(
+                        id = workout.id,
+                        type = SharedElementKey.Type.Title
+                    )
+                ),
                 text = workout.title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface

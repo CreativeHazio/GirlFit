@@ -20,6 +20,7 @@ fun GirlFitSearchBar(
     placeholderText: String,
     onSearchPressed: () -> Unit,
     showFilterIcon: Boolean = false,
+    filterIconBadgeCount: Int = 0,
     onFilterClick: () -> Unit = {}
 ) {
     val focusManager = LocalFocusManager.current
@@ -31,6 +32,7 @@ fun GirlFitSearchBar(
         onValueChange = onQueryChange,
         leadingIcon = Res.drawable.search_ic,
         trailingIcon = if (showFilterIcon) Res.drawable.filter_ic else null,
+        trailingIconBadgeCount = filterIconBadgeCount,
         onTrailingIconClick = onFilterClick,
         placeholderText = placeholderText,
         singleLine = true,

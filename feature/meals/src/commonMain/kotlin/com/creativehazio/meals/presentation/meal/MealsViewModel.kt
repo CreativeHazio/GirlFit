@@ -12,9 +12,14 @@ import com.creativehazio.data.meal.domain.MealRepository
 import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealDetail
 import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealScan
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
 data class MealsState(
@@ -46,10 +51,17 @@ class MealsViewModel(
     private val _filterItemIds = MutableStateFlow(emptyList<String>())
     val filterItemIds = _filterItemIds.asStateFlow()
 
-    val meals = filterItemIds
-        .flatMapLatest { filterIds ->
-            mealRepository.getMeals(filterIds)
-        }.cachedIn(viewModelScope)
+    @OptIn(FlowPreview::class)
+    val meals = combine(
+        _filterItemIds,
+        uiState.map { it.searchQuery.trim() }
+            .distinctUntilChanged()
+            .debounce(500)
+    ) { filterItemIds, searchQuery ->
+        filterItemIds to searchQuery
+    }.flatMapLatest { (filterItemIds, searchQuery) ->
+        mealRepository.getMeals(filterItemIds, searchQuery)
+    }.cachedIn(viewModelScope)
 
     override fun onEvent(event: MealsEvent) {
         when(event) {

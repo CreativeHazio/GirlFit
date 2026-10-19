@@ -60,8 +60,16 @@ fun GirlFitWorkoutCard(
                 model = imageUrl,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .sharedBoundsIfAvailable(
+                        key = SharedElementKey(
+                            id = sharedKey ?: imageUrl,
+                            type = SharedElementKey.Type.Image
+                        )
+                    )
+                    .fillMaxSize()
                     .clip(MaterialTheme.shapes.medium)
+
             )
 
             Box(
@@ -78,6 +86,12 @@ fun GirlFitWorkoutCard(
                 verticalArrangement = Arrangement.spacedBy(Spacing.Small)
             ) {
                 Text(
+                    modifier = Modifier.sharedElementIfAvailable(
+                        key = SharedElementKey(
+                            id = sharedKey ?: "",
+                            type = SharedElementKey.Type.Title
+                        )
+                    ),
                     text = title,
                     style = titleStyle,
                     color = Color.White

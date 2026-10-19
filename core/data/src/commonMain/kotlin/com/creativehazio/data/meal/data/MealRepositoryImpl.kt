@@ -33,7 +33,7 @@ class MealRepositoryImpl(
 ) : MealRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getMeals(filters: List<String>): Flow<PagingData<Meal>> {
+    override fun getMeals(filters: List<String>, searchQuery: String): Flow<PagingData<Meal>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -45,7 +45,7 @@ class MealRepositoryImpl(
                 mealDataSource = mealDataSource
             ),
             pagingSourceFactory = {
-                girlFitDatabase.mealDao().getMeals(filters)
+                girlFitDatabase.mealDao().getMeals(filters, searchQuery)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toMeal() }

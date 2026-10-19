@@ -137,6 +137,7 @@ internal fun MealsScreen(
 
                 if (meal != null) {
                     MealCard(
+                        sharedElementKeyId = meal.id,
                         imageUrl = meal.imageUrl,
                         onMealCardClicked = { onEvent(MealsEvent.OnMealCardClicked(meal.id)) }
                     )

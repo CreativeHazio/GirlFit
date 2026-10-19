@@ -8,11 +8,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import com.creativehazio.designsystem.SharedElementKey
 import com.creativehazio.designsystem.components.GirlfitImage
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
 import com.creativehazio.designsystem.theme.Sizing
 
 @Composable
 internal fun MealCard(
+    sharedElementKeyId: String = "",
     imageUrl: String,
     onMealCardClicked: () -> Unit
 ) {
@@ -22,7 +25,9 @@ internal fun MealCard(
         modifier = Modifier.height(Sizing.CardHeightLarge)
             .clickable {
                 onMealCardClicked()
-            }
+            }.sharedBoundsIfAvailable(
+                key = SharedElementKey(sharedElementKeyId, SharedElementKey.Type.Image)
+            )
     ) {
 
         GirlfitImage(
