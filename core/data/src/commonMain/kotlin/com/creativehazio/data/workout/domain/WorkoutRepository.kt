@@ -5,7 +5,7 @@ import com.creativehazio.data.user.domain.CyclePhase
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
-    fun getWorkouts(category: WorkoutCategory): Flow<PagingData<Workout>>
+    fun getWorkouts(category: WorkoutCategory, searchQuery: String): Flow<PagingData<Workout>>
     suspend fun getWorkout(workoutId: String): Workout
     suspend fun getCycleRelatedWorkouts(
         limit: Int,

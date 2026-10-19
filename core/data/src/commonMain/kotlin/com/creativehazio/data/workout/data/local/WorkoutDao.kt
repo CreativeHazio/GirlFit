@@ -12,16 +12,25 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutDao {
 
     @Transaction
-    @Query("SELECT * FROM workouts ORDER BY createdAt DESC")
-    fun getWorkouts() : PagingSource<Int, WorkoutWithExercises>
+    @Query(
+        """
+    SELECT * FROM workouts
+    WHERE :query = '' OR title LIKE '%' || :query || '%'
+    ORDER BY createdAt DESC
+    """
+    )
+    fun getWorkouts(query: String): PagingSource<Int, WorkoutWithExercises>
 
     @Transaction
-    @Query("SELECT * FROM workouts WHERE category = :category ORDER BY createdAt DESC LIMIT 5")
-    fun getWorkoutsByCategoryAsFlow(category: String): Flow<List<WorkoutWithExercises>>
-
-    @Transaction
-    @Query("SELECT * FROM workouts WHERE category = :category ORDER BY createdAt DESC")
-    fun getWorkoutsByCategory(category: String): PagingSource<Int, WorkoutWithExercises>
+    @Query(
+        """
+    SELECT * FROM workouts
+    WHERE category = :category
+    AND (:query = '' OR title LIKE '%' || :query || '%')
+    ORDER BY createdAt DESC
+    """
+    )
+    fun getWorkoutsByCategory(category: String, query: String): PagingSource<Int, WorkoutWithExercises>
 
     @Transaction
     @Query("SELECT * FROM workouts ORDER BY createdAt ASC LIMIT 1")
@@ -29,7 +38,7 @@ interface WorkoutDao {
 
     @Transaction
     @Query("SELECT * FROM workouts WHERE id = :workoutId")
-    suspend fun getWorkoutById(workoutId: String) : WorkoutWithExercises
+    suspend fun getWorkoutById(workoutId: String): WorkoutWithExercises
 
     @Query("DELETE FROM workouts")
     suspend fun clearAllWorkouts()

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -25,10 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -48,6 +45,7 @@ import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
+import com.creativehazio.designsystem.components.GirlfitEmptyState
 import com.creativehazio.designsystem.components.GirlfitErrorLoadingItem
 import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
@@ -87,12 +85,10 @@ fun WorkoutScreenRoot(
     }
 
     val workouts = viewModel.workouts.collectAsLazyPagingItems()
-    val workoutCategory = viewModel.workoutCategory.collectAsStateWithLifecycle().value
 
     WorkoutScreen(
         paddingValues = paddingValues,
         workouts = workouts,
-        workoutCategory = workoutCategory,
         uiState = uiState,
         event = event
     )
@@ -103,7 +99,6 @@ fun WorkoutScreenRoot(
 internal fun WorkoutScreen(
     paddingValues: PaddingValues,
     workouts: LazyPagingItems<Workout>,
-    workoutCategory: WorkoutCategory,
     uiState: WorkoutState,
     event: (WorkoutEvent) -> Unit,
 ) {
@@ -113,18 +108,35 @@ internal fun WorkoutScreen(
         modifier = Modifier.padding(horizontal = Spacing.Medium),
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium),
         horizontalArrangement = Arrangement.spacedBy(Spacing.Medium),
-        contentPadding = paddingValues,
+        contentPadding = PaddingValues(bottom = paddingValues.calculateBottomPadding()),
     ) {
 
-        item(
-            span = { GridItemSpan(maxLineSpan) },
+        stickyHeader(
             contentType = "welcome_and_search"
         ) {
-            WelcomeAndSearchSection(
-                onSearchWorkoutClicked = {
-                    event(WorkoutEvent.OnSearchWorkoutClicked(it))
-                }
-            )
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.surface)
+                    .statusBarsPadding(),
+                verticalArrangement = Arrangement.spacedBy(Spacing.Medium),
+            ) {
+                Text(
+                    text = "Let's go, Ria 💌",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                WorkoutSearchbar(
+                    searchQuery = uiState.searchQuery,
+                    onQueryChange = {
+                        event(WorkoutEvent.OnSearchQueryChange(it))
+                    },
+                    onSearchWorkoutClicked = {
+                        event(WorkoutEvent.OnSearchQueryChange(it))
+                    }
+                )
+            }
+
         }
 
         item(
@@ -142,7 +154,7 @@ internal fun WorkoutScreen(
             contentType = "goal_header_and_pill"
         ) {
             GoalHeaderAndPills(
-                workoutCategory = workoutCategory,
+                workoutCategory = uiState.workoutCategory,
                 onWorkoutCategoryPillClicked = { event(WorkoutEvent.OnWorkoutCategoryPillClicked(it)) }
             )
         }
@@ -167,49 +179,64 @@ internal fun WorkoutScreen(
             }
 
             else -> {
-                items(
-                    count = workouts.itemCount,
-                    key = workouts.itemKey { it.id },
-                    contentType = { "workout_section" }
-                ) { index ->
+                val isEmpty = workouts.itemCount == 0 &&
+                        workouts.loadState.refresh is LoadState.NotLoading &&
+                        workouts.loadState.append.endOfPaginationReached &&
+                        workouts.loadState.mediator?.refresh !is LoadState.Loading
 
-                    val workout = workouts[index]
-
-                    if (workout != null) {
-                        val currentDay = workout.challenge.challengeDays.find {
-                            it.state == ChallengeDayState.CURRENT
-                        }
-
-                        GirlFitWorkoutCard(
-                            modifier = Modifier.height(Sizing.CardHeightLarge),
-                            sharedKey = workout.id,
-                            title = workout.title,
-                            imageUrl = workout.imageUrl,
-                            durationText = workout.getDurationText(),
-                            detailsText = workout.getDetailsText(),
-                            buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
-                            onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
+                if (isEmpty) {
+                    item(span = { GridItemSpan(maxLineSpan) }, contentType = "empty_state") {
+                        GirlfitEmptyState(
+                            title = "Nothing to show here 💌",
+                            subtitle = "We couldn't find any workouts matching your criteria."
                         )
                     }
+                } else {
+                    items(
+                        count = workouts.itemCount,
+                        key = workouts.itemKey { it.id },
+                        contentType = { "workout_section" }
+                    ) { index ->
 
-                }
+                        val workout = workouts[index]
 
-                when (val append = workouts.loadState.append) {
-                    LoadState.Loading -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_loading") {
-                        Box(Modifier.fillMaxWidth().padding(Spacing.Medium), contentAlignment = Alignment.Center) {
-                            CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
+                        if (workout != null) {
+                            val currentDay = workout.challenge.challengeDays.find {
+                                it.state == ChallengeDayState.CURRENT
+                            }
+
+                            GirlFitWorkoutCard(
+                                modifier = Modifier.height(Sizing.CardHeightLarge),
+                                sharedKey = workout.id,
+                                title = workout.title,
+                                imageUrl = workout.imageUrl,
+                                durationText = workout.getDurationText(),
+                                detailsText = workout.getDetailsText(),
+                                buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
+                                onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
+                            )
                         }
+
                     }
 
-                    is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_error") {
-                        GirlfitErrorLoadingItem(
-                            error = append.error.message,
-                            onRetryClicked = { workouts.retry() },
-                            modifier = Modifier
-                        )
+                    when (val append = workouts.loadState.append) {
+                        LoadState.Loading -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_loading") {
+                            Box(Modifier.fillMaxWidth().padding(Spacing.Medium), contentAlignment = Alignment.Center) {
+                                CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
+                            }
+                        }
+
+                        is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_error") {
+                            GirlfitErrorLoadingItem(
+                                error = append.error.message,
+                                onRetryClicked = { workouts.retry() },
+                                modifier = Modifier
+                            )
+                        }
+
+                        else -> {}
                     }
 
-                    else -> {}
                 }
             }
         }
@@ -219,34 +246,23 @@ internal fun WorkoutScreen(
 }
 
 @Composable
-internal fun WelcomeAndSearchSection(
+internal fun WorkoutSearchbar(
+    searchQuery: String,
+    onQueryChange: (String) -> Unit,
     onSearchWorkoutClicked: (String) -> Unit
 ) {
 
-    var searchQuery by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.padding(top = Spacing.Medium),
-        verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
-    ) {
-        Text(
-            "Let's go, Ria 💌",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        GirlFitSearchBar(
-            modifier = Modifier.fillMaxWidth(),
-            query = searchQuery,
-            onQueryChange = {
-                searchQuery = it
-            },
-            placeholderText = "e.g., postpartum workout",
-            onSearchPressed = {
-                onSearchWorkoutClicked(searchQuery)
-            }
-        )
-    }
+    GirlFitSearchBar(
+        modifier = Modifier.fillMaxWidth(),
+        query = searchQuery,
+        onQueryChange = {
+            onQueryChange(it)
+        },
+        placeholderText = "e.g., postpartum workout",
+        onSearchPressed = {
+            onSearchWorkoutClicked(searchQuery)
+        }
+    )
 }
 
 @Composable
@@ -391,7 +407,6 @@ fun WorkoutPreview() {
     WorkoutScreen(
         paddingValues = PaddingValues.Zero,
         workouts = flowOf(PagingData.empty<Workout>()).collectAsLazyPagingItems(),
-        workoutCategory = WorkoutCategory.ALL,
         uiState = WorkoutState(),
         event = {}
     )

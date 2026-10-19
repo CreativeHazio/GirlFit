@@ -34,7 +34,10 @@ class WorkoutRepositoryImpl(
 ) : WorkoutRepository {
 
     @OptIn(ExperimentalPagingApi::class)
-    override fun getWorkouts(category: WorkoutCategory): Flow<PagingData<Workout>> {
+    override fun getWorkouts(
+        category: WorkoutCategory,
+        searchQuery: String
+    ): Flow<PagingData<Workout>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 20,
@@ -47,9 +50,9 @@ class WorkoutRepositoryImpl(
             ),
             pagingSourceFactory = {
                 if (category == WorkoutCategory.ALL) {
-                    girlFitDatabase.workoutDao().getWorkouts()
+                    girlFitDatabase.workoutDao().getWorkouts(searchQuery)
                 } else {
-                    girlFitDatabase.workoutDao().getWorkoutsByCategory(category.name)
+                    girlFitDatabase.workoutDao().getWorkoutsByCategory(category.name, searchQuery)
                 }
             }
         ).flow.map { pagingData ->
