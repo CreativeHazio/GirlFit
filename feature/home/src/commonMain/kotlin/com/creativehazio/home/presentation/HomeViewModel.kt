@@ -9,7 +9,6 @@ import com.creativehazio.common.State
 import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.user.domain.User
-import com.creativehazio.data.workout.data.Seeder
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
@@ -19,6 +18,7 @@ import girlfit.feature.home.generated.resources.exhausted_emoji
 import girlfit.feature.home.generated.resources.sad_emoji
 import girlfit.feature.home.generated.resources.sick_emoji
 import girlfit.feature.home.generated.resources.smile_emoji
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -32,6 +32,8 @@ data class HomeState(
         "Tired" to Res.drawable.exhausted_emoji,
         "Angry" to Res.drawable.angry_emoji,
     ),
+    val isRecommendedLoading: Boolean = true,
+    val isRelaxLoading: Boolean = true,
     val recommendedWorkouts: List<Workout> = emptyList(),
     val relaxWorkouts: List<Workout> = emptyList(),
 ) : State
@@ -48,30 +50,21 @@ sealed interface HomeEffect : Effect {
 class HomeViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val workoutRepository: WorkoutRepository,
-    private val girlFitDatabase: GirlFitDatabase
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
-//        viewModelScope.launch {
-//            // TODO: Fix this making the workouts disappear
-//            val existingWorkout = girlFitDatabase.workoutDao().getLastWorkout()
-//
-//            if (existingWorkout == null) {
-//                val seeder = Seeder(girlFitDatabase = girlFitDatabase)
-//                seeder.addRelaxAndRecommendedWorkouts()
-//            }
-//        }
-        getRecommendedWorkouts(CyclePhase.MENSTRUAL)
-        getRelaxWorkouts(CyclePhase.MENSTRUAL)
+        getRecommendedWorkouts(CyclePhase.OVULATION)
+        getRelaxWorkouts(CyclePhase.OVULATION)
     }
 
     override fun onEvent(event: HomeEvent) {
-        when(event) {
+        when (event) {
             is HomeEvent.OnWorkoutCardClicked -> {
-                when(event.workout.type) {
+                when (event.workout.type) {
                     WorkoutType.CHALLENGE -> {
                         sendEffect(HomeEffect.NavigateToWorkoutChallengeCalender(event.workout.id))
                     }
+
                     WorkoutType.TIME -> {
                         sendEffect(HomeEffect.NavigateToWorkoutDetail(event.workout.id))
                     }
@@ -82,17 +75,21 @@ class HomeViewModel(
 
     private fun getRecommendedWorkouts(cyclePhase: CyclePhase) {
         viewModelScope.launch {
-            workoutRepository.getRecommendedWorkouts(cyclePhase).collect {
-                updateState { copy(recommendedWorkouts = it) }
-            }
+            workoutRepository.getRecommendedWorkouts(cyclePhase)
+                .catch { updateState { copy(isRecommendedLoading = false) } }
+                .collect {
+                    updateState { copy(recommendedWorkouts = it, isRecommendedLoading = false) }
+                }
         }
     }
 
     private fun getRelaxWorkouts(cyclePhase: CyclePhase) {
         viewModelScope.launch {
-            workoutRepository.getRelaxWorkouts(cyclePhase).collect {
-                updateState { copy(relaxWorkouts = it) }
-            }
+            workoutRepository.getRelaxWorkouts(cyclePhase)
+                .catch { updateState { copy(isRelaxLoading = false) } }
+                .collect {
+                    updateState { copy(relaxWorkouts = it, isRelaxLoading = false) }
+                }
         }
     }
 }

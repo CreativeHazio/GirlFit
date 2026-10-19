@@ -89,6 +89,7 @@ internal fun HomeScreen(
 
         item {
             WorkoutSection(
+                isLoading = uiState.isRecommendedLoading,
                 name = "Recommended workouts",
                 workouts = uiState.recommendedWorkouts,
                 onNavigateToWorkoutDetail = {
@@ -99,6 +100,7 @@ internal fun HomeScreen(
 
         item {
             WorkoutSection(
+                isLoading = uiState.isRelaxLoading,
                 name = "Relax instead?",
                 workouts = uiState.relaxWorkouts,
                 onNavigateToWorkoutDetail = {

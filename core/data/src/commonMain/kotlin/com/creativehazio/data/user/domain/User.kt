@@ -8,5 +8,5 @@ data class User(
 )
 
 enum class CyclePhase {
-    MENSTRUAL, FOLLICULAR, OVULATION, LUTEAL
+    NONE, MENSTRUAL, FOLLICULAR, OVULATION, LUTEAL
 }

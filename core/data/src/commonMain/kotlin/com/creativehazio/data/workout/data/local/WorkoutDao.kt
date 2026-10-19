@@ -50,10 +50,10 @@ interface WorkoutDao {
     suspend fun clearAllChallengeDays()
 
     @Transaction
-    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'RELAX'")
+    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'RELAX' LIMIT 3")
     fun getRelaxWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
 
     @Transaction
-    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'STRENGTH'")
+    @Query("SELECT * FROM workouts WHERE cyclePhase = :phase AND category = 'STRENGTH' LIMIT 3")
     fun getRecommendedWorkoutByPhase(phase: String): Flow<List<WorkoutWithExercises>>
 }

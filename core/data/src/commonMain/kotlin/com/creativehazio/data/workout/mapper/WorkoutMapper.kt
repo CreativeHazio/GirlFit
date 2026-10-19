@@ -1,5 +1,6 @@
 package com.creativehazio.data.workout.mapper
 
+import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.workout.data.local.ChallengeDayEntity
 import com.creativehazio.data.workout.data.local.ExerciseEntity
 import com.creativehazio.data.workout.data.local.WorkoutEntity
@@ -23,6 +24,7 @@ fun WorkoutDto.toWorkoutEntity() : WorkoutEntity {
         title = this.title,
         imageUrl = this.imageUrl,
         details = this.details,
+        cyclePhase = this.cyclePhase,
         duration = this.duration,
         level = this.level,
         type = this.type,
@@ -67,6 +69,7 @@ fun WorkoutWithExercises.toWorkout() : Workout {
         imageUrl = workout.imageUrl,
         details = workout.details,
         duration = workout.duration,
+        cyclePhase = CyclePhase.valueOf(workout.cyclePhase),
         level = WorkoutLevel.valueOf(workout.level),
         type = WorkoutType.valueOf(workout.type),
         category = WorkoutCategory.valueOf(workout.category),
