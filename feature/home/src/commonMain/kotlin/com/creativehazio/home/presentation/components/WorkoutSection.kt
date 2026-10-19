@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.creativehazio.common.util.DateTimeUtil
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutType
+import com.creativehazio.designsystem.LocalSharedTransitionScope
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
@@ -36,6 +37,7 @@ internal fun WorkoutSection(
         workouts.forEach { workout ->
             GirlFitWorkoutCard(
                 modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
+                sharedKey = workout.id,
                 title = workout.title,
                 titleStyle = MaterialTheme.typography.headlineSmall,
                 durationText = workout.getDurationText(),

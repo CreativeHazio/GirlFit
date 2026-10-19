@@ -21,6 +21,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeScreenRoot(
     homeViewModel: HomeViewModel,
+    modifier: Modifier,
     contentPaddingValues: PaddingValues,
     onNavigateToWorkoutDetail: (String) -> Unit,
     onNavigateToWorkoutChallengeCalender: (String) -> Unit,
@@ -43,6 +44,7 @@ fun HomeScreenRoot(
     }
 
     HomeScreen(
+        modifier = modifier,
         contentPaddingValues = contentPaddingValues,
         uiState = uiState,
         event = event,
@@ -52,13 +54,14 @@ fun HomeScreenRoot(
 
 @Composable
 internal fun HomeScreen(
+    modifier: Modifier,
     contentPaddingValues: PaddingValues,
     uiState: HomeState,
     event: (HomeEvent) -> Unit,
 ) {
 
     LazyColumn(
-        modifier = Modifier.padding(
+        modifier = modifier.padding(
             start = Spacing.Medium,
             end = Spacing.Medium
         ),
@@ -113,6 +116,7 @@ internal fun HomeScreen(
 @Composable
 fun HomeScreenPreview() {
     HomeScreen(
+        modifier = Modifier,
         contentPaddingValues = PaddingValues.Zero,
         uiState = HomeState(),
         event = {},

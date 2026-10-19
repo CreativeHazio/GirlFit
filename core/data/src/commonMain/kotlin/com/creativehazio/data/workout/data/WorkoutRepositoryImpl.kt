@@ -70,28 +70,26 @@ class WorkoutRepositoryImpl(
 
     // TODO: For relax and recommended, add cloud sync incase user wipes app's data
     // TODO: And change this to a list instead of flow
-    override suspend fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                girlFitDatabase.workoutDao().getRecommendedWorkoutByPhase(currentCyclePhase.name)
-                    .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                flowOf(emptyList())
-            }
+    override suspend fun getRecommendedWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> {
+        return try {
+            girlFitDatabase.workoutDao().getRecommendedWorkoutByPhase(currentCyclePhase.name)
+                .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            flowOf(emptyList())
         }
+}
 
-    override suspend fun getRelaxWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                girlFitDatabase.workoutDao().getRelaxWorkoutByPhase(currentCyclePhase.name)
-                    .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                flowOf(emptyList())
-            }
-
+    override suspend fun getRelaxWorkouts(currentCyclePhase: CyclePhase): Flow<List<Workout>> {
+        return try {
+            girlFitDatabase.workoutDao().getRelaxWorkoutByPhase(currentCyclePhase.name)
+                .map { workoutsWithExercises -> workoutsWithExercises.map { it.toWorkout() } }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            flowOf(emptyList())
         }
+    }
+
 
 }
 

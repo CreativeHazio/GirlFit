@@ -1,5 +1,6 @@
 package com.creativehazio.girlfit
 
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -8,6 +9,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.creativehazio.auth.presentation.emailverification.EmailVerificationScreenRoot
@@ -26,6 +29,8 @@ import com.creativehazio.auth.presentation.login.LoginScreenRoot
 import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
+import com.creativehazio.designsystem.LocalAnimatedVisibilityScope
+import com.creativehazio.designsystem.LocalSharedTransitionScope
 import com.creativehazio.designsystem.components.BottomBarTab
 import com.creativehazio.designsystem.components.GirlFitBottomBar
 import com.creativehazio.designsystem.theme.GirlFitTheme
@@ -110,205 +115,221 @@ fun App() {
         val snappy = tween<IntOffset>(200, easing = FastOutSlowInEasing)
         val snappyFade = tween<Float>(200, easing = FastOutSlowInEasing)
 
-        NavDisplay(
-            backStack = backStack,
-            onBack = {
-                if (backStack.size > 1) backStack.removeLastOrNull()
-            },
-            transitionSpec = {
-                (slideInHorizontally(snappy) { it / 3 } + fadeIn(snappyFade)) togetherWith
-                        (slideOutHorizontally(snappy) { -it / 6 } + fadeOut(snappyFade))
-            },
+        SharedTransitionLayout {
+            CompositionLocalProvider(
+                LocalSharedTransitionScope provides this,
+            ) {
+                NavDisplay(
+                    backStack = backStack,
+                    onBack = {
+                        if (backStack.size > 1) backStack.removeLastOrNull()
+                    },
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    transitionSpec = {
+                        (slideInHorizontally(snappy) { it / 3 } + fadeIn(snappyFade)) togetherWith
+                                (slideOutHorizontally(snappy) { -it / 6 } + fadeOut(snappyFade))
+                    },
+                    popTransitionSpec = {
+                        (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
+                                (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
+                    },
+                    predictivePopTransitionSpec = {
+                        (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
+                                (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
+                    },
+                    entryProvider = entryProvider {
+                        entry<Splash> {
 
-            popTransitionSpec = {
-                (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
-                        (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
-            },
-            entryProvider = entryProvider {
-                entry<Splash> {
+                            val splashViewModel : SplashViewModel = koinViewModel()
 
-                    val splashViewModel : SplashViewModel = koinViewModel()
-
-                    SplashScreenRoot(
-                        viewModel = splashViewModel,
-                        onNavigateToOnboarding = {
-                            backStack.clear()
-                            backStack.add(Onboarding)
-                        },
-                        onNavigateToAuth = {
-                            backStack.clear()
-                            backStack.add(Login)
-                        },
-                        onNavigateToMain = {
-                            backStack.clear()
-                            backStack.add(Main)
-                        },
-                    )
-                }
-
-                entry<Onboarding> {
-                    val onboardingViewModel : OnboardingViewModel = koinViewModel()
-
-                    OnboardingScreenRoot(
-                        viewModel = onboardingViewModel,
-                        onNavigateToAuth = {
-                            backStack.clear()
-                            backStack.add(Login)
-                        },
-                        onNavigateToMain = {
-                            backStack.clear()
-                            backStack.add(Main)
-                        }
-                    )
-                }
-
-                entry<Login> {
-                    val loginViewModel: LoginViewModel = koinViewModel()
-
-                    LoginScreenRoot(
-                        loginViewModel = loginViewModel,
-                        onNavigateToSignUp = {
-                            backStack.add(SignUp)
-                        },
-                        onNavigateToHome = {
-                            backStack.clear()
-                            backStack.add(Main)
-                        },
-                        onNavigateToEmailVerification = { email ->
-                            backStack.add(EmailVerification(email))
-                        }
-                    )
-                }
-
-                entry<EmailVerification> { key ->
-                    val emailVerificationViewModel: EmailVerificationViewModel = koinViewModel()
-
-                    EmailVerificationScreenRoot(
-                        email = key.email,
-                        emailVerificationViewModel = emailVerificationViewModel,
-                        onNavigateToLogin = {
-                            backStack.clear()
-                            backStack.add(Login)
-                        }
-                    )
-                }
-
-                entry<SignUp> {
-                    val signUpViewModel: SignUpViewModel = koinViewModel()
-
-                    SignUpScreenRoot(
-                        signUpViewModel = signUpViewModel,
-                        onNavigateToLogin = {
-                            backStack.removeLastOrNull()
-                        },
-                        onNavigateToEmailVerification = { email ->
-                            backStack.add(EmailVerification(email))
-                        }
-                    )
-                }
-
-                entry<Main> {
-                    MainAppContainer(
-                        onLogout = {
-                            backStack.clear()
-                            backStack.add(Login)
-                        },
-                        onNavigateToWorkoutChallengeCalender = { workoutId ->
-                            backStack.add(WorkoutChallengeCalender(workoutId))
-                        },
-                        onNavigateToWorkoutDetail = { workoutId ->
-                            backStack.add(WorkoutDetail(workoutId))
-                        },
-                        onNavigateToMealScan = {
-                            backStack.add(MealScan)
-                        },
-                        onNavigateToMealDetail = { mealId ->
-                            backStack.add(MealDetail(mealId))
-                        }
-                    )
-                }
-
-                entry<WorkoutChallengeCalender> { key ->
-
-                    val workoutChallengeCalenderViewModel: WorkoutChallengeCalenderViewModel =
-                        koinViewModel()
-
-                    LaunchedEffect(key.id) {
-                        workoutChallengeCalenderViewModel.onEvent(
-                            WorkoutChallengeCalenderEvent.GetWorkoutChallengeById(
-                                key.id
+                            SplashScreenRoot(
+                                viewModel = splashViewModel,
+                                onNavigateToOnboarding = {
+                                    backStack.clear()
+                                    backStack.add(Onboarding)
+                                },
+                                onNavigateToAuth = {
+                                    backStack.clear()
+                                    backStack.add(Login)
+                                },
+                                onNavigateToMain = {
+                                    backStack.clear()
+                                    backStack.add(Main)
+                                },
                             )
-                        )
-                    }
-
-                    WorkoutChallengeCalenderScreenRoot(
-                        viewModel = workoutChallengeCalenderViewModel,
-                        onBack = {
-                            backStack.removeLastOrNull()
-                        },
-                        onNavigateToWorkoutDetail = { workoutId ->
-                            backStack.add(WorkoutDetail(workoutId))
                         }
-                    )
-                }
 
-                entry<WorkoutDetail> { key ->
+                        entry<Onboarding> {
+                            val onboardingViewModel : OnboardingViewModel = koinViewModel()
 
-                    val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel()
-
-                    LaunchedEffect(key.workoutId) {
-                        workoutDetailViewModel.onEvent(WorkoutDetailEvent.GetWorkoutById(key.workoutId))
-                    }
-
-                    WorkoutDetailScreenRoot(
-                        workoutViewModel = workoutDetailViewModel,
-                        onBack = {
-                            backStack.removeLastOrNull()
+                            OnboardingScreenRoot(
+                                viewModel = onboardingViewModel,
+                                onNavigateToAuth = {
+                                    backStack.clear()
+                                    backStack.add(Login)
+                                },
+                                onNavigateToMain = {
+                                    backStack.clear()
+                                    backStack.add(Main)
+                                }
+                            )
                         }
-                    )
 
-                }
+                        entry<Login> {
+                            val loginViewModel: LoginViewModel = koinViewModel()
 
-                entry<MealDetail> { key ->
-
-                    val mealDetailViewModel: MealDetailViewModel = koinViewModel()
-
-                    LaunchedEffect(key.mealId) {
-                        mealDetailViewModel.onEvent(MealDetailEvent.GetMealDetailById(key.mealId))
-                    }
-
-                    MealDetailScreenRoot(
-                        viewModel = mealDetailViewModel,
-                        onBack = {
-                            backStack.removeLastOrNull()
+                            LoginScreenRoot(
+                                loginViewModel = loginViewModel,
+                                onNavigateToSignUp = {
+                                    backStack.add(SignUp)
+                                },
+                                onNavigateToHome = {
+                                    backStack.clear()
+                                    backStack.add(Main)
+                                },
+                                onNavigateToEmailVerification = { email ->
+                                    backStack.add(EmailVerification(email))
+                                }
+                            )
                         }
-                    )
 
-                }
+                        entry<EmailVerification> { key ->
+                            val emailVerificationViewModel: EmailVerificationViewModel = koinViewModel()
 
-                entry<MealScan> {
+                            EmailVerificationScreenRoot(
+                                email = key.email,
+                                emailVerificationViewModel = emailVerificationViewModel,
+                                onNavigateToLogin = {
+                                    backStack.clear()
+                                    backStack.add(Login)
+                                }
+                            )
+                        }
 
-                    val mealScanViewModel : MealScanViewModel = koinViewModel()
+                        entry<SignUp> {
+                            val signUpViewModel: SignUpViewModel = koinViewModel()
 
-                    MealScanScreenRoot(
-                        viewModel = mealScanViewModel
-                    )
+                            SignUpScreenRoot(
+                                signUpViewModel = signUpViewModel,
+                                onNavigateToLogin = {
+                                    backStack.removeLastOrNull()
+                                },
+                                onNavigateToEmailVerification = { email ->
+                                    backStack.add(EmailVerification(email))
+                                }
+                            )
+                        }
 
-                }
+                        entry<Main> {
+                            ProvideEntryAnimatedScope {
+                                MainAppContainer(
+                                    onLogout = {
+                                        backStack.clear()
+                                        backStack.add(Login)
+                                    },
+                                    onNavigateToWorkoutChallengeCalender = { workoutId ->
+                                        backStack.add(WorkoutChallengeCalender(workoutId))
+                                    },
+                                    onNavigateToWorkoutDetail = { workoutId ->
+                                        backStack.add(WorkoutDetail(workoutId))
+                                    },
+                                    onNavigateToMealScan = {
+                                        backStack.add(MealScan)
+                                    },
+                                    onNavigateToMealDetail = { mealId ->
+                                        backStack.add(MealDetail(mealId))
+                                    }
+                                )
+                            }
+                        }
 
-                entry<MealScanDetail> {
+                        entry<WorkoutChallengeCalender> { key ->
 
-                    val mealScanDetailViewModel : MealScanDetailViewModel = koinViewModel()
+                            val workoutChallengeCalenderViewModel: WorkoutChallengeCalenderViewModel =
+                                koinViewModel()
 
-                    MealScanDetailScreenRoot(
-                        viewModel = mealScanDetailViewModel
-                    )
+                            LaunchedEffect(key.id) {
+                                workoutChallengeCalenderViewModel.onEvent(
+                                    WorkoutChallengeCalenderEvent.GetWorkoutChallengeById(
+                                        key.id
+                                    )
+                                )
+                            }
 
-                }
+                            WorkoutChallengeCalenderScreenRoot(
+                                viewModel = workoutChallengeCalenderViewModel,
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                },
+                                onNavigateToWorkoutDetail = { workoutId ->
+                                    backStack.add(WorkoutDetail(workoutId))
+                                }
+                            )
+                        }
+
+                        entry<WorkoutDetail> { key ->
+
+                            val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel()
+
+                            LaunchedEffect(key.workoutId) {
+                                workoutDetailViewModel.onEvent(WorkoutDetailEvent.GetWorkoutById(key.workoutId))
+                            }
+
+                            ProvideEntryAnimatedScope {
+
+                                WorkoutDetailScreenRoot(
+                                    workoutViewModel = workoutDetailViewModel,
+                                    onBack = {
+                                        backStack.removeLastOrNull()
+                                    }
+                                )
+                            }
+
+
+                        }
+
+                        entry<MealDetail> { key ->
+
+                            val mealDetailViewModel: MealDetailViewModel = koinViewModel()
+
+                            LaunchedEffect(key.mealId) {
+                                mealDetailViewModel.onEvent(MealDetailEvent.GetMealDetailById(key.mealId))
+                            }
+
+                            MealDetailScreenRoot(
+                                viewModel = mealDetailViewModel,
+                                onBack = {
+                                    backStack.removeLastOrNull()
+                                }
+                            )
+
+                        }
+
+                        entry<MealScan> {
+
+                            val mealScanViewModel : MealScanViewModel = koinViewModel()
+
+                            MealScanScreenRoot(
+                                viewModel = mealScanViewModel
+                            )
+
+                        }
+
+                        entry<MealScanDetail> {
+
+                            val mealScanDetailViewModel : MealScanDetailViewModel = koinViewModel()
+
+                            MealScanDetailScreenRoot(
+                                viewModel = mealScanDetailViewModel
+                            )
+
+                        }
+
+                    }
+                )
 
             }
-        )
-
+        }
     }
 }
 
@@ -392,7 +413,9 @@ fun MainAppContainer(
             entryProvider = entryProvider {
                 entry<Home> {
                     val homeViewModel: HomeViewModel = koinViewModel()
+
                     HomeScreenRoot(
+                        modifier = Modifier,
                         contentPaddingValues = innerPadding,
                         homeViewModel = homeViewModel,
                         onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender,
@@ -453,4 +476,12 @@ fun MainAppContainer(
         )
     }
 
+}
+
+@Composable
+fun ProvideEntryAnimatedScope(content: @Composable () -> Unit) {
+    CompositionLocalProvider(
+        LocalAnimatedVisibilityScope provides LocalNavAnimatedContentScope.current,
+        content = content
+    )
 }

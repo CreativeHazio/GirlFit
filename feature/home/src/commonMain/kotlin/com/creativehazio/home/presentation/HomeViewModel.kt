@@ -52,15 +52,15 @@ class HomeViewModel(
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
-        viewModelScope.launch {
-            // TODO: Fix this making the workouts disappear
-            val existingWorkout = girlFitDatabase.workoutDao().getLastWorkout()
-
-            if (existingWorkout == null) {
-                val seeder = Seeder(girlFitDatabase = girlFitDatabase)
-                seeder.addRelaxAndRecommendedWorkouts()
-            }
-        }
+//        viewModelScope.launch {
+//            // TODO: Fix this making the workouts disappear
+//            val existingWorkout = girlFitDatabase.workoutDao().getLastWorkout()
+//
+//            if (existingWorkout == null) {
+//                val seeder = Seeder(girlFitDatabase = girlFitDatabase)
+//                seeder.addRelaxAndRecommendedWorkouts()
+//            }
+//        }
         getRecommendedWorkouts(CyclePhase.MENSTRUAL)
         getRelaxWorkouts(CyclePhase.MENSTRUAL)
     }

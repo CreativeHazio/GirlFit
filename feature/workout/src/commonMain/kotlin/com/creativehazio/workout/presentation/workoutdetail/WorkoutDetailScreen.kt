@@ -1,5 +1,6 @@
 package com.creativehazio.workout.presentation.workoutdetail
 
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,8 +46,11 @@ import com.creativehazio.data.workout.domain.Exercise
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutLevel
 import com.creativehazio.data.workout.domain.WorkoutType
+import com.creativehazio.designsystem.SharedElementKey
 import com.creativehazio.designsystem.components.GirlFitPrimaryButton
 import com.creativehazio.designsystem.components.GirlfitImage
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
+import com.creativehazio.designsystem.sharedElementIfAvailable
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.workout.generated.resources.Res
@@ -105,6 +110,7 @@ internal fun WorkoutDetailScreen(
                 contentScale = ContentScale.Crop
             )
 
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -162,7 +168,7 @@ internal fun WorkoutDetailScreen(
                 )
             }
             Text(
-                workout.title,
+                text = workout.title,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface
             )

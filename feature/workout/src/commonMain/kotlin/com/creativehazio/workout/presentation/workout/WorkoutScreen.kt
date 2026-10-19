@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,22 +34,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import com.creativehazio.common.util.DateTimeUtil
 import com.creativehazio.data.workout.domain.ChallengeDayState
+import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutType
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
+import com.creativehazio.designsystem.components.GirlfitErrorLoadingItem
 import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import girlfit.feature.workout.generated.resources.Res
 import girlfit.feature.workout.generated.resources.heart_icon_selected
 import girlfit.feature.workout.generated.resources.premium_icon
+import kotlinx.coroutines.flow.flowOf
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -80,8 +86,13 @@ fun WorkoutScreenRoot(
         }
     }
 
+    val workouts = viewModel.workouts.collectAsLazyPagingItems()
+    val workoutCategory = viewModel.workoutCategory.collectAsStateWithLifecycle().value
+
     WorkoutScreen(
         paddingValues = paddingValues,
+        workouts = workouts,
+        workoutCategory = workoutCategory,
         uiState = uiState,
         event = event
     )
@@ -91,11 +102,11 @@ fun WorkoutScreenRoot(
 @Composable
 internal fun WorkoutScreen(
     paddingValues: PaddingValues,
+    workouts: LazyPagingItems<Workout>,
+    workoutCategory: WorkoutCategory,
     uiState: WorkoutState,
     event: (WorkoutEvent) -> Unit,
 ) {
-
-    val workouts = uiState.workouts.collectAsLazyPagingItems()
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -109,7 +120,6 @@ internal fun WorkoutScreen(
             span = { GridItemSpan(maxLineSpan) },
             contentType = "welcome_and_search"
         ) {
-            Spacer(Modifier.size(Spacing.Medium))
             WelcomeAndSearchSection(
                 onSearchWorkoutClicked = {
                     event(WorkoutEvent.OnSearchWorkoutClicked(it))
@@ -132,35 +142,75 @@ internal fun WorkoutScreen(
             contentType = "goal_header_and_pill"
         ) {
             GoalHeaderAndPills(
-                workoutCategory = uiState.workoutCategory,
+                workoutCategory = workoutCategory,
                 onWorkoutCategoryPillClicked = { event(WorkoutEvent.OnWorkoutCategoryPillClicked(it)) }
             )
         }
 
-        items(
-            count = workouts.itemCount,
-            key = workouts.itemKey { it.id },
-            contentType = { "workout_section" }
-        ) { index ->
-
-            val workout = workouts[index]
-
-            if (workout != null) {
-                val currentDay = workout.challenge.challengeDays.find {
-                    it.state == ChallengeDayState.CURRENT
+        when (val refreshState = workouts.loadState.refresh) {
+            is LoadState.Loading -> {
+                item(span = { GridItemSpan(maxLineSpan) }, contentType = "loading") {
+                    Box(Modifier.fillMaxWidth().padding(Spacing.Large), contentAlignment = Alignment.Center) {
+                        CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
+                    }
                 }
-
-                GirlFitWorkoutCard(
-                    modifier = Modifier.height(Sizing.CardHeightLarge),
-                    title = workout.title,
-                    imageUrl = workout.imageUrl,
-                    durationText = workout.getDurationText(),
-                    detailsText = workout.getDetailsText(),
-                    buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
-                    onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
-                )
             }
 
+            is LoadState.Error -> {
+                item(span = { GridItemSpan(maxLineSpan) }, contentType = "error") {
+                    GirlfitErrorLoadingItem(
+                        error = refreshState.error.message,
+                        onRetryClicked = { workouts.retry() },
+                        modifier = Modifier
+                    )
+                }
+            }
+
+            else -> {
+                items(
+                    count = workouts.itemCount,
+                    key = workouts.itemKey { it.id },
+                    contentType = { "workout_section" }
+                ) { index ->
+
+                    val workout = workouts[index]
+
+                    if (workout != null) {
+                        val currentDay = workout.challenge.challengeDays.find {
+                            it.state == ChallengeDayState.CURRENT
+                        }
+
+                        GirlFitWorkoutCard(
+                            modifier = Modifier.height(Sizing.CardHeightLarge),
+                            title = workout.title,
+                            imageUrl = workout.imageUrl,
+                            durationText = workout.getDurationText(),
+                            detailsText = workout.getDetailsText(),
+                            buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
+                            onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
+                        )
+                    }
+
+                }
+
+                when (val append = workouts.loadState.append) {
+                    LoadState.Loading -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_loading") {
+                        Box(Modifier.fillMaxWidth().padding(Spacing.Medium), contentAlignment = Alignment.Center) {
+                            CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
+                        }
+                    }
+
+                    is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_error") {
+                        GirlfitErrorLoadingItem(
+                            error = append.error.message,
+                            onRetryClicked = { workouts.retry() },
+                            modifier = Modifier
+                        )
+                    }
+
+                    else -> {}
+                }
+            }
         }
 
     }
@@ -175,6 +225,7 @@ internal fun WelcomeAndSearchSection(
     var searchQuery by remember { mutableStateOf("") }
 
     Column(
+        modifier = Modifier.padding(top = Spacing.Medium),
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
         Text(
@@ -338,6 +389,8 @@ fun WorkoutCategoryPill(
 fun WorkoutPreview() {
     WorkoutScreen(
         paddingValues = PaddingValues.Zero,
+        workouts = flowOf(PagingData.empty<Workout>()).collectAsLazyPagingItems(),
+        workoutCategory = WorkoutCategory.ALL,
         uiState = WorkoutState(),
         event = {}
     )
