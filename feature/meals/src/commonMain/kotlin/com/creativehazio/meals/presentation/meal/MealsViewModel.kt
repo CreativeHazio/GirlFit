@@ -1,36 +1,26 @@
 package com.creativehazio.meals.presentation.meal
 
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.creativehazio.common.BaseViewModel
 import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
-import com.creativehazio.data.meal.data.remote.FilterItemDto
-import com.creativehazio.data.meal.data.remote.MealFilterDto
 import com.creativehazio.data.meal.domain.FilterItem
-import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealFilter
 import com.creativehazio.data.meal.domain.MealRepository
 import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealDetail
 import com.creativehazio.meals.presentation.meal.MealsEffect.NavigateToMealScan
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
-import org.koin.core.KoinApplication.Companion.init
-import kotlin.time.Clock
+import kotlinx.coroutines.flow.update
 
 data class MealsState(
     val isLoading: Boolean = false,
     val searchQuery: String = "",
-    val currentFilterItemIds: List<String> = emptyList(),
-    val filterItemIds: List<String> = emptyList()
+    val mealFilters: List<MealFilter> = mealFiltersList,
 ) : State
 
 sealed interface MealsEvent : Event {
@@ -39,7 +29,6 @@ sealed interface MealsEvent : Event {
     data class OnSearchQueryChanged(val searchQuery: String) : MealsEvent
     data object OnSearchPressed : MealsEvent
     data class OnFilterItemClicked(val filterItemId: String) : MealsEvent
-    data object ApplyFilters : MealsEvent
 }
 
 sealed interface MealsEffect : Effect {
@@ -54,12 +43,12 @@ class MealsViewModel(
     MealsState()
 ) {
 
-    private val _mealFilters = MutableStateFlow(emptyList<String>())
-    val mealFilters = _mealFilters.asStateFlow()
+    private val _filterItemIds = MutableStateFlow(emptyList<String>())
+    val filterItemIds = _filterItemIds.asStateFlow()
 
-    val meals = mealFilters
-        .flatMapLatest { filters ->
-            mealRepository.getMeals(filters)
+    val meals = filterItemIds
+        .flatMapLatest { filterIds ->
+            mealRepository.getMeals(filterIds)
         }.cachedIn(viewModelScope)
 
     override fun onEvent(event: MealsEvent) {
@@ -72,31 +61,18 @@ class MealsViewModel(
                 updateState { copy(searchQuery = event.searchQuery) }
             }
             is MealsEvent.OnFilterItemClicked -> addFilterItem(event.filterItemId)
-            MealsEvent.ApplyFilters -> applyFilters()
             MealsEvent.OnMealScanCamClicked -> {
                 sendEffect(NavigateToMealScan)
             }
         }
     }
 
-    private fun applyFilters() {
-        getMeals(uiState.value.filterItemIds)
-    }
-
-    private fun getMeals(filters: List<String>) {
-        viewModelScope.launch {
-            updateState { copy(isLoading = true) }
-            val meals = mealRepository.getMeals(filters).cachedIn(viewModelScope)
-            updateState { copy(isLoading = false, meals = meals) }
-        }
-    }
-
     private fun addFilterItem(filterItemId: String) {
-        val filterItemIds = uiState.value.filterItemIds
+        val filterItemIds = _filterItemIds.value
         if (filterItemIds.contains(filterItemId)) {
-            updateState { copy(filterItemIds = filterItemIds - filterItemId) }
+            _filterItemIds.update { filterItemIds - filterItemId }
         } else {
-            updateState { copy(filterItemIds = filterItemIds + filterItemId) }
+            _filterItemIds.update { filterItemIds + filterItemId }
         }
     }
 }
