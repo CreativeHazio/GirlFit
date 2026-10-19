@@ -52,6 +52,9 @@ import com.creativehazio.designsystem.components.GirlFitSearchBar
 import com.creativehazio.designsystem.components.GirlfitImage
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
+import com.creativehazio.meals.presentation.component.MealCard
+import com.creativehazio.meals.presentation.component.MealHeaderSection
+import com.creativehazio.meals.presentation.component.MealSearchBar
 import girlfit.feature.meals.generated.resources.Res
 import girlfit.feature.meals.generated.resources.camera_track_calories
 import girlfit.feature.meals.generated.resources.down_arrow
@@ -114,7 +117,7 @@ internal fun MealsScreen(
             contentPadding = paddingValues
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
-                HeaderSection(
+                MealHeaderSection(
                     onMealScanCamClicked = {
                         onEvent(MealsEvent.OnMealScanCamClicked)
                     }
@@ -126,7 +129,15 @@ internal fun MealsScreen(
             }
 
             item(span = { GridItemSpan(maxLineSpan) }) {
-                SuggestionsHeadingAndSearch(
+                Text(
+                    text = stringResource(Res.string.meals_suggestions),
+                    style = MaterialTheme.typography.headlineSmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+
+                Spacer(Modifier.size(Spacing.Medium))
+
+                MealSearchBar(
                     searchQuery = uiState.searchQuery,
                     showFilterCard = showMealFilterCard,
                     onSearchQueryChanged = { onEvent(MealsEvent.OnSearchQueryChanged(it)) },
@@ -167,213 +178,6 @@ internal fun MealsScreen(
             )
         }
     }
-}
-
-@Composable
-internal fun HeaderSection(
-    onMealScanCamClicked: () -> Unit
-) {
-    Box(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        IconButton(
-            modifier = Modifier.align(Alignment.TopEnd),
-            onClick = {}
-        ) {
-            Icon(
-                modifier = Modifier.size(Sizing.IconMedium),
-                painter = painterResource(Res.drawable.premium_icon),
-                contentDescription = null
-            )
-        }
-
-        GirlFitInfoBubble(
-            modifier = Modifier.align(Alignment.TopEnd).padding(top = 40.dp, end = Spacing.Medium),
-            text = stringResource(Res.string.camera_track_calories),
-            onClick = onMealScanCamClicked
-        )
-
-        Image(
-            modifier = Modifier.align(Alignment.TopEnd)
-                .padding(top = 87.dp, end = 180.dp)
-                .size(60.dp)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    onMealScanCamClicked()
-                },
-            painter = painterResource(Res.drawable.gradient_cam),
-            contentDescription = null
-        )
-    }
-}
-
-@Composable
-internal fun SuggestionsHeadingAndSearch(
-    searchQuery: String,
-    showFilterCard: Boolean,
-    onSearchQueryChanged: (String) -> Unit,
-    onSearchPressed: () -> Unit,
-    mealFilters: List<MealFilter>,
-    filterItemIds: List<String>,
-    onFilterClicked: () -> Unit,
-    onFilterItemClicked: (String) -> Unit,
-    onDismissFilter: () -> Unit
-) {
-    Column {
-        Text(
-            text = stringResource(Res.string.meals_suggestions),
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(Modifier.size(Spacing.Medium))
-
-        GirlFitSearchBar(
-            query = searchQuery,
-            onQueryChange = { onSearchQueryChanged(it) },
-            placeholderText = stringResource(Res.string.meals_search_hint),
-            onSearchPressed = { onSearchPressed() },
-            showFilterIcon = true,
-            onFilterClick = onFilterClicked
-        )
-
-        if (showFilterCard) {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Popup(
-                    alignment = Alignment.TopEnd,
-                    onDismissRequest = { onDismissFilter() },
-                    properties = PopupProperties(focusable = true)
-                ) {
-                    MealsFilterCard(
-                        mealFilters = mealFilters,
-                        filterItemIds = filterItemIds,
-                        onFilterItemClicked = {
-                            onFilterItemClicked(it)
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-internal fun MealCard(
-    imageUrl: String,
-    onMealCardClicked: () -> Unit
-) {
-
-    Card(
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.height(Sizing.CardHeightLarge)
-            .clickable {
-                onMealCardClicked()
-            }
-    ) {
-
-        GirlfitImage(
-            imageUrl = imageUrl,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-        )
-    }
-
-}
-
-@Composable
-internal fun MealsFilterCard(
-    mealFilters: List<MealFilter>,
-    filterItemIds: List<String>,
-    onFilterItemClicked: (String) -> Unit,
-) {
-
-    var expandedFilterIndex by remember { mutableIntStateOf(0) }
-
-    Card(
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
-    ) {
-
-        Column(
-            modifier = Modifier.padding(Spacing.Large),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            mealFilters.forEachIndexed { index, mealFilter ->
-                val isExpanded = expandedFilterIndex == index
-
-                val arrowRotation by animateFloatAsState(
-                    targetValue = if (isExpanded) 180f else 0f,
-                    label = "arrow_rotation"
-                )
-
-                Row(
-                    modifier = Modifier.clickable(
-                        indication = null,
-                        interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        expandedFilterIndex = if (isExpanded) expandedFilterIndex else index
-                    },
-                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = mealFilter.name,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    Icon(
-                        modifier = Modifier.graphicsLayer {
-                            rotationZ = arrowRotation
-                        },
-                        painter = painterResource(Res.drawable.down_arrow),
-                        contentDescription = null
-                    )
-                }
-
-                AnimatedVisibility(visible = isExpanded) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(Spacing.Large)
-                    ) {
-                        mealFilter.items.forEach { filterItem ->
-                            Row(
-                                modifier = Modifier.width(200.dp)
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null,
-                                    ) {
-                                        onFilterItemClicked(filterItem.id)
-                                    },
-                                horizontalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    text = filterItem.name,
-                                    style = MaterialTheme.typography.labelLarge
-                                )
-                                if (filterItemIds.contains(filterItem.id)) {
-                                    Icon(
-                                        painter = painterResource(Res.drawable.pink_check_icon),
-                                        tint = Color.Unspecified,
-                                        contentDescription = null
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-    }
-
 }
 
 @Preview(showBackground = true, showSystemUi = true)

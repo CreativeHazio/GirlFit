@@ -26,7 +26,6 @@ data class MealNutrientDto(
 @Serializable
 data class MealFilterDto(
     val id: String = "",
-    val createdAt: Long = 0L,
     val name: String = "",
     val items: List<FilterItemDto> = emptyList()
 )
@@ -34,6 +33,5 @@ data class MealFilterDto(
 @Serializable
 data class FilterItemDto(
     val id: String = "",
-    val createdAt: Long = 0L,
     val name: String = "",
 )

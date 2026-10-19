@@ -18,12 +18,6 @@ interface MealDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMealNutrients(mealNutrients: List<MealNutrientEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMealFilters(filters: List<MealFilterEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFilterItems(items: List<FilterItemEntity>)
-
     @Query("DELETE FROM meals")
     suspend fun clearAllMeals()
 
@@ -66,8 +60,4 @@ interface MealDao {
     @Transaction
     @Query("SELECT * FROM meals WHERE id = :mealId")
     suspend fun getMealById(mealId: String): MealWithNutrients
-
-    @Transaction
-    @Query("SELECT * FROM meal_filters ORDER BY createdAt DESC")
-    suspend fun getMealFilters(): List<MealFilterWithItem>
 }

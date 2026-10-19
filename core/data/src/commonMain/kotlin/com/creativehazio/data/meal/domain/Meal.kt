@@ -21,13 +21,11 @@ data class MealNutrient(
 
 data class MealFilter(
     val id: String = "",
-    val createdAt: Long = 0L,
     val name: String = "",
     val items: List<FilterItem> = emptyList()
 )
 
 data class FilterItem(
     val id: String = "",
-    val createdAt: Long = 0L,
     val name: String = "",
 )

@@ -32,7 +32,6 @@ data class MealNutrientEntity(
 @Entity(tableName = MEAL_FILTER)
 data class MealFilterEntity(
     @PrimaryKey val id: String,
-    val createdAt: Long,
     val name: String,
 )
 
@@ -40,6 +39,5 @@ data class MealFilterEntity(
 data class FilterItemEntity(
     @PrimaryKey val id: String,
     val mealFilterId: String,
-    val createdAt: Long,
     val name: String,
 )
