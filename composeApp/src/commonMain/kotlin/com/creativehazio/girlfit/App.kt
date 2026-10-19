@@ -35,6 +35,7 @@ import com.creativehazio.designsystem.LocalAnimatedVisibilityScope
 import com.creativehazio.designsystem.LocalSharedTransitionScope
 import com.creativehazio.designsystem.components.BottomBarTab
 import com.creativehazio.designsystem.components.GirlFitBottomBar
+import com.creativehazio.designsystem.renderAboveSharedElements
 import com.creativehazio.designsystem.theme.GirlFitTheme
 import com.creativehazio.home.presentation.HomeScreenRoot
 import com.creativehazio.home.presentation.HomeViewModel
@@ -295,18 +296,18 @@ fun App() {
 
                         entry<MealDetail> { key ->
 
-                            val mealDetailViewModel: MealDetailViewModel = koinViewModel()
-
-                            LaunchedEffect(key.mealId) {
-                                mealDetailViewModel.onEvent(MealDetailEvent.GetMealDetailById(key.mealId))
+                            val mealDetailViewModel: MealDetailViewModel = koinViewModel(key = key.mealId) {
+                                parametersOf(key.mealId)
                             }
 
-                            MealDetailScreenRoot(
-                                viewModel = mealDetailViewModel,
-                                onBack = {
-                                    backStack.removeLastOrNull()
-                                }
-                            )
+                            ProvideEntryAnimatedScope {
+                                MealDetailScreenRoot(
+                                    viewModel = mealDetailViewModel,
+                                    onBack = {
+                                        backStack.removeLastOrNull()
+                                    }
+                                )
+                            }
 
                         }
 
@@ -389,6 +390,7 @@ fun MainAppContainer(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             GirlFitBottomBar(
+                modifier = Modifier.renderAboveSharedElements(),
                 tabs = tabs,
                 currentRoute = currentTab,
                 onTabSelected = { selectedRoute ->

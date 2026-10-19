@@ -24,10 +24,15 @@ sealed interface MealDetailEffect : Effect {
 }
 
 class MealDetailViewModel(
+    mealId: String,
     private val mealRepository: MealRepository
 ) : BaseViewModel<MealDetailState, MealDetailEvent, MealDetailEffect>(
     MealDetailState()
 ) {
+
+    init {
+        onEvent(MealDetailEvent.GetMealDetailById(mealId))
+    }
     override fun onEvent(event: MealDetailEvent) {
         when (event) {
             MealDetailEvent.OnBackClicked -> sendEffect(MealDetailEffect.NavigateBack)

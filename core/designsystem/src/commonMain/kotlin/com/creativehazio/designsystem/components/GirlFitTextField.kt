@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -58,6 +60,7 @@ fun GirlFitTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     leadingIcon: DrawableResource? = null,
     trailingIcon: DrawableResource? = null,
+    trailingIconBadgeCount: Int = 0,
     onTrailingIconClick: () -> Unit = {},
 ) {
     TextField(
@@ -140,12 +143,26 @@ fun GirlFitTextField(
 
                 trailingIcon?.let {
                     IconButton(onClick = onTrailingIconClick) {
-                        Icon(
-                            modifier = Modifier.size(Sizing.IconMedium),
-                            painter = painterResource(trailingIcon),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
+                        BadgedBox(
+                            badge = {
+                                if (trailingIconBadgeCount > 0) {
+                                    Badge(
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = MaterialTheme.colorScheme.onPrimary
+                                    ) {
+                                        Text(text = if (trailingIconBadgeCount > 9) "9+" else trailingIconBadgeCount.toString())
+                                    }
+                                }
+                            }
+                        ) {
+
+                            Icon(
+                                modifier = Modifier.size(Sizing.IconMedium),
+                                painter = painterResource(trailingIcon),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onBackground
+                            )
+                        }
                     }
                 }
             }

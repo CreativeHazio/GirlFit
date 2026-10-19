@@ -18,12 +18,6 @@ interface MealDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMealNutrients(mealNutrients: List<MealNutrientEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMealFilters(filters: List<MealFilterEntity>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFilterItems(items: List<FilterItemEntity>)
-
     @Query("DELETE FROM meals")
     suspend fun clearAllMeals()
 
@@ -34,27 +28,44 @@ interface MealDao {
     @RawQuery(observedEntities = [MealEntity::class])
     fun getMealsRawQuery(query: RoomRawQuery): PagingSource<Int, MealWithNutrients>
 
-    fun getMeals(filters: List<String>): PagingSource<Int, MealWithNutrients> {
-        var queryString = "SELECT * FROM meals"
+    fun getMeals(filters: List<String>, searchQuery: String): PagingSource<Int, MealWithNutrients> {
+        val queryString = StringBuilder("SELECT * FROM meals")
+        val conditions = mutableListOf<String>()
+        val search = searchQuery.trim()
 
         if (filters.isNotEmpty()) {
-            val conditions = filters.map { "',' || filterIds || ',' LIKE ?" }
+            val filterConditions = filters.map {
+                "',' || filterIds || ',' LIKE ?"
+            }
 
-            queryString += " WHERE " + conditions.joinToString(" OR ")
+            conditions += "(${filterConditions.joinToString(" OR ")})"
         }
 
-        queryString += " ORDER BY createdAt DESC"
+        if (search.isNotEmpty()) {
+            conditions += "name LIKE ? COLLATE NOCASE"
+        }
+
+        if (conditions.isNotEmpty()) {
+            queryString.append(" WHERE ")
+            queryString.append(conditions.joinToString(" AND "))
+        }
+
+        queryString.append(" ORDER BY createdAt DESC")
 
         val query = RoomRawQuery(
-            sql = queryString,
+            sql = queryString.toString(),
             onBindStatement = { statement ->
-                filters.forEachIndexed { index, filterId ->
-                    statement.bindText(index + 1, "%,$filterId%,")
+                var index = 1
+
+                filters.forEach { filterId ->
+                    statement.bindText(index++, "%,$filterId,%")
+                }
+
+                if (search.isNotEmpty()) {
+                    statement.bindText(index, "%$search%")
                 }
             }
         )
-
-        println("Room query is" + query.sql)
 
         return getMealsRawQuery(query)
     }
@@ -66,8 +77,4 @@ interface MealDao {
     @Transaction
     @Query("SELECT * FROM meals WHERE id = :mealId")
     suspend fun getMealById(mealId: String): MealWithNutrients
-
-    @Transaction
-    @Query("SELECT * FROM meal_filters ORDER BY createdAt DESC")
-    suspend fun getMealFilters(): List<MealFilterWithItem>
 }

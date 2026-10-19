@@ -151,7 +151,7 @@ internal fun SignUpScreen(
             labelText = stringResource(Res.string.name),
             isError = nameError != null,
             errorText = nameError?.asString() ?: "",
-            singleLine = true
+            singleLine = true,
         )
 
         GirlFitTextField(
@@ -162,7 +162,7 @@ internal fun SignUpScreen(
             labelText = stringResource(Res.string.email),
             isError = emailError != null,
             errorText = emailError?.asString() ?: "",
-            singleLine = true
+            singleLine = true,
         )
 
         GirlFitTextField(
@@ -171,10 +171,10 @@ internal fun SignUpScreen(
                 event(SignUpEvent.OnPasswordChanged(it))
             },
             labelText = stringResource(Res.string.password),
-            visualTransformation = PasswordVisualTransformation(),
             isError = passwordError != null,
             errorText = passwordError?.asString() ?: "",
-            singleLine = true
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
         )
 
         GirlFitPrimaryButton(

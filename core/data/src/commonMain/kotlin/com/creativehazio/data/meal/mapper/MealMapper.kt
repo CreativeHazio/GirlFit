@@ -44,7 +44,6 @@ fun MealNutrientDto.toMealNutrientEntity(
 fun MealFilterDto.toMealFilterEntity() : MealFilterEntity {
     return MealFilterEntity(
         id = id,
-        createdAt = createdAt,
         name = name
     )
 }
@@ -52,7 +51,6 @@ fun MealFilterDto.toMealFilterEntity() : MealFilterEntity {
 fun MealFilterDto.toMealFilter() : MealFilter {
     return MealFilter(
         id = id,
-        createdAt = createdAt,
         name = name,
         items = items.map { it.toFilterItem() }
     )
@@ -64,7 +62,6 @@ fun FilterItemDto.toFilterItemEntity(
     return FilterItemEntity(
         id = id,
         mealFilterId = mealFilterId,
-        createdAt = createdAt,
         name = name
     )
 }
@@ -72,7 +69,6 @@ fun FilterItemDto.toFilterItemEntity(
 fun FilterItemDto.toFilterItem() : FilterItem {
     return FilterItem(
         id = id,
-        createdAt = createdAt,
         name = name
     )
 }
@@ -103,7 +99,6 @@ fun MealNutrientEntity.toMealNutrient() : MealNutrient {
 fun MealFilterWithItem.toMealFilter() : MealFilter {
     return MealFilter(
         id = mealFilter.id,
-        createdAt = mealFilter.createdAt,
         name = mealFilter.name,
         items = filterItems.map { it.toFilterItem() }
     )
@@ -112,7 +107,6 @@ fun MealFilterWithItem.toMealFilter() : MealFilter {
 fun FilterItemEntity.toFilterItem() : FilterItem {
     return FilterItem(
         id = id,
-        createdAt = createdAt,
         name = name
     )
 }

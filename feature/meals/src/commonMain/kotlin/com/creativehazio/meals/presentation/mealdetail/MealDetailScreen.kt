@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,8 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.creativehazio.data.meal.domain.Meal
 import com.creativehazio.data.meal.domain.MealNutrient
+import com.creativehazio.designsystem.SharedElementKey
 import com.creativehazio.designsystem.components.GirlFitInfoBubble
 import com.creativehazio.designsystem.components.GirlfitImage
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.meals.util.Utils
 import girlfit.feature.meals.generated.resources.Res
@@ -56,10 +59,13 @@ fun MealDetailScreenRoot(
         }
     }
 
-    MealDetailScreen(
-        uiState = uiState,
-        onEvent = event
-    )
+    Scaffold {
+        MealDetailScreen(
+            uiState = uiState,
+            onEvent = event
+        )
+    }
+
 }
 
 @Composable
@@ -84,6 +90,9 @@ internal fun MealDetailScreen(
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth()
                     .height(400.dp)
+                    .sharedBoundsIfAvailable(
+                        key = SharedElementKey(uiState.meal.id, SharedElementKey.Type.Image)
+                    )
             )
 
             IconButton(
