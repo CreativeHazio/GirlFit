@@ -52,6 +52,9 @@ kotlin {
 
                 implementation(libs.compose.components.resources)
 
+                implementation(libs.compottie)
+                implementation(libs.compottie.resources)
+
                 implementation(libs.paging.common)
                 implementation(libs.paging.compose)
             }

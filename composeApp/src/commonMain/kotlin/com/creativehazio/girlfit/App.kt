@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
@@ -31,6 +29,7 @@ import com.creativehazio.auth.presentation.login.LoginScreenRoot
 import com.creativehazio.auth.presentation.login.LoginViewModel
 import com.creativehazio.auth.presentation.signup.SignUpScreenRoot
 import com.creativehazio.auth.presentation.signup.SignUpViewModel
+import com.creativehazio.data.workout.domain.Exercise
 import com.creativehazio.designsystem.LocalAnimatedVisibilityScope
 import com.creativehazio.designsystem.LocalSharedTransitionScope
 import com.creativehazio.designsystem.components.BottomBarTab
@@ -43,7 +42,6 @@ import com.creativehazio.me.presentation.MeScreenRoot
 import com.creativehazio.me.presentation.MeViewModel
 import com.creativehazio.meals.presentation.meal.MealsScreenRoot
 import com.creativehazio.meals.presentation.meal.MealsViewModel
-import com.creativehazio.meals.presentation.mealdetail.MealDetailEvent
 import com.creativehazio.meals.presentation.mealdetail.MealDetailScreenRoot
 import com.creativehazio.meals.presentation.mealdetail.MealDetailViewModel
 import com.creativehazio.meals.presentation.mealscan.MealScanScreenRoot
@@ -51,6 +49,7 @@ import com.creativehazio.meals.presentation.mealscan.MealScanViewModel
 import com.creativehazio.meals.presentation.mealscandetails.MealScanDetailScreenRoot
 import com.creativehazio.meals.presentation.mealscandetails.MealScanDetailViewModel
 import com.creativehazio.navigation.EmailVerification
+import com.creativehazio.navigation.StartWorkout
 import com.creativehazio.navigation.Home
 import com.creativehazio.navigation.Login
 import com.creativehazio.navigation.Main
@@ -73,12 +72,12 @@ import com.creativehazio.startup.onboarding.OnboardingScreenRoot
 import com.creativehazio.startup.onboarding.OnboardingViewModel
 import com.creativehazio.startup.splash.SplashScreenRoot
 import com.creativehazio.startup.splash.SplashViewModel
+import com.creativehazio.workout.presentation.exercise.ExerciseScreenRoot
+import com.creativehazio.workout.presentation.exercise.ExerciseViewModel
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
-import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderEvent
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
-import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailEvent
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailScreenRoot
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel
 import girlfit.composeapp.generated.resources.Res
@@ -92,7 +91,6 @@ import girlfit.composeapp.generated.resources.progress
 import girlfit.composeapp.generated.resources.progress_selected
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
-import kotlinx.io.files.FileSystem
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -111,7 +109,7 @@ private val navConfig = SavedStateConfiguration {
 @Composable
 fun App() {
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Splash)
 
     // TODO: Split all complex main screens into composable functions
     GirlFitTheme {
@@ -255,8 +253,8 @@ fun App() {
                         entry<WorkoutChallengeCalender> { key ->
 
                             val workoutChallengeCalenderViewModel: WorkoutChallengeCalenderViewModel =
-                                koinViewModel(key = key.id) {
-                                    parametersOf(key.id)
+                                koinViewModel(key = key.workoutId) {
+                                    parametersOf(key.workoutId)
                                 }
 
                             ProvideEntryAnimatedScope {
@@ -285,6 +283,9 @@ fun App() {
 
                                 WorkoutDetailScreenRoot(
                                     workoutViewModel = workoutDetailViewModel,
+                                    onNavigateToExercise = {
+                                        backStack.add(StartWorkout(key.workoutId))
+                                    },
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     }
@@ -292,6 +293,18 @@ fun App() {
                             }
 
 
+                        }
+
+                        entry<StartWorkout> { key ->
+                            val exerciseViewModel: ExerciseViewModel = koinViewModel(key = key.workoutId) {
+                                parametersOf(key.workoutId)
+                            }
+
+                            ProvideEntryAnimatedScope {
+                                ExerciseScreenRoot(
+                                    viewModel = exerciseViewModel
+                                )
+                            }
                         }
 
                         entry<MealDetail> { key ->

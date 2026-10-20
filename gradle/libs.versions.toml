@@ -117,6 +117,7 @@ imagePickerKMP = { module = "io.github.ismoy:imagepickerkmp", version.ref = "ima
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 compottie = { module = "io.github.alexzhirkevich:compottie", version.ref = "compottie" }
+compottie-resources = { module = "io.github.alexzhirkevich:compottie-resources", version.ref = "compottie" }
 exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "exoplayer" }
 exoplayer-media3 = { module = "androidx.media3:media3-ui", version.ref = "exoplayer" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
