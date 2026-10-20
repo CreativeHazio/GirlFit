@@ -46,7 +46,10 @@ import com.creativehazio.data.workout.domain.Challenge
 import com.creativehazio.data.workout.domain.ChallengeDay
 import com.creativehazio.data.workout.domain.ChallengeDayState
 import com.creativehazio.data.workout.domain.Workout
+import com.creativehazio.designsystem.SharedElementKey
 import com.creativehazio.designsystem.components.GirlfitImage
+import com.creativehazio.designsystem.sharedBoundsIfAvailable
+import com.creativehazio.designsystem.sharedElementIfAvailable
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 import com.creativehazio.designsystem.theme.greyDisabledButtonLight
@@ -105,7 +108,14 @@ internal fun WorkoutChallengeCalenderScreen(
         ) {
 
             GirlfitImage(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .sharedBoundsIfAvailable(
+                        key = SharedElementKey(
+                            id = uiState.workout.id,
+                            type = SharedElementKey.Type.Image
+                        )
+                    )
+                    .fillMaxSize(),
                 imageUrl = uiState.workout.imageUrl,
                 contentScale = ContentScale.Crop
             )
@@ -149,7 +159,14 @@ internal fun WorkoutChallengeCalenderScreen(
                 }
 
                 Text(
-                    modifier = Modifier.padding(start = Spacing.Medium),
+                    modifier = Modifier
+                        .sharedElementIfAvailable(
+                            key = SharedElementKey(
+                                id = uiState.workout.id,
+                                type = SharedElementKey.Type.Title
+                            )
+                        )
+                        .padding(start = Spacing.Medium),
                     text = uiState.workout.title,
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White
@@ -157,7 +174,14 @@ internal fun WorkoutChallengeCalenderScreen(
 
                 // TODO: Rewrite entire screen based in reforms I did
                 Text(
-                    modifier = Modifier.padding(start = Spacing.Medium),
+                    modifier = Modifier
+                        .sharedBoundsIfAvailable(
+                            key = SharedElementKey(
+                                id = uiState.workout.id,
+                                type = SharedElementKey.Type.Subtitle
+                            )
+                        )
+                        .padding(start = Spacing.Medium),
                     text = "${uiState.workout.challenge.challengeTitle} Challenge",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.White

@@ -16,7 +16,7 @@ val LocalSharedTransitionScope = compositionLocalOf<SharedTransitionScope?> { nu
 val LocalAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> { null }
 
 data class SharedElementKey(val id: String, val type: Type) {
-    enum class Type { Image, Title, Container }
+    enum class Type { Image, Title, Subtitle, Container }
 }
 
 @Composable

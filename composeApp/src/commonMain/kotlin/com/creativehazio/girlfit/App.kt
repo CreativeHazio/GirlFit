@@ -148,7 +148,7 @@ fun App() {
                     entryProvider = entryProvider {
                         entry<Splash> {
 
-                            val splashViewModel : SplashViewModel = koinViewModel()
+                            val splashViewModel: SplashViewModel = koinViewModel()
 
                             SplashScreenRoot(
                                 viewModel = splashViewModel,
@@ -168,7 +168,7 @@ fun App() {
                         }
 
                         entry<Onboarding> {
-                            val onboardingViewModel : OnboardingViewModel = koinViewModel()
+                            val onboardingViewModel: OnboardingViewModel = koinViewModel()
 
                             OnboardingScreenRoot(
                                 viewModel = onboardingViewModel,
@@ -202,7 +202,8 @@ fun App() {
                         }
 
                         entry<EmailVerification> { key ->
-                            val emailVerificationViewModel: EmailVerificationViewModel = koinViewModel()
+                            val emailVerificationViewModel: EmailVerificationViewModel =
+                                koinViewModel()
 
                             EmailVerificationScreenRoot(
                                 email = key.email,
@@ -254,32 +255,31 @@ fun App() {
                         entry<WorkoutChallengeCalender> { key ->
 
                             val workoutChallengeCalenderViewModel: WorkoutChallengeCalenderViewModel =
-                                koinViewModel()
+                                koinViewModel(key = key.id) {
+                                    parametersOf(key.id)
+                                }
 
-                            LaunchedEffect(key.id) {
-                                workoutChallengeCalenderViewModel.onEvent(
-                                    WorkoutChallengeCalenderEvent.GetWorkoutChallengeById(
-                                        key.id
-                                    )
+                            ProvideEntryAnimatedScope {
+                                WorkoutChallengeCalenderScreenRoot(
+                                    viewModel = workoutChallengeCalenderViewModel,
+                                    onBack = {
+                                        backStack.removeLastOrNull()
+                                    },
+                                    onNavigateToWorkoutDetail = { workoutId ->
+                                        backStack.add(WorkoutDetail(workoutId))
+                                    }
                                 )
+
                             }
 
-                            WorkoutChallengeCalenderScreenRoot(
-                                viewModel = workoutChallengeCalenderViewModel,
-                                onBack = {
-                                    backStack.removeLastOrNull()
-                                },
-                                onNavigateToWorkoutDetail = { workoutId ->
-                                    backStack.add(WorkoutDetail(workoutId))
-                                }
-                            )
                         }
 
                         entry<WorkoutDetail> { key ->
 
-                            val workoutDetailViewModel: WorkoutDetailViewModel = koinViewModel(key = key.workoutId) {
-                                parametersOf(key.workoutId)
-                            }
+                            val workoutDetailViewModel: WorkoutDetailViewModel =
+                                koinViewModel(key = key.workoutId) {
+                                    parametersOf(key.workoutId)
+                                }
 
                             ProvideEntryAnimatedScope {
 
@@ -296,9 +296,10 @@ fun App() {
 
                         entry<MealDetail> { key ->
 
-                            val mealDetailViewModel: MealDetailViewModel = koinViewModel(key = key.mealId) {
-                                parametersOf(key.mealId)
-                            }
+                            val mealDetailViewModel: MealDetailViewModel =
+                                koinViewModel(key = key.mealId) {
+                                    parametersOf(key.mealId)
+                                }
 
                             ProvideEntryAnimatedScope {
                                 MealDetailScreenRoot(
@@ -313,7 +314,7 @@ fun App() {
 
                         entry<MealScan> {
 
-                            val mealScanViewModel : MealScanViewModel = koinViewModel()
+                            val mealScanViewModel: MealScanViewModel = koinViewModel()
 
                             MealScanScreenRoot(
                                 viewModel = mealScanViewModel
@@ -323,7 +324,7 @@ fun App() {
 
                         entry<MealScanDetail> {
 
-                            val mealScanDetailViewModel : MealScanDetailViewModel = koinViewModel()
+                            val mealScanDetailViewModel: MealScanDetailViewModel = koinViewModel()
 
                             MealScanDetailScreenRoot(
                                 viewModel = mealScanDetailViewModel
@@ -444,7 +445,7 @@ fun MainAppContainer(
                 }
 
                 entry<Progress> {
-                    val progressViewModel : ProgressViewModel = koinViewModel()
+                    val progressViewModel: ProgressViewModel = koinViewModel()
 
                     ProgressScreenRoot(
                         paddingValues = innerPadding,
@@ -456,7 +457,7 @@ fun MainAppContainer(
                 }
 
                 entry<Meals> {
-                    val mealsViewModel : MealsViewModel = koinViewModel()
+                    val mealsViewModel: MealsViewModel = koinViewModel()
 
                     MealsScreenRoot(
                         paddingValues = innerPadding,
@@ -472,7 +473,7 @@ fun MainAppContainer(
 
                 entry<Me> {
 
-                    val meViewModel : MeViewModel = koinViewModel()
+                    val meViewModel: MeViewModel = koinViewModel()
 
                     MeScreenRoot(
                         paddingValues = innerPadding,
