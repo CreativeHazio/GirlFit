@@ -162,7 +162,10 @@ internal fun WorkoutScreen(
         when (val refreshState = workouts.loadState.refresh) {
             is LoadState.Loading -> {
                 item(span = { GridItemSpan(maxLineSpan) }, contentType = "loading") {
-                    Box(Modifier.fillMaxWidth().padding(Spacing.Large), contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.fillMaxWidth().padding(Spacing.Large),
+                        contentAlignment = Alignment.Center
+                    ) {
                         CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
                     }
                 }
@@ -220,13 +223,22 @@ internal fun WorkoutScreen(
                     }
 
                     when (val append = workouts.loadState.append) {
-                        LoadState.Loading -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_loading") {
-                            Box(Modifier.fillMaxWidth().padding(Spacing.Medium), contentAlignment = Alignment.Center) {
+                        LoadState.Loading -> item(
+                            span = { GridItemSpan(maxLineSpan) },
+                            contentType = "append_loading"
+                        ) {
+                            Box(
+                                Modifier.fillMaxWidth().padding(Spacing.Medium),
+                                contentAlignment = Alignment.Center
+                            ) {
                                 CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
                             }
                         }
 
-                        is LoadState.Error -> item(span = { GridItemSpan(maxLineSpan) }, contentType = "append_error") {
+                        is LoadState.Error -> item(
+                            span = { GridItemSpan(maxLineSpan) },
+                            contentType = "append_error"
+                        ) {
                             GirlfitErrorLoadingItem(
                                 error = append.error.message,
                                 onRetryClicked = { workouts.retry() },
