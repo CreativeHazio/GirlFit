@@ -8,6 +8,7 @@ import com.creativehazio.common.State
 import com.creativehazio.data.workout.domain.Exercise
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
+import girlfit.feature.workout.generated.resources.Res
 import kotlinx.coroutines.launch
 
 data class WorkoutDetailState(
@@ -42,13 +43,29 @@ class WorkoutDetailViewModel(
     }
 
     override fun onEvent(event: WorkoutDetailEvent) {
-        when(event) {
+        when (event) {
             is WorkoutDetailEvent.GetWorkoutById -> getWorkout(event.workoutId)
             is WorkoutDetailEvent.OnExerciseClicked -> {
-                updateState { copy(currentExercise = event.exercise, showExerciseBottomSheet = true) }
+                updateState {
+                    copy(
+                        currentExercise = event.exercise,
+                        showExerciseBottomSheet = true
+                    )
+                }
             }
-            is WorkoutDetailEvent.OnExerciseFavorited -> {
 
+            is WorkoutDetailEvent.OnExerciseFavorited -> {
+                updateState {
+                    val updatedExercises = workout.exercises.map { exercise ->
+                        if (exercise.id == event.exercise.id) {
+                            exercise.copy(isFavourite = !exercise.isFavourite)
+                        } else {
+                            exercise
+                        }
+                    }
+
+                    copy(workout = workout.copy(exercises = updatedExercises))
+                }
             }
 
             WorkoutDetailEvent.ToggleOnExerciseSheet -> {
@@ -67,7 +84,21 @@ class WorkoutDetailViewModel(
 
             val workout = workoutRepository.getWorkout(workoutId)
 
-            updateState { copy(isLoading = false, workout = workout) }
+            val lottieOne = Res.readBytes("files/pushup.json").decodeToString()
+            val lottieTwo = Res.readBytes("files/lunges.json").decodeToString()
+            val pool = listOf(lottieOne, lottieTwo)
+
+            val modifiedWorkout = workout.copy(
+                exercises = workout.exercises.map { exercise ->
+                    val randomAnimation = pool.random()
+                    exercise.copy(
+                        thumbnailGifUrl = randomAnimation,
+                        gifUrl = randomAnimation
+                    )
+                }
+            )
+
+            updateState { copy(isLoading = false, workout = modifiedWorkout) }
         }
     }
 }

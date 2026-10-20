@@ -65,6 +65,12 @@ import girlfit.feature.workout.generated.resources.music_icon
 import girlfit.feature.workout.generated.resources.next_exercise_ic
 import girlfit.feature.workout.generated.resources.previous_exercise_ic
 import girlfit.feature.workout.generated.resources.spotify_logo
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.Lottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -328,7 +334,7 @@ internal fun WorkoutDetailScreen(
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(Spacing.Large),
-                contentPadding = PaddingValues(bottom = 60.dp)
+                contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(workout.exercises, key = { it.id }) {
                     ExerciseCard(
@@ -360,14 +366,26 @@ internal fun ExerciseCard(
             .clickable {
                 onClick(exercise)
             },
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        GirlfitImage(
-            imageUrl = exercise.thumbnailGifUrl,
-            modifier = Modifier.size(66.dp),
-            contentScale = ContentScale.Crop
+        val composition by rememberLottieComposition(
+            spec = LottieCompositionSpec.JsonString(exercise.thumbnailGifUrl)
         )
+
+        Lottie(
+            modifier = Modifier
+                .size(66.dp),
+            painter = rememberLottiePainter(
+                composition = composition,
+                iterations = Compottie.IterateForever,
+            ),
+            contentDescription = null
+        )
+
+        Spacer(Modifier.size(Spacing.Small))
+
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(Spacing.Small)
@@ -436,9 +454,19 @@ internal fun ExerciseBottomSheet(
                 contentAlignment = Alignment.Center
             ) {
 
-                GirlfitImage(
-                    imageUrl = exercise.gifUrl,
-                    modifier = Modifier.width(100.dp)
+                val composition by rememberLottieComposition(
+                    spec = LottieCompositionSpec.JsonString(exercise.thumbnailGifUrl)
+                )
+
+                Lottie(
+                    modifier = Modifier
+                        .width(188.dp)
+                        .height(188.dp),
+                    painter = rememberLottiePainter(
+                        composition = composition,
+                        iterations = Compottie.IterateForever,
+                    ),
+                    contentDescription = null
                 )
 
             }

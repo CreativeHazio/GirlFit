@@ -75,6 +75,12 @@ import girlfit.feature.workout.generated.resources.plus_ic
 import girlfit.feature.workout.generated.resources.previous_exercise_ic
 import girlfit.feature.workout.generated.resources.restart_ic
 import girlfit.feature.workout.generated.resources.spotify_logo
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.Lottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
@@ -119,15 +125,21 @@ internal fun ExerciseScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f)),
             ) {
-//            Image(
-//                painter = painterResource(exercise.mediaRes),
-//                contentDescription = exercise.name,
-//                contentScale = ContentScale.Fit,
-//                modifier = Modifier
-//                    .align(Alignment.Center)
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 40.dp),
-//            )
+
+                val composition by rememberLottieComposition(
+                    spec = LottieCompositionSpec.JsonString(exercise.gifUrl)
+                )
+
+                Lottie(
+                    modifier = Modifier.align(Alignment.Center)
+                        .width(240.dp)
+                        .height(240.dp),
+                    painter = rememberLottiePainter(
+                        composition = composition,
+                        iterations = Compottie.IterateForever
+                    ),
+                    contentDescription = null
+                )
 
                 Column(
                     modifier = Modifier
