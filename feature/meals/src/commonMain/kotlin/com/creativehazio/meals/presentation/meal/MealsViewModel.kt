@@ -26,6 +26,7 @@ data class MealsState(
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val mealFilters: List<MealFilter> = mealFiltersList,
+    val filterItemIds: List<String> = emptyList()
 ) : State
 
 sealed interface MealsEvent : Event {
@@ -48,12 +49,10 @@ class MealsViewModel(
     MealsState()
 ) {
 
-    private val _filterItemIds = MutableStateFlow(emptyList<String>())
-    val filterItemIds = _filterItemIds.asStateFlow()
-
     @OptIn(FlowPreview::class)
     val meals = combine(
-        _filterItemIds,
+        uiState.map { it.filterItemIds }
+            .distinctUntilChanged(),
         uiState.map { it.searchQuery.trim() }
             .distinctUntilChanged()
             .debounce(500)
@@ -64,14 +63,16 @@ class MealsViewModel(
     }.cachedIn(viewModelScope)
 
     override fun onEvent(event: MealsEvent) {
-        when(event) {
+        when (event) {
             is MealsEvent.OnMealCardClicked -> {
                 sendEffect(NavigateToMealDetail(event.mealId))
             }
+
             MealsEvent.OnSearchPressed -> {}
             is MealsEvent.OnSearchQueryChanged -> {
                 updateState { copy(searchQuery = event.searchQuery) }
             }
+
             is MealsEvent.OnFilterItemClicked -> addFilterItem(event.filterItemId)
             MealsEvent.OnMealScanCamClicked -> {
                 sendEffect(NavigateToMealScan)
@@ -80,11 +81,11 @@ class MealsViewModel(
     }
 
     private fun addFilterItem(filterItemId: String) {
-        val filterItemIds = _filterItemIds.value
+        val filterItemIds = uiState.value.filterItemIds
         if (filterItemIds.contains(filterItemId)) {
-            _filterItemIds.update { filterItemIds - filterItemId }
+            updateState { copy(filterItemIds = filterItemIds - filterItemId) }
         } else {
-            _filterItemIds.update { filterItemIds + filterItemId }
+            updateState { copy(filterItemIds = filterItemIds + filterItemId) }
         }
     }
 }
