@@ -5,7 +5,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 
 private const val WORKOUTS = "workouts"
 private const val CREATED_AT = "createdAt"
-private const val CATEGORY = "category"
+private const val CYCLE_PHASE = "cyclePhase"
 
 
 class WorkoutDataSource (
@@ -27,13 +27,12 @@ class WorkoutDataSource (
         return query.get().documents.map { it.data() }
     }
 
-    suspend fun getWorkoutsByCategory(
+    suspend fun getWorkoutsByPhase(
         limit: Int,
-        category: String
+        cyclePhase: String
     ) : List<WorkoutDto> {
         val query = firestore.collection(WORKOUTS)
-            .where { CATEGORY equalTo category }
-            .orderBy(CREATED_AT, Direction.DESCENDING)
+            .where { CYCLE_PHASE equalTo cyclePhase }
             .limit(limit.toLong())
 
         return query.get().documents.map { it.data() }

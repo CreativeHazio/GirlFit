@@ -12,6 +12,9 @@ import com.creativehazio.data.meal.data.local.MealEntity
 import com.creativehazio.data.meal.data.local.MealFilterEntity
 import com.creativehazio.data.meal.data.local.MealNutrientEntity
 import com.creativehazio.data.workout.data.local.ChallengeDayEntity
+import com.creativehazio.data.workout.data.local.CycleRelatedChallengeDayEntity
+import com.creativehazio.data.workout.data.local.CycleRelatedExerciseEntity
+import com.creativehazio.data.workout.data.local.CycleRelatedWorkoutEntity
 import com.creativehazio.data.workout.data.local.ExerciseEntity
 import com.creativehazio.data.workout.data.local.WorkoutDao
 import com.creativehazio.data.workout.data.local.WorkoutEntity
@@ -19,6 +22,7 @@ import com.creativehazio.data.workout.data.local.WorkoutEntity
 @Database(
     entities = [
         WorkoutEntity::class, ExerciseEntity::class, ChallengeDayEntity::class,
+        CycleRelatedWorkoutEntity::class, CycleRelatedExerciseEntity::class, CycleRelatedChallengeDayEntity::class,
         MealEntity::class, MealNutrientEntity::class, MealFilterEntity::class, FilterItemEntity::class
     ],
     version = 1

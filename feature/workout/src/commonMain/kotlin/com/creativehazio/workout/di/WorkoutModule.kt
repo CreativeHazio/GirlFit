@@ -11,5 +11,8 @@ val workoutModule = module {
     viewModel { (workoutId: String) -> WorkoutDetailViewModel(workoutId, get()) }
     viewModelOf(::WorkoutDetailViewModel)
     viewModelOf(::WorkoutViewModel)
-    viewModelOf(::WorkoutChallengeCalenderViewModel)
+
+    viewModel { (workoutId: String) ->
+        WorkoutChallengeCalenderViewModel(workoutId, get())
+    }
 }

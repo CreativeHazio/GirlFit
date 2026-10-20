@@ -30,10 +30,16 @@ sealed interface WorkoutChallengeCalenderEffect : Effect {
 }
 
 class WorkoutChallengeCalenderViewModel(
+    workoutId: String,
     private val workoutRepository: WorkoutRepository
 ) : BaseViewModel<WorkoutChallengeCalenderState, WorkoutChallengeCalenderEvent, WorkoutChallengeCalenderEffect>(
     WorkoutChallengeCalenderState()
 ) {
+
+    init {
+        onEvent(WorkoutChallengeCalenderEvent.GetWorkoutChallengeById(workoutId))
+    }
+
     override fun onEvent(event: WorkoutChallengeCalenderEvent) {
         when (event) {
             WorkoutChallengeCalenderEvent.OnBackClicked -> {

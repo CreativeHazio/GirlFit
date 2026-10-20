@@ -98,6 +98,12 @@ fun GirlFitWorkoutCard(
                 )
                 detailsText?.let {
                     Text(
+                        modifier = Modifier.sharedBoundsIfAvailable(
+                            key = SharedElementKey(
+                                id = sharedKey ?: "",
+                                type = SharedElementKey.Type.Subtitle
+                            )
+                        ),
                         text = detailsText,
                         style = MaterialTheme.typography.labelMedium,
                         color = Color.White
