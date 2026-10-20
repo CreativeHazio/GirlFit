@@ -106,7 +106,8 @@ fun MainAppContainer(
             )
 
             Lottie(
-                modifier = Modifier.size(77.dp),
+                modifier = Modifier.size(77.dp)
+                    .renderAboveSharedElements(),
                 painter = rememberLottiePainter(
                     composition = composition,
                     iterations = Compottie.IterateForever
