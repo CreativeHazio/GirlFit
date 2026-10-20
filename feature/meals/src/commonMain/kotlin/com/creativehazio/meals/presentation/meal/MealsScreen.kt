@@ -55,7 +55,6 @@ fun MealsScreenRoot(
     val event = viewModel::onEvent
 
     val meals = viewModel.meals.collectAsLazyPagingItems()
-    val mealFilterIds = viewModel.filterItemIds.collectAsStateWithLifecycle().value
 
     LaunchedEffect(viewModel.effect) {
         viewModel.effect.collect {
@@ -74,7 +73,6 @@ fun MealsScreenRoot(
     MealsScreen(
         paddingValues = paddingValues,
         meals = meals,
-        mealFilterIds = mealFilterIds,
         uiState = uiState,
         onEvent = event
     )
@@ -87,7 +85,6 @@ internal fun MealsScreen(
     onEvent: (MealsEvent) -> Unit,
     paddingValues: PaddingValues,
     meals: LazyPagingItems<Meal>,
-    mealFilterIds: List<String>
 ) {
 
     var showMealFilterCard by remember { mutableStateOf(false) }
@@ -134,7 +131,7 @@ internal fun MealsScreen(
                         onSearchQueryChanged = { onEvent(MealsEvent.OnSearchQueryChanged(it)) },
                         onSearchPressed = { onEvent(MealsEvent.OnSearchPressed) },
                         mealFilters = uiState.mealFilters,
-                        filterItemIds = mealFilterIds,
+                        filterItemIds = uiState.filterItemIds,
                         onFilterClicked = { showMealFilterCard = !showMealFilterCard },
                         onFilterItemClicked = {
                             onEvent(MealsEvent.OnFilterItemClicked(it))
