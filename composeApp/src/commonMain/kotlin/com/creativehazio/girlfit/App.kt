@@ -109,7 +109,7 @@ private val navConfig = SavedStateConfiguration {
 @Composable
 fun App() {
 
-    val backStack = rememberNavBackStack(navConfig, Main)
+    val backStack = rememberNavBackStack(navConfig, Splash)
 
     // TODO: Split all complex main screens into composable functions
     GirlFitTheme {

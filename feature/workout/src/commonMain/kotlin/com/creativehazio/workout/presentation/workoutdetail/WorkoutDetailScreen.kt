@@ -93,7 +93,13 @@ fun WorkoutDetailScreenRoot(
     if (uiState.showExerciseBottomSheet) {
         ExerciseBottomSheet(
             exercise = uiState.currentExercise,
-            exercises = uiState.workout.exercises
+            exercises = uiState.workout.exercises,
+            onNext = {
+                event(WorkoutDetailEvent.OnNextExerciseOnSheetClicked)
+            },
+            onPrevious = {
+                event(WorkoutDetailEvent.OnPreviousExerciseOnSheetClicked)
+            }
         ) {
             event(WorkoutDetailEvent.ToggleOnExerciseSheet)
         }
@@ -427,6 +433,8 @@ internal fun ExerciseCard(
 internal fun ExerciseBottomSheet(
     exercise: Exercise,
     exercises: List<Exercise>,
+    onNext: () -> Unit,
+    onPrevious: () -> Unit,
     onDismiss: () -> Unit
 ) {
 
@@ -494,7 +502,7 @@ internal fun ExerciseBottomSheet(
                         contentColor = MaterialTheme.colorScheme.primary,
                         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
-                    onClick = {}
+                    onClick = onPrevious
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.previous_exercise_ic),
@@ -512,7 +520,7 @@ internal fun ExerciseBottomSheet(
                         contentColor = MaterialTheme.colorScheme.primary,
                         disabledContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
-                    onClick = {}
+                    onClick = onNext
                 ) {
                     Icon(
                         painter = painterResource(Res.drawable.next_exercise_ic),
@@ -550,6 +558,8 @@ fun WorkoutDetailPreview() {
             isFavourite = false
         ),
         exercises = emptyList(),
+        onNext = {},
+        onPrevious = {},
         onDismiss = {}
     )
 

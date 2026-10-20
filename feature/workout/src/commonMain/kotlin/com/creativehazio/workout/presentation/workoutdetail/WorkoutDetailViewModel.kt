@@ -21,6 +21,8 @@ data class WorkoutDetailState(
 sealed interface WorkoutDetailEvent : Event {
     data class GetWorkoutById(val workoutId: String) : WorkoutDetailEvent
     data class OnExerciseClicked(val exercise: Exercise) : WorkoutDetailEvent
+    data object OnNextExerciseOnSheetClicked : WorkoutDetailEvent
+    data object OnPreviousExerciseOnSheetClicked : WorkoutDetailEvent
     data object ToggleOnExerciseSheet : WorkoutDetailEvent
     data class OnExerciseFavorited(val exercise: Exercise) : WorkoutDetailEvent
 
@@ -74,6 +76,23 @@ class WorkoutDetailViewModel(
 
             WorkoutDetailEvent.StartWorkout -> {
                 sendEffect(WorkoutDetailEffect.NavigateToExercise)
+            }
+
+            WorkoutDetailEvent.OnNextExerciseOnSheetClicked -> {
+                updateState {
+                    val currentExerciseIndex = workout.exercises.indexOf(currentExercise)
+                    val nextExerciseIndex = currentExerciseIndex + 1
+                    val nextExercise = workout.exercises[nextExerciseIndex]
+                    copy(currentExercise = nextExercise)
+                }
+            }
+            WorkoutDetailEvent.OnPreviousExerciseOnSheetClicked -> {
+                updateState {
+                    val currentExerciseIndex = workout.exercises.indexOf(currentExercise)
+                    val previousExerciseIndex = currentExerciseIndex - 1
+                    val previousExercise = workout.exercises[previousExerciseIndex]
+                    copy(currentExercise = previousExercise)
+                }
             }
         }
     }
