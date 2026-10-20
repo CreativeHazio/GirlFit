@@ -8,11 +8,13 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -52,6 +54,14 @@ import girlfit.composeapp.generated.resources.tab_progress
 import girlfit.composeapp.generated.resources.tab_workout
 import girlfit.composeapp.generated.resources.workout
 import girlfit.composeapp.generated.resources.workout_selected
+import io.github.alexzhirkevich.compottie.Compottie
+import io.github.alexzhirkevich.compottie.ExperimentalCompottieApi
+import io.github.alexzhirkevich.compottie.Lottie
+import io.github.alexzhirkevich.compottie.LottieCompositionSpec
+import io.github.alexzhirkevich.compottie.Resource
+import io.github.alexzhirkevich.compottie.rememberLottieComposition
+import io.github.alexzhirkevich.compottie.rememberLottiePainter
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.viewmodel.koinViewModel
 
 private val mainTabs = listOf(
@@ -62,6 +72,7 @@ private val mainTabs = listOf(
     BottomBarTab(Me, Res.string.tab_me, Res.drawable.me, Res.drawable.me_selected),
 )
 
+@OptIn(ExperimentalResourceApi::class, ExperimentalCompottieApi::class)
 @Composable
 fun MainAppContainer(
     onLogout: () -> Unit,
@@ -88,7 +99,21 @@ fun MainAppContainer(
                     }
                 }
             )
-        }
+        },
+        floatingActionButton = {
+            val composition by rememberLottieComposition(
+                LottieCompositionSpec.Resource(Res.getUri("files/FitnessBuddyAI.json"))
+            )
+
+            Lottie(
+                modifier = Modifier.size(77.dp),
+                painter = rememberLottiePainter(
+                    composition = composition,
+                    iterations = Compottie.IterateForever
+                ),
+                contentDescription = "Lottie animation"
+            )
+        },
     ) { innerPadding ->
         val snappy = tween<IntOffset>(200, easing = FastOutSlowInEasing)
         val snappyFade = tween<Float>(200, easing = FastOutSlowInEasing)

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -188,7 +189,7 @@ internal fun HistorySection() {
             }
 
             WorkoutHistoryCard(
-                imageUrl = "",
+                imageUrl = "https://plus.unsplash.com/premium_photo-1666736570873-36d95bd8ee3f?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
                 title = "Full body workout",
                 duration = 12,
                 calories = 160,
@@ -196,7 +197,7 @@ internal fun HistorySection() {
             )
 
             WorkoutHistoryCard(
-                imageUrl = "",
+                imageUrl = "https://plus.unsplash.com/premium_photo-1663050712656-f240e3cdd7d3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
                 title = "Full body stretch",
                 duration = 12,
                 calories = 160,
@@ -221,7 +222,8 @@ internal fun WorkoutHistoryCard(
     ) {
 
         GirlfitImage(
-            modifier = Modifier.size(60.dp),
+            modifier = Modifier.size(60.dp)
+                .clip(RoundedCornerShape(12.dp)),
             imageUrl = imageUrl
         )
 
