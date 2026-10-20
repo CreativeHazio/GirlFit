@@ -76,7 +76,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun WorkoutDetailScreenRoot(
     workoutViewModel: WorkoutDetailViewModel,
-    onNavigateToExercise: (List<Exercise>) -> Unit,
+    onNavigateToExercise: () -> Unit,
     onBack: () -> Unit
 ) {
     val uiState = workoutViewModel.uiState.collectAsStateWithLifecycle().value
@@ -85,7 +85,7 @@ fun WorkoutDetailScreenRoot(
     LaunchedEffect(workoutViewModel.effect) {
         workoutViewModel.effect.collect {
             when (it) {
-                WorkoutDetailEffect.NavigateToExercise -> onNavigateToExercise(uiState.workout.exercises)
+                WorkoutDetailEffect.NavigateToExercise -> onNavigateToExercise()
             }
         }
     }

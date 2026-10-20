@@ -18,7 +18,7 @@ val workoutModule = module {
         WorkoutChallengeCalenderViewModel(workoutId, get())
     }
 
-    viewModel { (exercises: List<Exercise>) ->
-        ExerciseViewModel(exercises)
+    viewModel { (workoutId: String) ->
+        ExerciseViewModel(workoutId, get())
     }
 }

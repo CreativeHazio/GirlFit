@@ -6,6 +6,8 @@ import com.creativehazio.common.Effect
 import com.creativehazio.common.Event
 import com.creativehazio.common.State
 import com.creativehazio.data.workout.domain.Exercise
+import com.creativehazio.data.workout.domain.WorkoutRepository
+import girlfit.feature.workout.generated.resources.Res
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -70,7 +72,8 @@ sealed interface ExerciseEffect : Effect {
 }
 
 class ExerciseViewModel(
-    exercises: List<Exercise>
+    workoutId: String,
+    private val workoutRepository: WorkoutRepository,
 ) : BaseViewModel<ExerciseState, ExerciseEvent, ExerciseEffect>(
     ExerciseState()
 ) {
@@ -78,15 +81,33 @@ class ExerciseViewModel(
     private var timerJob: Job? = null
 
     init {
-        val firstExerciseDuration = exercises.firstOrNull()?.duration?.times(1000L) ?: 0L
+        viewModelScope.launch {
 
-        updateState {
-            copy(
-                exercises = exercises,
-                durationMs = firstExerciseDuration
-            )
+            val lottieOne = Res.readBytes("files/pushup.json").decodeToString()
+            val lottieTwo = Res.readBytes("files/lunges.json").decodeToString()
+            val pool = listOf(lottieOne, lottieTwo)
+
+            val workout = workoutRepository.getWorkout(workoutId)
+            val exercises = workout.exercises.map {
+                    exercise ->
+                val randomAnimation = pool.random()
+                exercise.copy(
+                    thumbnailGifUrl = randomAnimation,
+                    gifUrl = randomAnimation
+                )
+            }
+
+            val firstExerciseDuration = exercises.firstOrNull()?.duration?.times(1000L) ?: 0L
+
+            updateState {
+                copy(
+                    exercises = exercises,
+                    durationMs = firstExerciseDuration
+                )
+            }
+            startTimer()
+
         }
-        startTimer()
     }
 
     override fun onEvent(event: ExerciseEvent) {

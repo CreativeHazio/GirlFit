@@ -37,7 +37,7 @@ data class WorkoutChallengeCalender(val workoutId: String) : Route
 data class WorkoutDetail(val workoutId: String) : Route
 
 @Serializable
-data class StartWorkout<T>(val exercises: List<T>) : Route
+data class StartWorkout(val workoutId: String) : Route
 
 @Serializable
 data object Progress : Route

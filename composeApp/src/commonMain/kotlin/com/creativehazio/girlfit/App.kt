@@ -284,7 +284,7 @@ fun App() {
                                 WorkoutDetailScreenRoot(
                                     workoutViewModel = workoutDetailViewModel,
                                     onNavigateToExercise = {
-                                        backStack.add(StartWorkout(it))
+                                        backStack.add(StartWorkout(key.workoutId))
                                     },
                                     onBack = {
                                         backStack.removeLastOrNull()
@@ -295,9 +295,9 @@ fun App() {
 
                         }
 
-                        entry<StartWorkout<List<Exercise>>> { key ->
-                            val exerciseViewModel: ExerciseViewModel = koinViewModel(key = key.exercises.size.toString()) {
-                                parametersOf(key.exercises)
+                        entry<StartWorkout> { key ->
+                            val exerciseViewModel: ExerciseViewModel = koinViewModel(key = key.workoutId) {
+                                parametersOf(key.workoutId)
                             }
 
                             ProvideEntryAnimatedScope {
