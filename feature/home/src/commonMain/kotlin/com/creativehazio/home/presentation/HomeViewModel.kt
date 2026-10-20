@@ -12,6 +12,7 @@ import com.creativehazio.data.workout.domain.CycleRelatedWorkout
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
+import com.creativehazio.home.presentation.HomeEffect.*
 import girlfit.feature.home.generated.resources.Res
 import girlfit.feature.home.generated.resources.angry_emoji
 import girlfit.feature.home.generated.resources.exhausted_emoji
@@ -40,6 +41,8 @@ data class HomeState(
 
 sealed interface HomeEvent : Event {
     data class OnWorkoutCardClicked(val workout: Workout) : HomeEvent
+    data object ReloadRecommendedWorkouts : HomeEvent
+    data object ReloadRelaxWorkouts : HomeEvent
 }
 
 sealed interface HomeEffect : Effect {
@@ -53,6 +56,50 @@ class HomeViewModel(
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
+        loadCycleRelatedWorkouts()
+    }
+
+    override fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.OnWorkoutCardClicked -> {
+                when (event.workout.type) {
+                    WorkoutType.CHALLENGE -> {
+                        sendEffect(NavigateToWorkoutChallengeCalender(event.workout.id))
+                    }
+
+                    WorkoutType.TIME -> {
+                        sendEffect(NavigateToWorkoutDetail(event.workout.id))
+                    }
+                }
+            }
+            HomeEvent.ReloadRecommendedWorkouts -> {
+                updateState { copy(isRecommendedLoading = true) }
+                loadRecommendedWorkouts()
+            }
+            HomeEvent.ReloadRelaxWorkouts -> {
+                updateState { copy(isRelaxLoading = true) }
+                loadRelaxWorkouts()
+            }
+        }
+    }
+
+    private fun loadRecommendedWorkouts() {
+        getCycleRelatedWorkouts(
+            limit = 2,
+            cyclePhase = CyclePhase.OVULATION,
+            cycleRelatedWorkout = CycleRelatedWorkout.RECOMMENDED
+        )
+    }
+
+    private fun loadRelaxWorkouts() {
+        getCycleRelatedWorkouts(
+            limit = 1,
+            cyclePhase = CyclePhase.OVULATION,
+            cycleRelatedWorkout = CycleRelatedWorkout.RELAX
+        )
+    }
+
+    private fun loadCycleRelatedWorkouts() {
         getCycleRelatedWorkouts(
             limit = 2,
             cyclePhase = CyclePhase.OVULATION,
@@ -63,22 +110,6 @@ class HomeViewModel(
             cyclePhase = CyclePhase.OVULATION,
             cycleRelatedWorkout = CycleRelatedWorkout.RELAX
         )
-    }
-
-    override fun onEvent(event: HomeEvent) {
-        when (event) {
-            is HomeEvent.OnWorkoutCardClicked -> {
-                when (event.workout.type) {
-                    WorkoutType.CHALLENGE -> {
-                        sendEffect(HomeEffect.NavigateToWorkoutChallengeCalender(event.workout.id))
-                    }
-
-                    WorkoutType.TIME -> {
-                        sendEffect(HomeEffect.NavigateToWorkoutDetail(event.workout.id))
-                    }
-                }
-            }
-        }
     }
 
     private fun getCycleRelatedWorkouts(

@@ -191,7 +191,10 @@ internal fun WorkoutScreen(
                     item(span = { GridItemSpan(maxLineSpan) }, contentType = "empty_state") {
                         GirlfitEmptyState(
                             title = "Nothing to show here 💌",
-                            subtitle = "We couldn't find any workouts matching your criteria."
+                            subtitle = "We couldn't find any workouts matching your criteria.",
+                            retry = {
+                                workouts.retry()
+                            }
                         )
                     }
                 } else {

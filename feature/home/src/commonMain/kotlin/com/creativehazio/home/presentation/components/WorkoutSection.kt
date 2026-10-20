@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.designsystem.components.GirlFitWorkoutCard
+import com.creativehazio.designsystem.components.GirlfitEmptyState
 import com.creativehazio.designsystem.theme.Sizing
 import com.creativehazio.designsystem.theme.Spacing
 
@@ -25,6 +26,7 @@ import com.creativehazio.designsystem.theme.Spacing
 internal fun WorkoutSection(
     isLoading: Boolean,
     name: String,
+    reloadWorkouts: () -> Unit,
     workouts: List<Workout>,
     onNavigateToWorkoutDetail: (Workout) -> Unit
 ) {
@@ -38,7 +40,7 @@ internal fun WorkoutSection(
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.size(Spacing.ExtraSmall))
-        if (isLoading && workouts.isEmpty()) {
+        if (isLoading) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -48,19 +50,29 @@ internal fun WorkoutSection(
                 CircularWavyProgressIndicator(modifier = Modifier.size(16.dp))
             }
         } else {
-            workouts.forEach { workout ->
-                GirlFitWorkoutCard(
-                    modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
-                    sharedKey = workout.id,
-                    title = workout.title,
-                    titleStyle = MaterialTheme.typography.headlineSmall,
-                    durationText = workout.getDurationText(),
-                    detailsText = workout.getDetailsText(),
-                    imageUrl = workout.imageUrl,
-                    onCardClick = {
-                        onNavigateToWorkoutDetail(workout)
+            if (workouts.isEmpty()) {
+                GirlfitEmptyState(
+                    title = "Nothing to show here 💌",
+                    subtitle = "We couldn't find any workouts matching your criteria.",
+                    retry = {
+                        reloadWorkouts()
                     }
                 )
+            } else {
+                workouts.forEach { workout ->
+                    GirlFitWorkoutCard(
+                        modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
+                        sharedKey = workout.id,
+                        title = workout.title,
+                        titleStyle = MaterialTheme.typography.headlineSmall,
+                        durationText = workout.getDurationText(),
+                        detailsText = workout.getDetailsText(),
+                        imageUrl = workout.imageUrl,
+                        onCardClick = {
+                            onNavigateToWorkoutDetail(workout)
+                        }
+                    )
+                }
             }
         }
 

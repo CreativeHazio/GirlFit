@@ -91,6 +91,9 @@ internal fun HomeScreen(
             WorkoutSection(
                 isLoading = uiState.isRecommendedLoading,
                 name = "Recommended workouts",
+                reloadWorkouts = {
+                    event(HomeEvent.ReloadRecommendedWorkouts)
+                },
                 workouts = uiState.recommendedWorkouts,
                 onNavigateToWorkoutDetail = {
                     event(HomeEvent.OnWorkoutCardClicked(it))
@@ -102,6 +105,9 @@ internal fun HomeScreen(
             WorkoutSection(
                 isLoading = uiState.isRelaxLoading,
                 name = "Relax instead?",
+                reloadWorkouts = {
+                    event(HomeEvent.ReloadRelaxWorkouts)
+                },
                 workouts = uiState.relaxWorkouts,
                 onNavigateToWorkoutDetail = {
                     event(HomeEvent.OnWorkoutCardClicked(it))
