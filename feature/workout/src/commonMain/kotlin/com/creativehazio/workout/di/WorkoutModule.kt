@@ -1,5 +1,7 @@
 package com.creativehazio.workout.di
 
+import com.creativehazio.data.workout.domain.Exercise
+import com.creativehazio.workout.presentation.exercise.ExerciseViewModel
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderViewModel
 import com.creativehazio.workout.presentation.workoutdetail.WorkoutDetailViewModel
@@ -14,5 +16,9 @@ val workoutModule = module {
 
     viewModel { (workoutId: String) ->
         WorkoutChallengeCalenderViewModel(workoutId, get())
+    }
+
+    viewModel { (exercises: List<Exercise>) ->
+        ExerciseViewModel(exercises)
     }
 }
