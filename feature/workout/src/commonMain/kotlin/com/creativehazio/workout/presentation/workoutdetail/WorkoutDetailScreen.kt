@@ -68,7 +68,6 @@ import girlfit.feature.workout.generated.resources.spotify_logo
 import io.github.alexzhirkevich.compottie.Compottie
 import io.github.alexzhirkevich.compottie.Lottie
 import io.github.alexzhirkevich.compottie.LottieCompositionSpec
-import io.github.alexzhirkevich.compottie.animateLottieCompositionAsState
 import io.github.alexzhirkevich.compottie.rememberLottieComposition
 import io.github.alexzhirkevich.compottie.rememberLottiePainter
 import org.jetbrains.compose.resources.painterResource
@@ -76,6 +75,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun WorkoutDetailScreenRoot(
     workoutViewModel: WorkoutDetailViewModel,
+    sharedElementKey: String,
     onNavigateToExercise: () -> Unit,
     onBack: () -> Unit
 ) {
@@ -119,6 +119,7 @@ fun WorkoutDetailScreenRoot(
         }
     ) { innerPadding ->
         WorkoutDetailScreen(
+            sharedElementKey = sharedElementKey,
             uiState = uiState,
             event = event,
             onBack = onBack
@@ -129,6 +130,7 @@ fun WorkoutDetailScreenRoot(
 @Composable
 internal fun WorkoutDetailScreen(
     modifier: Modifier = Modifier,
+    sharedElementKey: String,
     uiState: WorkoutDetailState,
     event: (WorkoutDetailEvent) -> Unit,
     onBack: () -> Unit,
@@ -150,7 +152,7 @@ internal fun WorkoutDetailScreen(
                 modifier = Modifier
                     .sharedBoundsIfAvailable(
                         key = SharedElementKey(
-                            id = workout.id,
+                            id = sharedElementKey,
                             type = SharedElementKey.Type.Image
                         )
                     )

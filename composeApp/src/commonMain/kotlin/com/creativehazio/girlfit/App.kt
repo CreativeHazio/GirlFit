@@ -75,6 +75,7 @@ import com.creativehazio.startup.splash.SplashScreenRoot
 import com.creativehazio.startup.splash.SplashViewModel
 import com.creativehazio.workout.presentation.exercise.ExerciseScreenRoot
 import com.creativehazio.workout.presentation.exercise.ExerciseViewModel
+import com.creativehazio.workout.presentation.workout.WorkoutEvent
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
@@ -220,17 +221,18 @@ fun App() {
                         }
 
                         entry<Main> {
+
                             ProvideEntryAnimatedScope {
                                 MainAppContainer(
                                     onLogout = {
                                         backStack.clear()
                                         backStack.add(Login)
                                     },
-                                    onNavigateToWorkoutChallengeCalender = { workoutId ->
-                                        backStack.add(WorkoutChallengeCalender(workoutId))
+                                    onNavigateToWorkoutChallengeCalender = { workoutId, sharedElementKey ->
+                                        backStack.add(WorkoutChallengeCalender(workoutId, sharedElementKey))
                                     },
-                                    onNavigateToWorkoutDetail = { workoutId ->
-                                        backStack.add(WorkoutDetail(workoutId))
+                                    onNavigateToWorkoutDetail = { workoutId, sharedElementKey ->
+                                        backStack.add(WorkoutDetail(workoutId, sharedElementKey))
                                     },
                                     onNavigateToMealScan = {
                                         backStack.add(MealScan)
@@ -252,11 +254,12 @@ fun App() {
                             ProvideEntryAnimatedScope {
                                 WorkoutChallengeCalenderScreenRoot(
                                     viewModel = workoutChallengeCalenderViewModel,
+                                    sharedElementKey = key.sharedElementKey,
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },
                                     onNavigateToWorkoutDetail = { workoutId ->
-                                        backStack.add(WorkoutDetail(workoutId))
+                                        backStack.add(WorkoutDetail(workoutId, workoutId))
                                     }
                                 )
 
@@ -275,6 +278,7 @@ fun App() {
 
                                 WorkoutDetailScreenRoot(
                                     workoutViewModel = workoutDetailViewModel,
+                                    sharedElementKey = key.sharedElementKey,
                                     onNavigateToExercise = {
                                         backStack.add(StartWorkout(key.workoutId))
                                     },

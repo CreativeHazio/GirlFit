@@ -5,10 +5,6 @@ import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
 import com.creativehazio.data.user.domain.CyclePhase
 import com.creativehazio.data.workout.data.local.ChallengeDayEntity
-import com.creativehazio.data.workout.data.local.CycleRelatedChallengeDayEntity
-import com.creativehazio.data.workout.data.local.CycleRelatedExerciseEntity
-import com.creativehazio.data.workout.data.local.CycleRelatedWorkoutEntity
-import com.creativehazio.data.workout.data.local.CycleRelatedWorkoutWithExercises
 import com.creativehazio.data.workout.data.local.ExerciseEntity
 import com.creativehazio.data.workout.data.local.WorkoutEntity
 import com.creativehazio.data.workout.data.local.WorkoutWithExercises
@@ -39,21 +35,6 @@ fun WorkoutDto.toWorkoutEntity() : WorkoutEntity {
     )
 }
 
-fun WorkoutDto.toCycleRelatedWorkoutEntity() : CycleRelatedWorkoutEntity {
-    return CycleRelatedWorkoutEntity(
-        id = this.id,
-        createdAt = this.createdAt,
-        title = this.title,
-        imageUrl = this.imageUrl,
-        details = this.details,
-        cyclePhase = this.cyclePhase,
-        duration = this.duration,
-        level = this.level,
-        type = this.type,
-        category = this.category
-    )
-}
-
 fun ChallengeDayDto.toChallengeDayEntity(
     parentChallengeId: String,
     state : String
@@ -67,40 +48,11 @@ fun ChallengeDayDto.toChallengeDayEntity(
     )
 }
 
-fun ChallengeDayDto.toCycleRelatedChallengeDayEntity(
-    parentChallengeId: String,
-    state : String
-) : CycleRelatedChallengeDayEntity {
-    return CycleRelatedChallengeDayEntity(
-        challengeDayId = this.id,
-        parentChallengeId = parentChallengeId,
-        workoutId = this.workoutId,
-        number = this.number,
-        state = state
-    )
-}
-
 fun ExerciseDto.toExerciseEntity(
     workoutId: String,
     isFavourite: Boolean
 ) : ExerciseEntity {
     return ExerciseEntity(
-        exerciseId = this.id,
-        workoutId = workoutId,
-        title = this.title,
-        duration = this.duration,
-        description = this.description,
-        thumbnailGifUrl = this.thumbnailGifUrl,
-        gifUrl = this.gifUrl,
-        isFavourite = isFavourite
-    )
-}
-
-fun ExerciseDto.toCycleRelatedExerciseEntity(
-    workoutId: String,
-    isFavourite: Boolean
-) : CycleRelatedExerciseEntity {
-    return CycleRelatedExerciseEntity(
         exerciseId = this.id,
         workoutId = workoutId,
         title = this.title,
@@ -146,48 +98,6 @@ fun ExerciseEntity.toExercise(): Exercise {
 }
 
 fun ChallengeDayEntity.toChallengeDay(): ChallengeDay {
-    return ChallengeDay(
-        id = this.challengeDayId,
-        number = this.number,
-        state = ChallengeDayState.valueOf(this.state),
-        workoutId = this.workoutId
-    )
-}
-
-fun CycleRelatedWorkoutWithExercises.toWorkout() : Workout {
-    return Workout(
-        id = workout.id,
-        createdAt = workout.createdAt,
-        title = workout.title,
-        imageUrl = workout.imageUrl,
-        details = workout.details,
-        duration = workout.duration,
-        cyclePhase = CyclePhase.valueOf(workout.cyclePhase),
-        level = WorkoutLevel.valueOf(workout.level),
-        type = WorkoutType.valueOf(workout.type),
-        category = WorkoutCategory.valueOf(workout.category),
-        exercises = exercises.map { it.toExercise() },
-        challenge = Challenge(
-            // TODO: What should be the challenge ID
-            id = workout.id,
-            challengeDays = challengeDays.map { it.toChallengeDay() }
-        )
-    )
-}
-
-fun CycleRelatedExerciseEntity.toExercise(): Exercise {
-    return Exercise(
-        id = exerciseId,
-        title = title,
-        duration = duration,
-        description = description,
-        thumbnailGifUrl = thumbnailGifUrl,
-        gifUrl = gifUrl,
-        isFavourite = isFavourite
-    )
-}
-
-fun CycleRelatedChallengeDayEntity.toChallengeDay(): ChallengeDay {
     return ChallengeDay(
         id = this.challengeDayId,
         number = this.number,

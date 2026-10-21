@@ -66,8 +66,18 @@ import org.koin.compose.viewmodel.koinViewModel
 
 private val mainTabs = listOf(
     BottomBarTab(Home, Res.string.tab_home, Res.drawable.home, Res.drawable.home_selected),
-    BottomBarTab(Workout, Res.string.tab_workout, Res.drawable.workout, Res.drawable.workout_selected),
-    BottomBarTab(Progress, Res.string.tab_progress, Res.drawable.progress, Res.drawable.progress_selected),
+    BottomBarTab(
+        Workout,
+        Res.string.tab_workout,
+        Res.drawable.workout,
+        Res.drawable.workout_selected
+    ),
+    BottomBarTab(
+        Progress,
+        Res.string.tab_progress,
+        Res.drawable.progress,
+        Res.drawable.progress_selected
+    ),
     BottomBarTab(Meals, Res.string.tab_meals, Res.drawable.meals, Res.drawable.meals_selected),
     BottomBarTab(Me, Res.string.tab_me, Res.drawable.me, Res.drawable.me_selected),
 )
@@ -76,8 +86,8 @@ private val mainTabs = listOf(
 @Composable
 fun MainAppContainer(
     onLogout: () -> Unit,
-    onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToWorkoutDetail: (workoutId: String, sharedElementKey: String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (workoutId: String, sharedElementKey: String) -> Unit,
     onNavigateToMealScan: () -> Unit,
     onNavigateToMealDetail: (String) -> Unit
 ) {
@@ -139,8 +149,15 @@ fun MainAppContainer(
                         modifier = Modifier,
                         contentPaddingValues = innerPadding,
                         homeViewModel = homeViewModel,
-                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender,
-                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
+                        onNavigateToWorkoutChallengeCalender = { workoutId, sharedElementKey ->
+                            onNavigateToWorkoutChallengeCalender(workoutId, sharedElementKey)
+                        },
+                        onNavigateToWorkoutDetail = { workoutId, sharedElementKey ->
+                            onNavigateToWorkoutDetail(
+                                workoutId,
+                                sharedElementKey
+                            )
+                        }
                     )
                 }
 
@@ -152,8 +169,12 @@ fun MainAppContainer(
                         viewModel = workoutViewModel,
                         onNavigateToFavourite = {},
                         onNavigateToPersonalPlan = {},
-                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail,
-                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender
+                        onNavigateToWorkoutDetail = { workoutId, sharedElementKey ->
+                            onNavigateToWorkoutDetail(workoutId, sharedElementKey)
+                        },
+                        onNavigateToWorkoutChallengeCalender = { workoutId, sharedElementKey ->
+                            onNavigateToWorkoutChallengeCalender(workoutId, sharedElementKey)
+                        }
                     )
                 }
 

@@ -28,7 +28,7 @@ internal fun WorkoutSection(
     name: String,
     reloadWorkouts: () -> Unit,
     workouts: List<Workout>,
-    onNavigateToWorkoutDetail: (Workout) -> Unit
+    onNavigateToWorkoutDetail: (Workout, sharedKey: String) -> Unit
 ) {
 
     Column(
@@ -60,16 +60,18 @@ internal fun WorkoutSection(
                 )
             } else {
                 workouts.forEach { workout ->
+                    val sharedKey = "$name:${workout.id}"
+
                     GirlFitWorkoutCard(
                         modifier = Modifier.fillMaxWidth().height(Sizing.CardHeightMedium),
-                        sharedKey = workout.id,
+                        sharedElementKey = sharedKey,
                         title = workout.title,
                         titleStyle = MaterialTheme.typography.headlineSmall,
                         durationText = workout.getDurationText(),
                         detailsText = workout.getDetailsText(),
                         imageUrl = workout.imageUrl,
                         onCardClick = {
-                            onNavigateToWorkoutDetail(workout)
+                            onNavigateToWorkoutDetail(workout, sharedKey)
                         }
                     )
                 }

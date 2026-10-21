@@ -31,10 +31,10 @@ data object Home : Route
 data object Workout : Route
 
 @Serializable
-data class WorkoutChallengeCalender(val workoutId: String) : Route
+data class WorkoutChallengeCalender(val workoutId: String, val sharedElementKey: String) : Route
 
 @Serializable
-data class WorkoutDetail(val workoutId: String) : Route
+data class WorkoutDetail(val workoutId: String, val sharedElementKey: String) : Route
 
 @Serializable
 data class StartWorkout(val workoutId: String) : Route

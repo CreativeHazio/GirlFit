@@ -32,7 +32,7 @@ sealed interface WorkoutEvent : Event {
 
     data class OnSearchQueryChange(val query: String) : WorkoutEvent
     data class OnWorkoutCategoryPillClicked(val category: WorkoutCategory) : WorkoutEvent
-    data class OnWorkoutCardClicked(val workout: Workout) : WorkoutEvent
+    data class OnWorkoutCardClicked(val workout: Workout, val sharedElementKey: String) : WorkoutEvent
     data object OnPersonalCardClicked : WorkoutEvent
     data object OnFavouriteInfoBubbleClicked : WorkoutEvent
 }
@@ -40,8 +40,8 @@ sealed interface WorkoutEvent : Event {
 sealed interface WorkoutEffect : Effect {
     data object NavigateToPersonalPlan : WorkoutEffect
     data object NavigateToFavourite : WorkoutEffect
-    data class NavigateToWorkoutDetail(val workoutId: String) : WorkoutEffect
-    data class NavigateToWorkoutChallengeCalender(val workoutId: String) : WorkoutEffect
+    data class NavigateToWorkoutDetail(val workoutId: String, val sharedElementKey: String) : WorkoutEffect
+    data class NavigateToWorkoutChallengeCalender(val workoutId: String, val sharedElementKey: String) : WorkoutEffect
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -91,11 +91,15 @@ class WorkoutViewModel(
                 when (event.workout.type) {
                     WorkoutType.CHALLENGE -> sendEffect(
                         WorkoutEffect.NavigateToWorkoutChallengeCalender(
-                            event.workout.id
+                            event.workout.id,
+                            event.sharedElementKey
                         )
                     )
 
-                    WorkoutType.TIME -> sendEffect(WorkoutEffect.NavigateToWorkoutDetail(event.workout.id))
+                    WorkoutType.TIME -> sendEffect(WorkoutEffect.NavigateToWorkoutDetail(
+                        event.workout.id,
+                        event.sharedElementKey
+                    ))
                 }
             }
         }
