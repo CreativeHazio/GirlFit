@@ -16,12 +16,11 @@ import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutCategory
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.mapper.toChallengeDayEntity
-import com.creativehazio.data.workout.mapper.toCycleRelatedChallengeDayEntity
-import com.creativehazio.data.workout.mapper.toCycleRelatedExerciseEntity
-import com.creativehazio.data.workout.mapper.toCycleRelatedWorkoutEntity
 import com.creativehazio.data.workout.mapper.toExerciseEntity
 import com.creativehazio.data.workout.mapper.toWorkout
 import com.creativehazio.data.workout.mapper.toWorkoutEntity
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -69,110 +68,61 @@ class WorkoutRepositoryImpl(
         }
     }
 
-    override suspend fun getCycleRelatedWorkouts(
-        limit: Int,
-        currentCyclePhase: CyclePhase,
-        cycleRelatedWorkout: CycleRelatedWorkout
-    ): Flow<List<Workout>> {
-        return try {
-
-            val workoutDao = girlFitDatabase.workoutDao()
-
-            val localWorkoutsFlow = when (cycleRelatedWorkout) {
-                CycleRelatedWorkout.RECOMMENDED ->
-                    workoutDao.getRecommendedWorkoutByPhase(
-                        currentCyclePhase.name
-                    )
-
-                CycleRelatedWorkout.RELAX ->
-                    workoutDao.getRelaxWorkoutByPhase(
-                        currentCyclePhase.name
-                    )
-            }
-
-
-            val cachedWorkouts = localWorkoutsFlow.first()
-
-            if (cachedWorkouts.isNotEmpty()) {
-                return localWorkoutsFlow.map { workouts ->
-                    workouts
-                        .take(limit)
-                        .map { it.toWorkout() }
-                }
-            }
-
-            val firestoreWorkouts = workoutDataSource.getWorkoutsByPhase(
-                limit = limit,
-                cyclePhase = currentCyclePhase.name
+    override fun observeRecommendedWorkouts(
+        cyclePhase: String
+    ): Flow<List<Workout>> =
+        girlFitDatabase.workoutDao()
+            .observeHomeRecommendedWorkouts(
+                cyclePhase = cyclePhase,
+                limit = 2
             )
-
-            firestoreWorkoutDtosToCycleEntityMapper(
-                firestoreWorkouts = firestoreWorkouts
-            )
-
-            return when (cycleRelatedWorkout) {
-                CycleRelatedWorkout.RECOMMENDED -> {
-                    girlFitDatabase.workoutDao()
-                        .getRecommendedWorkoutByPhase(currentCyclePhase.name)
-                        .map { cycleRelatedWorkoutWithExercises ->
-                            cycleRelatedWorkoutWithExercises.map { it.toWorkout() }
-                        }
-                }
-
-                CycleRelatedWorkout.RELAX -> {
-                    girlFitDatabase.workoutDao().getRelaxWorkoutByPhase(currentCyclePhase.name)
-                        .map { cycleRelatedWorkoutWithExercises ->
-                            cycleRelatedWorkoutWithExercises.map { it.toWorkout() }
-                        }
-                }
+            .map { workouts ->
+                workouts.map { it.toWorkout() }
             }
 
+    override fun observeRelaxWorkouts(): Flow<List<Workout>> =
+        girlFitDatabase.workoutDao()
+            .observeHomeRelaxWorkouts(limit = 1)
+            .map { workouts ->
+                workouts.map { it.toWorkout() }
+            }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-            flowOf(emptyList())
-        }
+    override suspend fun refreshRecommendedWorkouts(
+        cyclePhase: CyclePhase,
+        limit: Int
+    ) {
+        val dtos = workoutDataSource.getWorkoutsByPhase(
+            limit = limit,
+            cyclePhase = cyclePhase.name
+        )
+
+        // Save the actual workout content first.
+        girlFitDatabase.workoutDao()
+            .insertWorkoutDtos(dtos)
+
+        // Then update which IDs Home should feature.
+        girlFitDatabase.workoutDao()
+            .replaceHomeRecommendations(
+                cyclePhase = cyclePhase.name,
+                workoutIds = dtos.map { it.id }
+            )
     }
 
-    suspend fun firestoreWorkoutDtosToCycleEntityMapper(
-        firestoreWorkouts: List<WorkoutDto>,
+    override suspend fun refreshRelaxWorkouts(
+        limit: Int
     ) {
+        val dtos = workoutDataSource.getWorkoutsByCategory(
+            limit = limit,
+            category = WorkoutCategory.RELAX.name
+        )
 
-        girlFitDatabase.useWriterConnection { transactor ->
-            transactor.immediateTransaction {
-                try {
+        girlFitDatabase.workoutDao()
+            .insertWorkoutDtos(dtos)
 
-                    val workoutEntities = firestoreWorkouts.map { it.toCycleRelatedWorkoutEntity() }
-
-                    val exerciseEntities = firestoreWorkouts.flatMap { workoutDto ->
-                        workoutDto.exercises.map { exerciseDto ->
-                            exerciseDto.toCycleRelatedExerciseEntity(
-                                workoutId = workoutDto.id,
-                                isFavourite = false
-                            )
-                        }
-                    }
-
-                    val challengeDayEntities = firestoreWorkouts.flatMap { workoutDto ->
-                        workoutDto.challenge?.challengeDays?.mapIndexed { index, dayDto ->
-                            dayDto.toCycleRelatedChallengeDayEntity(
-                                parentChallengeId = workoutDto.id,
-                                state = if (index == 0) "CURRENT"
-                                else "UPCOMING"
-                            )
-                        } ?: emptyList()
-                    }
-
-                    girlFitDatabase.workoutDao().insertCycleRelatedWorkouts(workoutEntities)
-                    girlFitDatabase.workoutDao().insertCycleRelatedExercises(exerciseEntities)
-                    girlFitDatabase.workoutDao()
-                        .insertCycleRelatedChallengeDays(challengeDayEntities)
-                } catch (e: Exception) {
-                    throw e
-                }
-            }
-        }
-
+        girlFitDatabase.workoutDao()
+            .replaceHomeRelaxSelection(
+                workoutIds = dtos.map { it.id }
+            )
     }
 
 }

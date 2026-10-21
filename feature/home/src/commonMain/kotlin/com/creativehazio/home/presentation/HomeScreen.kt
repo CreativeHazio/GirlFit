@@ -23,8 +23,8 @@ fun HomeScreenRoot(
     homeViewModel: HomeViewModel,
     modifier: Modifier,
     contentPaddingValues: PaddingValues,
-    onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToWorkoutDetail: (workoutId: String, sharedElementKey: String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (workoutId: String, sharedElementKey: String) -> Unit,
 ) {
     val uiState = homeViewModel.uiState.collectAsStateWithLifecycle().value
     val event = homeViewModel::onEvent
@@ -33,11 +33,17 @@ fun HomeScreenRoot(
         homeViewModel.effect.collect {
             when (it) {
                 is HomeEffect.NavigateToWorkoutChallengeCalender -> {
-                    onNavigateToWorkoutChallengeCalender(it.workoutId)
+                    onNavigateToWorkoutChallengeCalender(
+                        it.workoutId,
+                        it.sharedElementKey
+                    )
                 }
 
                 is HomeEffect.NavigateToWorkoutDetail -> {
-                    onNavigateToWorkoutDetail(it.workoutId)
+                    onNavigateToWorkoutDetail(
+                        it.workoutId,
+                        it.sharedElementKey
+                    )
                 }
             }
         }
@@ -81,7 +87,7 @@ internal fun HomeScreen(
         }
 
         item {
-            val cycleCalenderViewModel : CycleCalenderViewModel = koinViewModel()
+            val cycleCalenderViewModel: CycleCalenderViewModel = koinViewModel()
             CycleCalenderSection(
                 viewModel = cycleCalenderViewModel
             )
@@ -91,9 +97,12 @@ internal fun HomeScreen(
             WorkoutSection(
                 isLoading = uiState.isRecommendedLoading,
                 name = "Recommended workouts",
+                reloadWorkouts = {
+                    event(HomeEvent.ReloadRecommendedWorkouts)
+                },
                 workouts = uiState.recommendedWorkouts,
-                onNavigateToWorkoutDetail = {
-                    event(HomeEvent.OnWorkoutCardClicked(it))
+                onNavigateToWorkoutDetail = { workout, sharedElementKey ->
+                    event(HomeEvent.OnWorkoutCardClicked(workout, sharedElementKey))
                 }
             )
         }
@@ -102,9 +111,12 @@ internal fun HomeScreen(
             WorkoutSection(
                 isLoading = uiState.isRelaxLoading,
                 name = "Relax instead?",
+                reloadWorkouts = {
+                    event(HomeEvent.ReloadRelaxWorkouts)
+                },
                 workouts = uiState.relaxWorkouts,
-                onNavigateToWorkoutDetail = {
-                    event(HomeEvent.OnWorkoutCardClicked(it))
+                onNavigateToWorkoutDetail = { workout, sharedElementKey ->
+                    event(HomeEvent.OnWorkoutCardClicked(workout, sharedElementKey))
                 }
             )
             Spacer(Modifier.size(Spacing.Small))

@@ -175,7 +175,10 @@ internal fun MealsScreen(
                         item(span = { GridItemSpan(maxLineSpan) }, contentType = "empty_state") {
                             GirlfitEmptyState(
                                 title = "Nothing to show here 💌",
-                                subtitle = "We couldn't find any meals matching your criteria."
+                                subtitle = "We couldn't find any meals matching your criteria.",
+                                retry = {
+                                    meals.retry()
+                                }
                             )
                         }
                     } else {

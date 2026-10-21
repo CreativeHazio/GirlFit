@@ -48,6 +48,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
+            implementation(libs.compottie)
+            implementation(libs.compottie.resources)
+
             implementation(projects.core.common)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)

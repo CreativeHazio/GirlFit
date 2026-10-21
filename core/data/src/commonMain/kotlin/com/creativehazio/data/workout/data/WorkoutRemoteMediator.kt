@@ -7,6 +7,7 @@ import androidx.paging.RemoteMediator
 import androidx.room.immediateTransaction
 import androidx.room.useWriterConnection
 import com.creativehazio.data.localdb.GirlFitDatabase
+import com.creativehazio.data.workout.data.local.WorkoutRemoteKeyEntity
 import com.creativehazio.data.workout.data.local.WorkoutWithExercises
 import com.creativehazio.data.workout.data.remote.WorkoutDataSource
 import com.creativehazio.data.workout.mapper.toChallengeDayEntity
@@ -19,6 +20,9 @@ class WorkoutRemoteMediator(
     private val workoutDataSource: WorkoutDataSource
 ) : RemoteMediator<Int, WorkoutWithExercises>() {
 
+    private val workoutDao = girlFitDatabase.workoutDao()
+    private val remoteKeyDao = girlFitDatabase.workoutRemoteKeyDao()
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, WorkoutWithExercises>
@@ -28,13 +32,18 @@ class WorkoutRemoteMediator(
             val lastTimestamp: Long? = when (loadType) {
                 LoadType.REFRESH -> null
 
-                LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
+                LoadType.PREPEND -> {
+                    return MediatorResult.Success(
+                        endOfPaginationReached = true
+                    )
+                }
 
                 LoadType.APPEND -> {
-                    val lastItem = girlFitDatabase.workoutDao().getLastWorkout()
-                        ?: return MediatorResult.Success(endOfPaginationReached = true)
-
-                    lastItem.workout.createdAt
+                    remoteKeyDao.getAllWorkoutsKey()
+                        ?.lastTimestamp
+                        ?: return MediatorResult.Success(
+                            endOfPaginationReached = true
+                        )
                 }
             }
 
@@ -43,55 +52,24 @@ class WorkoutRemoteMediator(
                 lastTimestamp = lastTimestamp
             )
 
-            girlFitDatabase.useWriterConnection { transactor ->
-                transactor.immediateTransaction {
-                    try {
-                        if (loadType == LoadType.REFRESH) {
-                            girlFitDatabase.workoutDao().clearAllWorkouts()
-                            girlFitDatabase.workoutDao().clearAllExercises()
-                            girlFitDatabase.workoutDao().clearAllChallengeDays()
-                        }
+            workoutDao.insertWorkoutDtos(firestoreWorkouts)
 
-                        val workoutEntities = firestoreWorkouts.map { it.toWorkoutEntity() }
-
-                        val exerciseEntities = firestoreWorkouts.flatMap { workoutDto ->
-                            workoutDto.exercises.map { exerciseDto ->
-                                exerciseDto.toExerciseEntity(
-                                    workoutId = workoutDto.id,
-                                    // TODO: Also query progress doc and add isFavourite from there
-                                    isFavourite = false
-                                )
-                            }
-                        }
-
-                        // TODO: Also query progress doc and add state from there, if file doesnt exist make the first day current
-                        val challengeDayEntities = firestoreWorkouts.flatMap { workoutDto ->
-                            workoutDto.challenge?.challengeDays?.mapIndexed { index, dayDto ->
-                                dayDto.toChallengeDayEntity(
-                                    parentChallengeId = workoutDto.id,
-                                    state = if (index == 0) "CURRENT"
-                                            else "UPCOMING"
-                                )
-                            } ?: emptyList()
-                        }
-
-                        girlFitDatabase.workoutDao().insertWorkouts(workoutEntities)
-                        girlFitDatabase.workoutDao().insertExercises(exerciseEntities)
-                        girlFitDatabase.workoutDao().insertChallengeDays(challengeDayEntities)
-
-                    } catch (e: Exception) {
-                        throw e
-                    }
-                }
-
+            if (firestoreWorkouts.isNotEmpty()) {
+                remoteKeyDao.upsert(
+                    WorkoutRemoteKeyEntity(
+                        lastTimestamp =
+                            firestoreWorkouts.last().createdAt
+                    )
+                )
+            } else if (loadType == LoadType.REFRESH) {
+                remoteKeyDao.clearAllWorkoutsKey()
             }
 
             MediatorResult.Success(
-                endOfPaginationReached = firestoreWorkouts.isEmpty()
+                endOfPaginationReached = firestoreWorkouts.size < state.config.pageSize
             )
 
         } catch (e: Exception) {
-            println("MEDIATOR CRASH: ${e.message}")
             e.printStackTrace()
             MediatorResult.Error(e)
         }

@@ -12,13 +12,20 @@ import com.creativehazio.data.workout.domain.CycleRelatedWorkout
 import com.creativehazio.data.workout.domain.Workout
 import com.creativehazio.data.workout.domain.WorkoutRepository
 import com.creativehazio.data.workout.domain.WorkoutType
+import com.creativehazio.home.presentation.HomeEffect.*
 import girlfit.feature.home.generated.resources.Res
 import girlfit.feature.home.generated.resources.angry_emoji
 import girlfit.feature.home.generated.resources.exhausted_emoji
 import girlfit.feature.home.generated.resources.sad_emoji
 import girlfit.feature.home.generated.resources.sick_emoji
 import girlfit.feature.home.generated.resources.smile_emoji
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -39,12 +46,19 @@ data class HomeState(
 ) : State
 
 sealed interface HomeEvent : Event {
-    data class OnWorkoutCardClicked(val workout: Workout) : HomeEvent
+    data class OnWorkoutCardClicked(val workout: Workout, val sharedElementKey: String) : HomeEvent
+    data object ReloadRecommendedWorkouts : HomeEvent
+    data object ReloadRelaxWorkouts : HomeEvent
 }
 
 sealed interface HomeEffect : Effect {
-    data class NavigateToWorkoutDetail(val workoutId: String) : HomeEffect
-    data class NavigateToWorkoutChallengeCalender(val workoutId: String) : HomeEffect
+    data class NavigateToWorkoutDetail(val workoutId: String, val sharedElementKey: String) :
+        HomeEffect
+
+    data class NavigateToWorkoutChallengeCalender(
+        val workoutId: String,
+        val sharedElementKey: String
+    ) : HomeEffect
 }
 
 class HomeViewModel(
@@ -53,16 +67,8 @@ class HomeViewModel(
 ) : BaseViewModel<HomeState, HomeEvent, HomeEffect>(initialState = HomeState()) {
 
     init {
-        getCycleRelatedWorkouts(
-            limit = 2,
-            cyclePhase = CyclePhase.OVULATION,
-            cycleRelatedWorkout = CycleRelatedWorkout.RECOMMENDED
-        )
-        getCycleRelatedWorkouts(
-            limit = 1,
-            cyclePhase = CyclePhase.OVULATION,
-            cycleRelatedWorkout = CycleRelatedWorkout.RELAX
-        )
+        observeWorkouts()
+        refreshRelaxWorkouts()
     }
 
     override fun onEvent(event: HomeEvent) {
@@ -70,50 +76,114 @@ class HomeViewModel(
             is HomeEvent.OnWorkoutCardClicked -> {
                 when (event.workout.type) {
                     WorkoutType.CHALLENGE -> {
-                        sendEffect(HomeEffect.NavigateToWorkoutChallengeCalender(event.workout.id))
+                        sendEffect(
+                            NavigateToWorkoutChallengeCalender(
+                                event.workout.id,
+                                event.sharedElementKey
+                            )
+                        )
                     }
 
                     WorkoutType.TIME -> {
-                        sendEffect(HomeEffect.NavigateToWorkoutDetail(event.workout.id))
+                        sendEffect(
+                            NavigateToWorkoutDetail(
+                                event.workout.id,
+                                event.sharedElementKey
+                            )
+                        )
+                    }
+                }
+            }
+
+            HomeEvent.ReloadRecommendedWorkouts -> {
+                refreshRecommendedWorkouts(
+                    uiState.value.user.cyclePhase
+                )
+            }
+
+            HomeEvent.ReloadRelaxWorkouts -> {
+                refreshRelaxWorkouts()
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeWorkouts() {
+        viewModelScope.launch {
+            uiState
+                .map { it.user.cyclePhase }
+                .distinctUntilChanged()
+                .onEach { phase ->
+                    refreshRecommendedWorkouts(phase)
+                }
+                .flatMapLatest { phase ->
+                    workoutRepository.observeRecommendedWorkouts(
+                        cyclePhase = phase.name
+                    )
+                }
+                .collect { workouts ->
+                    updateState {
+                        copy(
+                            recommendedWorkouts = workouts
+                        )
+                    }
+                }
+        }
+
+        viewModelScope.launch {
+            workoutRepository.observeRelaxWorkouts()
+                .collect { workouts ->
+                    updateState {
+                        copy(
+                            relaxWorkouts = workouts
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun refreshRecommendedWorkouts(
+        cyclePhase: CyclePhase
+    ) {
+        viewModelScope.launch {
+            updateState {
+                copy(
+                    isRecommendedLoading = recommendedWorkouts.isEmpty()
+                )
+            }
+
+            try {
+                workoutRepository.refreshRecommendedWorkouts(
+                    cyclePhase = cyclePhase,
+                    limit = 2
+                )
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                // An older request should not change the loading
+                // state after the user has switched cycle phases.
+                if (uiState.value.user.cyclePhase == cyclePhase) {
+                    updateState {
+                        copy(isRecommendedLoading = false)
                     }
                 }
             }
         }
     }
 
-    private fun getCycleRelatedWorkouts(
-        limit: Int,
-        cyclePhase: CyclePhase,
-        cycleRelatedWorkout: CycleRelatedWorkout
-    ) {
+    private fun refreshRelaxWorkouts() {
         viewModelScope.launch {
-            workoutRepository.getCycleRelatedWorkouts(
-                limit = limit,
-                currentCyclePhase = cyclePhase,
-                cycleRelatedWorkout = cycleRelatedWorkout
-            ).catch {
-                updateState {
-                    when (cycleRelatedWorkout) {
-                        CycleRelatedWorkout.RECOMMENDED -> copy(isRecommendedLoading = false)
-                        CycleRelatedWorkout.RELAX -> copy(isRelaxLoading = false)
-                    }
-                }
-            }
-                .collect {
-                    updateState {
-                        when (cycleRelatedWorkout) {
-                            CycleRelatedWorkout.RECOMMENDED -> copy(
-                                recommendedWorkouts = it,
-                                isRecommendedLoading = false
-                            )
+            updateState { copy(isRelaxLoading = relaxWorkouts.isEmpty()) }
 
-                            CycleRelatedWorkout.RELAX -> copy(
-                                relaxWorkouts = it,
-                                isRelaxLoading = false
-                            )
-                        }
-                    }
-                }
+            runCatching {
+                workoutRepository.refreshRelaxWorkouts(
+                    limit = 1
+                )
+            }
+
+            updateState { copy(isRelaxLoading = false) }
         }
     }
 }

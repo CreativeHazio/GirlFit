@@ -6,6 +6,7 @@ import dev.gitlive.firebase.firestore.FirebaseFirestore
 private const val WORKOUTS = "workouts"
 private const val CREATED_AT = "createdAt"
 private const val CYCLE_PHASE = "cyclePhase"
+private const val CATEGORY = "category"
 
 
 class WorkoutDataSource (
@@ -36,6 +37,16 @@ class WorkoutDataSource (
             .limit(limit.toLong())
 
         return query.get().documents.map { it.data() }
+    }
+
+    suspend fun getWorkoutsByCategory(
+        limit: Int,
+        category: String
+    ): List<WorkoutDto> {
+        return firestore.collection(WORKOUTS)
+            .where { CATEGORY equalTo category }
+            .limit(limit.toLong())
+            .get().documents.map { it.data() }
     }
 
 }

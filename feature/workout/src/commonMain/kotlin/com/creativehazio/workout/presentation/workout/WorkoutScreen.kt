@@ -62,8 +62,8 @@ fun WorkoutScreenRoot(
     viewModel: WorkoutViewModel,
     onNavigateToFavourite: () -> Unit,
     onNavigateToPersonalPlan: () -> Unit,
-    onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
+    onNavigateToWorkoutDetail: (String, String) -> Unit,
+    onNavigateToWorkoutChallengeCalender: (String, String) -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     val event = viewModel::onEvent
@@ -74,11 +74,11 @@ fun WorkoutScreenRoot(
                 WorkoutEffect.NavigateToFavourite -> onNavigateToFavourite()
                 WorkoutEffect.NavigateToPersonalPlan -> onNavigateToPersonalPlan()
                 is WorkoutEffect.NavigateToWorkoutDetail -> {
-                    onNavigateToWorkoutDetail(it.workoutId)
+                    onNavigateToWorkoutDetail(it.workoutId, it.sharedElementKey)
                 }
 
                 is WorkoutEffect.NavigateToWorkoutChallengeCalender -> {
-                    onNavigateToWorkoutChallengeCalender(it.workoutId)
+                    onNavigateToWorkoutChallengeCalender(it.workoutId, it.sharedElementKey)
                 }
             }
         }
@@ -191,7 +191,10 @@ internal fun WorkoutScreen(
                     item(span = { GridItemSpan(maxLineSpan) }, contentType = "empty_state") {
                         GirlfitEmptyState(
                             title = "Nothing to show here 💌",
-                            subtitle = "We couldn't find any workouts matching your criteria."
+                            subtitle = "We couldn't find any workouts matching your criteria.",
+                            retry = {
+                                workouts.retry()
+                            }
                         )
                     }
                 } else {
@@ -208,15 +211,19 @@ internal fun WorkoutScreen(
                                 it.state == ChallengeDayState.CURRENT
                             }
 
+                            val sharedElementKey = "workout_list:${workout.id}"
+
                             GirlFitWorkoutCard(
                                 modifier = Modifier.height(Sizing.CardHeightLarge),
-                                sharedKey = workout.id,
+                                sharedElementKey = sharedElementKey,
                                 title = workout.title,
                                 imageUrl = workout.imageUrl,
                                 durationText = workout.getDurationText(),
                                 detailsText = workout.getDetailsText(),
                                 buttonText = if (workout.type == WorkoutType.CHALLENGE) "Day ${currentDay?.number} 👏" else "Start",
-                                onCardClick = { event(WorkoutEvent.OnWorkoutCardClicked(workout)) }
+                                onCardClick = {
+                                    event(WorkoutEvent.OnWorkoutCardClicked(workout, sharedElementKey))
+                                }
                             )
                         }
 

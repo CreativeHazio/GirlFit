@@ -66,6 +66,7 @@ import com.creativehazio.navigation.Splash
 import com.creativehazio.navigation.Workout
 import com.creativehazio.navigation.WorkoutChallengeCalender
 import com.creativehazio.navigation.WorkoutDetail
+import com.creativehazio.navigation.navConfig
 import com.creativehazio.progress.presentation.ProgressScreenRoot
 import com.creativehazio.progress.presentation.ProgressViewModel
 import com.creativehazio.startup.onboarding.OnboardingScreenRoot
@@ -74,6 +75,7 @@ import com.creativehazio.startup.splash.SplashScreenRoot
 import com.creativehazio.startup.splash.SplashViewModel
 import com.creativehazio.workout.presentation.exercise.ExerciseScreenRoot
 import com.creativehazio.workout.presentation.exercise.ExerciseViewModel
+import com.creativehazio.workout.presentation.workout.WorkoutEvent
 import com.creativehazio.workout.presentation.workout.WorkoutScreenRoot
 import com.creativehazio.workout.presentation.workout.WorkoutViewModel
 import com.creativehazio.workout.presentation.workoutchallengecalender.WorkoutChallengeCalenderScreenRoot
@@ -96,15 +98,6 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-
-@OptIn(ExperimentalSerializationApi::class)
-private val navConfig = SavedStateConfiguration {
-    serializersModule = SerializersModule {
-        polymorphic(NavKey::class) {
-            subclassesOfSealed<Route>()
-        }
-    }
-}
 
 @Composable
 fun App() {
@@ -228,17 +221,18 @@ fun App() {
                         }
 
                         entry<Main> {
+
                             ProvideEntryAnimatedScope {
                                 MainAppContainer(
                                     onLogout = {
                                         backStack.clear()
                                         backStack.add(Login)
                                     },
-                                    onNavigateToWorkoutChallengeCalender = { workoutId ->
-                                        backStack.add(WorkoutChallengeCalender(workoutId))
+                                    onNavigateToWorkoutChallengeCalender = { workoutId, sharedElementKey ->
+                                        backStack.add(WorkoutChallengeCalender(workoutId, sharedElementKey))
                                     },
-                                    onNavigateToWorkoutDetail = { workoutId ->
-                                        backStack.add(WorkoutDetail(workoutId))
+                                    onNavigateToWorkoutDetail = { workoutId, sharedElementKey ->
+                                        backStack.add(WorkoutDetail(workoutId, sharedElementKey))
                                     },
                                     onNavigateToMealScan = {
                                         backStack.add(MealScan)
@@ -260,11 +254,12 @@ fun App() {
                             ProvideEntryAnimatedScope {
                                 WorkoutChallengeCalenderScreenRoot(
                                     viewModel = workoutChallengeCalenderViewModel,
+                                    sharedElementKey = key.sharedElementKey,
                                     onBack = {
                                         backStack.removeLastOrNull()
                                     },
                                     onNavigateToWorkoutDetail = { workoutId ->
-                                        backStack.add(WorkoutDetail(workoutId))
+                                        backStack.add(WorkoutDetail(workoutId, workoutId))
                                     }
                                 )
 
@@ -283,6 +278,7 @@ fun App() {
 
                                 WorkoutDetailScreenRoot(
                                     workoutViewModel = workoutDetailViewModel,
+                                    sharedElementKey = key.sharedElementKey,
                                     onNavigateToExercise = {
                                         backStack.add(StartWorkout(key.workoutId))
                                     },
@@ -351,152 +347,6 @@ fun App() {
             }
         }
     }
-}
-
-@Composable
-fun MainAppContainer(
-    onLogout: () -> Unit,
-    onNavigateToWorkoutDetail: (String) -> Unit,
-    onNavigateToWorkoutChallengeCalender: (String) -> Unit,
-    onNavigateToMealScan: () -> Unit,
-    onNavigateToMealDetail: (String) -> Unit
-) {
-
-    val tabBackStack = rememberNavBackStack(navConfig, Home)
-    val currentTab = tabBackStack.lastOrNull() as? Route
-
-    val tabs = rememberSaveable {
-        listOf<BottomBarTab<Route>>(
-            BottomBarTab(
-                route = Home,
-                title = "Home",
-                unselectedIcon = Res.drawable.home,
-                selectedIcon = Res.drawable.home_selected
-            ),
-            BottomBarTab(
-                route = Workout,
-                title = "Workout",
-                unselectedIcon = Res.drawable.workout,
-                selectedIcon = Res.drawable.workout_selected
-            ),
-            BottomBarTab(
-                route = Progress,
-                title = "Progress",
-                unselectedIcon = Res.drawable.progress,
-                selectedIcon = Res.drawable.progress_selected
-            ),
-            BottomBarTab(
-                route = Meals,
-                title = "Meals",
-                unselectedIcon = Res.drawable.meals,
-                selectedIcon = Res.drawable.meals_selected
-            ),
-            BottomBarTab(
-                route = Me,
-                title = "Me",
-                unselectedIcon = Res.drawable.me,
-                selectedIcon = Res.drawable.me_selected
-            )
-        )
-    }
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            GirlFitBottomBar(
-                modifier = Modifier.renderAboveSharedElements(),
-                tabs = tabs,
-                currentRoute = currentTab,
-                onTabSelected = { selectedRoute ->
-                    if (currentTab != selectedRoute) {
-                        tabBackStack.clear()
-                        tabBackStack.add(selectedRoute)
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        val snappy = tween<IntOffset>(200, easing = FastOutSlowInEasing)
-        val snappyFade = tween<Float>(200, easing = FastOutSlowInEasing)
-
-        //TODO: Add onback to only close app when its homescreen
-        NavDisplay(
-            backStack = tabBackStack,
-            transitionSpec = {
-                (slideInHorizontally(snappy) { it / 3 } + fadeIn(snappyFade)) togetherWith
-                        (slideOutHorizontally(snappy) { -it / 6 } + fadeOut(snappyFade))
-            },
-
-            popTransitionSpec = {
-                (slideInHorizontally(snappy) { -it / 6 } + fadeIn(snappyFade)) togetherWith
-                        (slideOutHorizontally(snappy) { it / 3 } + fadeOut(snappyFade))
-            },
-            entryProvider = entryProvider {
-                entry<Home> {
-                    val homeViewModel: HomeViewModel = koinViewModel()
-
-                    HomeScreenRoot(
-                        modifier = Modifier,
-                        contentPaddingValues = innerPadding,
-                        homeViewModel = homeViewModel,
-                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender,
-                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail
-                    )
-                }
-
-                entry<Workout> {
-                    val workoutViewModel: WorkoutViewModel = koinViewModel()
-
-                    WorkoutScreenRoot(
-                        paddingValues = innerPadding,
-                        viewModel = workoutViewModel,
-                        onNavigateToFavourite = {},
-                        onNavigateToPersonalPlan = {},
-                        onNavigateToWorkoutDetail = onNavigateToWorkoutDetail,
-                        onNavigateToWorkoutChallengeCalender = onNavigateToWorkoutChallengeCalender
-                    )
-                }
-
-                entry<Progress> {
-                    val progressViewModel: ProgressViewModel = koinViewModel()
-
-                    ProgressScreenRoot(
-                        paddingValues = innerPadding,
-                        viewModel = progressViewModel,
-                        onNavigateToProgressCalender = {
-
-                        }
-                    )
-                }
-
-                entry<Meals> {
-                    val mealsViewModel: MealsViewModel = koinViewModel()
-
-                    MealsScreenRoot(
-                        paddingValues = innerPadding,
-                        viewModel = mealsViewModel,
-                        onNavigateToMealScan = {
-                            onNavigateToMealScan()
-                        },
-                        onNavigateToMealDetail = { mealId ->
-                            onNavigateToMealDetail(mealId)
-                        }
-                    )
-                }
-
-                entry<Me> {
-
-                    val meViewModel: MeViewModel = koinViewModel()
-
-                    MeScreenRoot(
-                        paddingValues = innerPadding,
-                        viewModel = meViewModel
-                    )
-                }
-            }
-        )
-    }
-
 }
 
 @Composable

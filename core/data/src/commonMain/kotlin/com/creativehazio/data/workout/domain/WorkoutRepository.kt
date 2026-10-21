@@ -7,9 +7,11 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun getWorkouts(category: WorkoutCategory, searchQuery: String): Flow<PagingData<Workout>>
     suspend fun getWorkout(workoutId: String): Workout
-    suspend fun getCycleRelatedWorkouts(
-        limit: Int,
-        currentCyclePhase: CyclePhase,
-        cycleRelatedWorkout: CycleRelatedWorkout
-    ): Flow<List<Workout>>
+
+    fun observeRecommendedWorkouts(cyclePhase: String): Flow<List<Workout>>
+
+    fun observeRelaxWorkouts(): Flow<List<Workout>>
+
+    suspend fun refreshRelaxWorkouts(limit: Int = 1)
+    suspend fun refreshRecommendedWorkouts(cyclePhase: CyclePhase, limit: Int = 2)
 }

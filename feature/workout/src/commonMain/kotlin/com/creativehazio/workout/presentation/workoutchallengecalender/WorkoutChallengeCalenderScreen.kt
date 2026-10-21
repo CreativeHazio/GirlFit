@@ -65,6 +65,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun WorkoutChallengeCalenderScreenRoot(
     viewModel: WorkoutChallengeCalenderViewModel,
+    sharedElementKey: String,
     onBack: () -> Unit,
     onNavigateToWorkoutDetail: (String) -> Unit
 ) {
@@ -85,6 +86,7 @@ fun WorkoutChallengeCalenderScreenRoot(
 
     Scaffold { innerPadding ->
         WorkoutChallengeCalenderScreen(
+            sharedElementKey = sharedElementKey,
             uiState = uiState,
             event = event,
         )
@@ -94,6 +96,7 @@ fun WorkoutChallengeCalenderScreenRoot(
 @Composable
 internal fun WorkoutChallengeCalenderScreen(
     modifier: Modifier = Modifier,
+    sharedElementKey: String,
     uiState: WorkoutChallengeCalenderState,
     event: (WorkoutChallengeCalenderEvent) -> Unit,
 ) {
@@ -111,7 +114,7 @@ internal fun WorkoutChallengeCalenderScreen(
                 modifier = Modifier
                     .sharedBoundsIfAvailable(
                         key = SharedElementKey(
-                            id = uiState.workout.id,
+                            id = sharedElementKey,
                             type = SharedElementKey.Type.Image
                         )
                     )
@@ -467,7 +470,8 @@ fun ChallengeDayPillPrev() {
                 challenge = challenge
             )
         ),
-        event = {}
+        sharedElementKey = "",
+        event = {},
     )
 }
 

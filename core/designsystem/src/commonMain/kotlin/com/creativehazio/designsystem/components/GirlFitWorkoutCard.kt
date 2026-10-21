@@ -1,8 +1,5 @@
 package com.creativehazio.designsystem.components
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +35,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun GirlFitWorkoutCard(
     modifier: Modifier = Modifier,
-    sharedKey: String? = null,
+    sharedElementKey: String,
     imageUrl: String,
     title: String,
     titleStyle: TextStyle = MaterialTheme.typography.titleLarge,
@@ -63,7 +60,7 @@ fun GirlFitWorkoutCard(
                 modifier = Modifier
                     .sharedBoundsIfAvailable(
                         key = SharedElementKey(
-                            id = sharedKey ?: imageUrl,
+                            id = sharedElementKey,
                             type = SharedElementKey.Type.Image
                         )
                     )
@@ -88,7 +85,7 @@ fun GirlFitWorkoutCard(
                 Text(
                     modifier = Modifier.sharedElementIfAvailable(
                         key = SharedElementKey(
-                            id = sharedKey ?: "",
+                            id = sharedElementKey,
                             type = SharedElementKey.Type.Title
                         )
                     ),
@@ -100,7 +97,7 @@ fun GirlFitWorkoutCard(
                     Text(
                         modifier = Modifier.sharedBoundsIfAvailable(
                             key = SharedElementKey(
-                                id = sharedKey ?: "",
+                                id = sharedElementKey,
                                 type = SharedElementKey.Type.Subtitle
                             )
                         ),
