@@ -1,35 +1,70 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+# GirlFit
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+[Download APK](https://github.com/CreativeHazio/GirlFit/releases/tag/v1.0.0) · [Watch Demo](https://youtube.com/shorts/JQZe7ZSGdGM?si=B-QMehD8IuEz77dB) · [Contact Me](https://www.linkedin.com/in/haziothedev)
 
-### Build and Run Android Application
+## About the Project
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+GirlFit is a cross-platform female fitness app built using Kotlin Multiplatform (KMP) & Compose Multiplatform (CMP)-for shared UI across Android & iOS.
 
-### Build and Run iOS Application
+**Project status:** Portfolio project 
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+**Platform:** Android & iOS
 
----
+## Screenshots
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+<img width="250" alt="Screenshot_2026-10-22-14-56-32-039_com creativehazio girlfit" src="https://github.com/user-attachments/assets/da58d669-3f61-486f-b69d-2d284522dd42" />
+
+<img width="250" alt="Screenshot_2026-10-22-15-01-19-220_com creativehazio girlfit" src="https://github.com/user-attachments/assets/28e636ca-2d71-4e54-afe3-f6b89c29874d" />
+
+<img width="250" alt="Screenshot_2026-10-22-14-56-43-752_com creativehazio girlfit" src="https://github.com/user-attachments/assets/69ef588c-5ebc-493d-8248-600279dfb2d3" />
+
+<img width="250" alt="Screenshot_2026-10-22-14-57-07-590_com creativehazio girlfit" src="https://github.com/user-attachments/assets/dd7e4de8-132d-488a-be3a-8fb2d1d99560" />
+
+## Engineering Highlights
+
+A few of the important engineering decisions behind the app:
+
+- **Architecture:** Modularized Clean Architecture & MVI for unidirectional data flow (UDF) 
+- **State management:** Kotlin Flows and Coroutines are used respectively to manage state and perform asynchronous work.
+- **Data:** Offline-first architecture with Room as the single source of truth and FirebaseFirestore for remote database.
+- **Performance:** Stateless Composables, Correct Coroutine scopes, Paginated data, ViewModel Impl, Coil Image loading; all to ensure a smooth and responsive experience for users
+
+## Tech Stack
+
+- **Language:** Kotlin
+- **UI:** Jetpack Compose
+- **Architecture:** MVI & Clean Architecture 
+- **Dependency injection:** Koin
+- **Persistence:** Room Database and Datastore
+- **Other:** Firebase Auth, Firebase Firestore, Paging 3 & Compottie.
+
+## My Contribution
+
+I was responsible for end-to-end development of the app while collaborating with a UX designer.
+
+This included architecture, implementation, integrations, debugging &
+performance work.
+
+## Download and Try the App
+
+1. Open the [latest release](https://github.com/CreativeHazio/GirlFit/releases/tag/v1.0.0).
+2. Download the APK asset.
+3. Review the installation prompt on your Android device.
+4. Open the app.
+
+<img width="250" alt="Screenshot_2026-10-22-14-25-28-063_com android vending" src="https://github.com/user-attachments/assets/f41ea02d-cc3b-4d8c-ad8f-e02c38ec5853" />
+
+<img width="250" alt="Screenshot_2026-10-22-14-25-34-739_com android vending" src="https://github.com/user-attachments/assets/e4121146-120d-4488-83b0-92628d834195" />
+
+<img width="250" alt="Screenshot_2026-10-22-14-25-56-323_com android vending" src="https://github.com/user-attachments/assets/9d2ff036-e337-408b-92d0-94cf0598b702" />
+
+**Requirements:** Android version 8+ & internet connection access.
+
+## About Me
+
+I'm an Android developer focused on Kotlin, Jetpack Compose,
+I take iOS apps, Figma designs & existing backends to production on Google Play.
+
+- [LinkedIn](https://www.linkedin.com/in/haziothedev)
+- [Portfolio or GitHub profile](https://www.github.com/CreativeHazio)
